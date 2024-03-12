@@ -17,37 +17,59 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="addModalLabel">Tambah Data Customer</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
         </div>
         <div class="modal-body">
-          <form method="POST">
+          <form method="POST" action="{{ route('Tambah Data Customer') }}">
+            @csrf
             <div class="mb-3">
               <label for="id_customer" class="form-label">ID Customer:</label>
               <input type="text" class="form-control" id="id_customer" name="id_customer" required>
+              @error('id_customer')
+              <span class="text-danger">{{ $message }}</span>
+              @enderror
             </div>
             <div class="mb-3">
               <label for="nama_customer" class="form-label">Nama Customer:</label>
               <input type="text" class="form-control" id="nama_customer" name="nama_customer" required>
+              @error('nama_customer')
+              <span class="text-danger">{{ $message }}</span>
+              @enderror
             </div>
             <div class="mb-3">
               <label for="alamat_customer" class="form-label">Alamat Customer:</label>
               <input type="text" class="form-control" id="alamat_customer" name="alamat_customer" required>
+              @error('alamat_customer')
+              <span class="text-danger">{{ $message }}</span>
+              @enderror
             </div>
             <div class="mb-3">
               <label for="telp_customer" class="form-label">Telepon Customer:</label>
               <input type="number" class="form-control" id="telp_customer" name="telp_customer" required>
+              @error('telp_customer')
+              <span class="text-danger">{{ $message }}</span>
+              @enderror
             </div>
             <div class="mb-3">
               <label for="email_customer" class="form-label">Email Customer:</label>
               <input type="email" class="form-control" id="email_customer" name="email_customer" required>
+              @error('email_customer')
+              <span class="text-danger">{{ $message }}</span>
+              @enderror
             </div>
             <div class="mb-3">
               <label for="pic" class="form-label">PIC:</label>
               <input type="text" class="form-control" id="pic" name="pic" required>
+              @error('pic')
+              <span class="text-danger">{{ $message }}</span>
+              @enderror
             </div>
             <div class="mb-3">
               <label for="phone_pic" class="form-label">Telepon PIC:</label>
               <input type="number" class="form-control" id="phone_pic" name="phone_pic" required>
+              @error('phone_pic')
+              <span class="text-danger">{{ $message }}</span>
+              @enderror
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -58,6 +80,7 @@
       </div>
     </div>
   </div>
+  @foreach ($records as $record)
   <!-- Modal Edit Data -->
   <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -67,34 +90,42 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form method="POST">
+          <form method="POST" action="{{ route('Ubah Data Customer', $record->id_customer) }}">
+            @method('put')
+            @csrf
             <div class="mb-3">
-              <label for="edit_id_customer" class="form-label">ID Customer:</label>
-              <input type="text" class="form-control" id="edit_id_customer" name="edit_id_customer" readonly required>
+              <label for="id_customer" class="form-label">ID Customer:</label>
+              <input type="text" class="form-control" id="id_customer" value="{{ $record->id_customer }}"
+                name="id_customer" readonly required>
             </div>
             <div class="mb-3">
-              <label for="edit_nama_customer" class="form-label">Nama Customer:</label>
-              <input type="text" class="form-control" id="edit_nama_customer" name="edit_nama_customer" required>
+              <label for="nama_customer" class="form-label">Nama Customer:</label>
+              <input type="text" class="form-control" id="nama_customer" value="{{ $record->nama_customer }}"
+                name="nama_customer" required>
             </div>
             <div class="mb-3">
-              <label for="edit_alamat_customer" class="form-label">Alamat Customer:</label>
-              <input type="text" class="form-control" id="edit_alamat_customer" name="edit_alamat_customer" required>
+              <label for="alamat_customer" class="form-label">Alamat Customer:</label>
+              <input type="text" class="form-control" id="alamat_customer" value="{{ $record->alamat_customer }}"
+                name="alamat_customer" required>
             </div>
             <div class="mb-3">
-              <label for="edit_telp_customer" class="form-label">Telepon Customer:</label>
-              <input type="number" class="form-control" id="edit_telp_customer" name="edit_telp_customer" required>
+              <label for="telp_customer" class="form-label">Telepon Customer:</label>
+              <input type="number" class="form-control" id="telp_customer" value="{{ $record->telp_customer }}"
+                name="telp_customer" required>
             </div>
             <div class="mb-3">
-              <label for="edit_email_customer" class="form-label">Email Customer:</label>
-              <input type="email" class="form-control" id="edit_email_customer" name="edit_email_customer" required>
+              <label for="email_customer" class="form-label">Email Customer:</label>
+              <input type="email" class="form-control" id="email_customer" value="{{ $record->email_customer }}"
+                name="email_customer" required>
             </div>
             <div class="mb-3">
-              <label for="edit_pic" class="form-label">PIC:</label>
-              <input type="text" class="form-control" id="edit_pic" name="edit_pic" required>
+              <label for="pic" class="form-label">PIC:</label>
+              <input type="text" class="form-control" id="pic" value="{{ $record->pic }}" name="pic" required>
             </div>
             <div class="mb-3">
-              <label for="edit_phone_pic" class="form-label">Telepon PIC:</label>
-              <input type="number" class="form-control" id="edit_phone_pic" name="edit_phone_pic" required>
+              <label for="phone_pic" class="form-label">Telepon PIC:</label>
+              <input type="number" class="form-control" id="phone_pic" value="{{ $record->phone_pic }}" name="phone_pic"
+                required>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -106,6 +137,25 @@
     </div>
   </div>
   <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
+
+  <!-- Modal Delete -->
+  <div class="modal fade" id="deleteRecord" tabindex="-1" aria-labelledby="deleteRecordLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form method="POST" action="{{ route('Hapus Data Customer', $record->id_customer) }}">
+          @method('delete')@csrf
+          <div class="modal-body">
+            Apakah Anda sudah yakin ingin menghapus Record ini?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  @endforeach
 
   <!-- Row -->
   <div class="row">
@@ -154,28 +204,26 @@
               </tr>
             </thead>
             <tbody>
-              {{--
-              <?php
-			  $query = "SELECT * FROM data_customer";
-			  $result = mysqli_query($conn, $query);
-			  while ($data = mysqli_fetch_assoc($result)) {
-				  echo "<tr>";
-				  echo "<td>".$data['id_customer']."</td>";
-				  echo "<td>".$data['nama_customer']."</td>";
-				  echo "<td>".$data['alamat_customer']."</td>";
-				  echo "<td>".$data['telp_customer']."</td>";
-				  echo "<td>".$data['email_customer']."</td>";
-				  echo "<td>".$data['pic']."</td>";
-				  echo "<td>".$data['phone_pic']."</td>";
-				  echo "<td><span class='badge badge-danger'>Process</span></td>";
-				  echo "<td>";
-				  echo "<button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal' data-bs-target='#editModal' onclick='openEditModal(\"".$data['id_customer']."\", \"".$data['nama_customer']."\", \"".$data['alamat_customer']."\", \"".$data['telp_customer']."\", \"".$data['email_customer']."\", \"".$data['pic']."\", \"".$data['phone_pic']."\")'><i class='fas fa-edit'></i></button>";
-				  echo "<button type='button' class='btn btn-danger btn-sm' onclick='deleteData(\"".$data['id_customer']."\")'><i class='fas fa-trash'></i></button>";
-				  echo "<a href='generate_pdf.php?id_customer=".htmlspecialchars($data['id_customer'])."' class='btn btn-primary btn-sm' target='_blank' role='button'><i class='fas fa-print'></i></a>";
-				  echo "</td>";
-				  echo "</tr>"; 
-			  }
-			  ?> --}}
+              @foreach ($records as $record)
+              <tr>
+                <td>{{ $record->id_customer }}</td>
+                <td>{{ $record->nama_customer }}</td>
+                <td>{{ $record->alamat_customer }}</td>
+                <td>{{ $record->telp_customer }}</td>
+                <td>{{ $record->email_customer }}</td>
+                <td>{{ $record->pic }}</td>
+                <td>{{ $record->phone_pic }}</td>
+                <td><span class='badge badge-danger'>Process</span></td>
+                <td>
+                  <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
+                    data-bs-target='#editModal'><i class='fas fa-edit'></i></button>
+                  <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
+                    data-bs-target="#deleteRecord"><i class='fas fa-trash'></i></button>
+                  <a href="" class='btn btn-primary btn-sm' target='_blank' role='button'><i
+                      class='fas fa-print'></i></a>
+                </td>
+              </tr>
+              @endforeach
             </tbody>
             <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
           </table>
@@ -185,37 +233,7 @@
   </div>
 
   <script>
-    function updateTanggalJam() {
-	  var date = new Date();
-	  var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-	  var formattedDate = date.toLocaleDateString('id-ID', options);
-	  document.getElementById('tanggalJam').textContent = formattedDate;
-	}
-
-	// Memanggil fungsi untuk pertama kali saat halaman dimuat
-	updateTanggalJam();
-
-	// Memperbarui tanggal dan jam setiap detik
-	setInterval(updateTanggalJam, 1000);
-
-	
-	function openEditModal(idCustomer, namaCustomer, alamatCustomer, telpCustomer, emailCustomer, pic, phonePic) {
-		document.getElementById("edit_id_customer").value = idCustomer;
-		document.getElementById("edit_nama_customer").value = namaCustomer;
-		document.getElementById("edit_alamat_customer").value = alamatCustomer;
-		document.getElementById("edit_telp_customer").value = telpCustomer;
-		document.getElementById("edit_email_customer").value = emailCustomer;
-		document.getElementById("edit_pic").value = pic;
-		document.getElementById("edit_phone_pic").value = phonePic;
-	}
-
-	function deleteData(idCustomer) {
-		if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
-			window.location.href = "?id_customer=" + idCustomer;
-		}
-	}
-
-	// Ajax Data Table 
+    // Ajax Data Table 
 	$(document).ready(function () {
 	  $('#dataTableHover').DataTable();
 	});

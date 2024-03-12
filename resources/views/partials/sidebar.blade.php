@@ -40,7 +40,7 @@
       <!-- Konten dropdown Penerimaan Jasa -->
       <div class="bg-white py-2 collapse-inner rounded">
         <h6 class="collapse-header">Penerimaan Jasa</h6>
-        <a class="collapse-item" href="{{ route('Customer') }}">Customer</a>
+        <a class="collapse-item" href="{{ route('Data Customer') }}">Customer</a>
         <a class="collapse-item" href="{{ route('Order') }}">Order</a>
         <a class="collapse-item" href="{{ route('Dokumen Order') }}">Dokumen Order</a>
         <a class="collapse-item" href="{{ route('Sertifikat') }}">Sertifikat</a>

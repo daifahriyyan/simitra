@@ -2,6 +2,9 @@
 
 use Livewire\Livewire;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DataCustomer;
+use App\Http\Controllers\DataCustomerController;
+use App\Http\Controllers\DetailCustomerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,13 +29,23 @@ Route::view('/importer', 'pages.master.importer')->name('Importer');
 Route::view('/pegawai', 'pages.master.pegawai')->name('Pegawai');
 
 // Penerimaan Jasa
-Route::view('/customer', 'pages.penerimaan-jasa.customer')->name('Customer');
+Route::resource('customer', DataCustomer::class)->names([
+    'index' => 'Data Customer',
+    'store' => 'Tambah Data Customer',
+    'update'=> 'Ubah Data Customer',
+    'destroy'=> 'Hapus Data Customer'
+])->except(['edit', 'create', 'show']);
 Route::view('/order', 'pages.penerimaan-jasa.order')->name('Order');
 Route::view('/dokumen-order', 'pages.penerimaan-jasa.dokumen-order')->name('Dokumen Order');
 Route::view('/sertifikat', 'pages.penerimaan-jasa.sertifikat')->name('Sertifikat');
 Route::view('/invoice', 'pages.penerimaan-jasa.invoice')->name('Invoice');
 Route::view('/bukti-pembayaran', 'pages.penerimaan-jasa.bukti-pembayaran')->name('Bukti Pembayaran');
-Route::view('/detail-customer', 'pages.penerimaan-jasa.detail-customer')->name('Detail Customer');
+Route::resource('/detail-customer', DetailCustomerController::class)->names([
+    'index' => 'Detail Customer',
+    'store' => 'Tambah Detail Customer',
+    'update'=> 'Ubah Detail Customer',
+    'destroy'=> 'Hapus Detail Customer'
+])->except(['edit', 'create', 'show']);
 Route::view('/rekap-penjualan', 'pages.penerimaan-jasa.rekap-penjualan')->name('Rekap Penjualan');
 
 // Operasional
