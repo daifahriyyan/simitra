@@ -20,7 +20,8 @@
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-					<form method="POST">
+					<form method="POST" action="{{ route('Tambah Importer') }}">
+						@csrf
 						<div class="mb-3">
 							<label for="id_importer" class="form-label">ID Importer:</label>
 							<input type="text" class="form-control" id="id_importer" name="id_importer" required>
@@ -58,8 +59,9 @@
 			</div>
 		</div>
 	</div>
+	@foreach ($records as $record)
 	<!-- Modal Edit Data -->
-	<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+	<div class="modal fade" id="editModal{{ $record->id }}" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -67,34 +69,35 @@
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-					<form method="POST">
+					<form method="POST" action="{{ route('Ubah Importer', $record->id) }}">
+						@csrf @method('put')
 						<div class="mb-3">
-							<label for="edit_id_importer" class="form-label">ID Importer:</label>
-							<input type="text" class="form-control" id="edit_id_importer" name="edit_id_importer" readonly required>
+							<label for="id_importer" class="form-label">ID Importer:</label>
+							<input type="text" class="form-control" id="id_importer" value="{{ $record->id_importer }}" name="id_importer" readonly required>
 						</div>
 						<div class="mb-3">
-							<label for="edit_nama_importer" class="form-label">Nama Importer:</label>
-							<input type="text" class="form-control" id="edit_nama_importer" name="edit_nama_importer" required>
+							<label for="nama_importer" class="form-label">Nama Importer:</label>
+							<input type="text" class="form-control" id="nama_importer" value="{{ $record->nama_importer }}" name="nama_importer" required>
 						</div>
 						<div class="mb-3">
-							<label for="edit_alamat_importer" class="form-label">Alamat Importer:</label>
-							<input type="text" class="form-control" id="edit_alamat_importer" name="edit_alamat_importer" required>
+							<label for="alamat_importer" class="form-label">Alamat Importer:</label>
+							<input type="text" class="form-control" id="alamat_importer" value="{{ $record->alamat_importer }}" name="alamat_importer" required>
 						</div>
 						<div class="mb-3">
-							<label for="edit_telp_importer" class="form-label">Telepon Importer:</label>
-							<input type="text" class="form-control" id="edit_telp_importer" name="edit_telp_importer" required>
+							<label for="telp_importer" class="form-label">Telepon Importer:</label>
+							<input type="text" class="form-control" id="telp_importer" value="{{ $record->telp_importer }}" name="telp_importer" required>
 						</div>
 						<div class="mb-3">
-							<label for="edit_fax" class="form-label">Fax:</label>
-							<input type="text" class="form-control" id="edit_fax" name="edit_fax">
+							<label for="fax" class="form-label">Fax:</label>
+							<input type="text" class="form-control" id="fax" value="{{ $record->fax }}" name="fax">
 						</div>
 						<div class="mb-3">
-							<label for="edit_usci" class="form-label">USCI:</label>
-							<input type="text" class="form-control" id="edit_usci" name="edit_usci">
+							<label for="usci" class="form-label">USCI:</label>
+							<input type="text" class="form-control" id="usci" value="{{ $record->usci }}" name="usci">
 						</div>
 						<div class="mb-3">
-							<label for="edit_pic" class="form-label">PIC:</label>
-							<input type="text" class="form-control" id="edit_pic" name="edit_pic">
+							<label for="pic" class="form-label">PIC:</label>
+							<input type="text" class="form-control" id="pic" value="{{ $record->pic }}" name="pic">
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -106,6 +109,26 @@
 		</div>
 	</div>
 	<!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
+  <!-- Modal Delete -->
+  <div class="modal fade" id="deleteRecord{{ $record->id }}" tabindex="-1" aria-labelledby="deleteRecordLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form method="POST" action="{{ route('Hapus Importer', $record->id) }}">
+          @method('delete')@csrf
+          <div class="modal-body">
+            Apakah Anda sudah yakin ingin menghapus Record ini?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+	@endforeach
+			
 
 	<!-- Row -->
 	<div class="row">
@@ -153,6 +176,23 @@
 							</tr>
 						</thead>
 						<tbody>
+							@foreach ($records as $record)
+							<tr>
+								<td>{{ $record->id_importer }}</td>
+								<td>{{ $record->nama_importer }}</td>
+								<td>{{ $record->alamat_importer }}</td>
+								<td>{{ $record->telp_importer }}</td>
+								<td>{{ $record->fax }}</td>
+								<td>{{ $record->usci }}</td>
+								<td>{{ $record->pic }}</td>
+                <td>
+                  <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
+                    data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
+                  <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
+                    data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
+                </td>
+							</tr>
+							@endforeach
 							{{--
 							<?php
             $query = "SELECT * FROM data_importer";

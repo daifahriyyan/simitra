@@ -2,77 +2,101 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DataCustomer;
 use App\Models\DetailCustomer;
 use Illuminate\Http\Request;
 
 class DetailCustomerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        return view('pages.penerimaan-jasa.detail-customer', [
-            'title' => 'Detail Customer'
-        ]);
-    }
+  /**
+   * Display a listing of the resource.
+   */
+  public function index()
+  {
+    return view('pages.penerimaan-jasa.detail-customer', [
+      'title' => 'Detail Customer',
+      'records' => DetailCustomer::with('dataCustomer')->get(),
+      'customers'=> DataCustomer::all()
+    ]);
+  }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        $validator = request()->validate([
-            'id_customer' => 'required|unique:data_customer,id_customer',
-            'nama_customer' => 'required',
-            'alamat_customer' => 'required',
-            'telp_customer' => 'required',
-            'email_customer' => 'required',
-            'pic' => 'required',
-            'phone_pic' => 'required',
-        ]);
+  /**
+   * Show the form for creating a new resource.
+   */
+  public function create()
+  {
+  }
 
-        DetailCustomer::create($validator);
-        return redirect(route('Customer'))->with('success', 'Data Berhasil Ditambahkan');
-    }
+  /**
+   * Store a newly created resource in storage.
+   */
+  public function store(Request $request)
+  {
+    $validator = request()->validate([
+      'id_customer' => 'required|unique:detail_customer,id_customer',
+      'termin' => 'required',
+      'tanggal_input' => 'required',
+      'saldo_awal' => 'required',
+      'total_penjualan' => 'required',
+      'penerimaan' => 'required',
+      'saldo_akhir' => 'required',
+    ]);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+    DetailCustomer::create($validator);
+    return redirect(route('Detail Customer'))->with('add', 'Data Berhasil Ditambahkan');
+  }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+  /**
+   * Display the specified resource.
+   */
+  public function show(string $id)
+  {
+    //
+  }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+  /**
+   * Show the form for editing the specified resource.
+   */
+  public function edit(string $id)
+  {
+    //
+  }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+  /**
+   * Update the specified resource in storage.
+   */
+  public function update(Request $request, string $id)
+  {
+    request()->validate([
+      'id_customer' => 'required',
+      'termin' => 'required',
+      'tanggal_input' => 'required',
+      'saldo_awal' => 'required',
+      'total_penjualan' => 'required',
+      'penerimaan' => 'required',
+      'saldo_akhir' => 'required',
+    ]);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+    $DataCustomer = DetailCustomer::where('id_customer', '=', $id)->first();
+    $DataCustomer->id_customer = request('id_customer');
+    $DataCustomer->termin = request('termin');
+    $DataCustomer->tanggal_input = request('tanggal_input');
+    $DataCustomer->saldo_awal = request('saldo_awal');
+    $DataCustomer->total_penjualan = request('total_penjualan');
+    $DataCustomer->penerimaan = request('penerimaan');
+    $DataCustomer->saldo_akhir = request('saldo_akhir');
+    $DataCustomer->update();
+
+    return redirect(route('Detail Customer'))->with('edit', 'Data Berhasil Dirubah');
+  }
+
+  /**
+   * Remove the specified resource from storage.
+   */
+  public function destroy($id)
+  {
+    DetailCustomer::where('id', $id)->delete();
+    
+    return redirect(route('Detail Customer'))->with('delete', 'Data Berhasil Dihapus');
+  }
 }

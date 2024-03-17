@@ -17,10 +17,13 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="addModalLabel">Tambah Data HPP Feet</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
         <div class="modal-body">
-          <form method="POST">
+          <form method="POST" action="{{ route('Tambah Standar HPP') }}">
+            @csrf
             <div class="mb-3">
               <label for="id_standar" class="form-label">ID Standar:</label>
               <input type="text" class="form-control" id="id_standar" name="id_standar" required>
@@ -50,35 +53,45 @@
       </div>
     </div>
   </div>
+  @foreach ($records as $record)
   <!-- Modal Edit Data -->
-  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal fade" id="editModal{{ $record->id }}" tabindex="-1" aria-labelledby="editModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="editModalLabel">Edit Data HPP Feet</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
         <div class="modal-body">
-          <form method="POST">
+          <form method="POST" action="{{ route('Ubah Standar HPP', $record->id) }}">
+            @csrf @method('put')
             <div class="mb-3">
-              <label for="edit_id_standar" class="form-label">ID Standar:</label>
-              <input type="text" class="form-control" id="edit_id_standar" name="edit_id_standar" readonly required>
+              <label for="id_standar" class="form-label">ID Standar:</label>
+              <input type="text" class="form-control" id="id_standar" value="{{ $record->id_standar }}"
+                name="id_standar" readonly required>
             </div>
             <div class="mb-3">
-              <label for="edit_bbb_feet" class="form-label">BBB Feet:</label>
-              <input type="number" class="form-control" id="edit_bbb_feet" name="edit_bbb_feet" required>
+              <label for="bbb_feet" class="form-label">BBB Feet:</label>
+              <input type="number" class="form-control" id="bbb_feet" value="{{ $record->bbb_feet }}" name="bbb_feet"
+                required>
             </div>
             <div class="mb-3">
-              <label for="edit_btk_feet" class="form-label">BTK Feet:</label>
-              <input type="number" class="form-control" id="edit_btk_feet" name="edit_btk_feet" required>
+              <label for="btk_feet" class="form-label">BTK Feet:</label>
+              <input type="number" class="form-control" id="btk_feet" value="{{ $record->btk_feet }}" name="btk_feet"
+                required>
             </div>
             <div class="mb-3">
-              <label for="edit_bop_feet" class="form-label">BOP Feet:</label>
-              <input type="number" class="form-control" id="edit_bop_feet" name="edit_bop_feet" required>
+              <label for="bop_feet" class="form-label">BOP Feet:</label>
+              <input type="number" class="form-control" id="bop_feet" value="{{ $record->bop_feet }}" name="bop_feet"
+                required>
             </div>
             <div class="mb-3">
-              <label for="edit_jumlah_hpp_feet" class="form-label">Jumlah HPP Feet:</label>
-              <input type="number" class="form-control" id="edit_jumlah_hpp_feet" name="edit_jumlah_hpp_feet" required>
+              <label for="jumlah_hpp_feet" class="form-label">Jumlah HPP Feet:</label>
+              <input type="number" class="form-control" id="jumlah_hpp_feet" value="{{ $record->jumlah_hpp_feet }}"
+                name="jumlah_hpp_feet" required>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -90,6 +103,25 @@
     </div>
   </div>
   <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
+  <!-- Modal Delete -->
+  <div class="modal fade" id="deleteRecord{{ $record->id }}" tabindex="-1" aria-labelledby="deleteRecordLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form method="POST" action="{{ route('Hapus Harga Jasa', $record->id) }}">
+          @method('delete')@csrf
+          <div class="modal-body">
+            Apakah Anda sudah yakin ingin menghapus Record ini?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  @endforeach
 
   <!-- Row -->
   <div class="row">
@@ -135,24 +167,21 @@
               </tr>
             </thead>
             <tbody>
-              {{--
-              <?php
-              $query = "SELECT * FROM data_hpp_feet";
-              $result = mysqli_query($conn, $query);
-              while ($data = mysqli_fetch_assoc($result)) {
-                echo "<tr>";
-                echo "<td>".$data['id_standar']."</td>";
-                echo "<td>".number_format($data['bbb_feet'], 2, ',', '.')."</td>"; 
-                echo "<td>".number_format($data['btk_feet'], 2, ',', '.')."</td>"; 
-                echo "<td>".number_format($data['bop_feet'], 2, ',', '.')."</td>"; 
-                echo "<td>".number_format($data['jumlah_hpp_feet'], 2, ',', '.')."</td>";
-                echo "<td>";
-                echo "<button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal' data-bs-target='#editModal' onclick='openEditModal(\"".$data['id_standar']."\", \"".$data['bbb_feet']."\", \"".$data['btk_feet']."\", \"".$data['bop_feet']."\", \"".$data['jumlah_hpp_feet']."\")'><i class='fas fa-edit'></i></button>";
-                echo "<button type='button' class='btn btn-danger btn-sm' onclick='deleteData(\"".$data['id_standar']."\")'><i class='fas fa-trash'></i></button>";
-                echo "</td>";
-                echo "</tr>"; 
-                }
-            ?> --}}
+              @foreach ($records as $record)
+              <tr>
+                <th>{{ $record->id_standar }}</th>
+                <th>{{ number_format($record->bbb_feet, 2, ',', '.') }}</th>
+                <th>{{ number_format($record->btk_feet, 2, ',', '.') }}</th>
+                <th>{{ number_format($record->bop_feet, 2, ',', '.') }}</th>
+                <th>{{ number_format($record->jumlah_hpp_feet, 2, ',', '.') }}</th>
+                <td>
+                  <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
+                    data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
+                  <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
+                    data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
+                </td>
+              </tr>
+              @endforeach
             </tbody>
             <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
           </table>

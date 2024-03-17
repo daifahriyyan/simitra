@@ -20,4 +20,8 @@ class DataCustomer extends Model
     'pic',
     'phone_pic',
   ];
+
+  public function detailCustomer(){
+    return $this->hasOne(DetailCustomer::class, 'id_customer', 'id_customer');
+  }
 }

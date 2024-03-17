@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('data_hpp_feet', function (Blueprint $table) {
             $table->id();
+            $table->string('id_standar');
+            $table->string('bbb_feet');
+            $table->string('btk_feet');
+            $table->string('bop_feet');
+            $table->string('jumlah_hpp_feet');
             $table->timestamps();
         });
     }

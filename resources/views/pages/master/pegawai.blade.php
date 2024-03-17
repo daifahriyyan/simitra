@@ -20,7 +20,8 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form method="POST">
+          <form method="POST" action="{{ route('pegawai.store') }}">
+            @csrf
             <div class="mb-3">
               <label for="id_pegawai" class="form-label">ID Pegawai:</label>
               <input type="text" class="form-control" id="id_pegawai" name="id_pegawai" required>
@@ -68,8 +69,9 @@
       </div>
     </div>
   </div>
+  @foreach ($records as $record)
   <!-- Modal Edit Data -->
-  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal fade" id="editModal{{ $record->id }}" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -77,44 +79,49 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form method="POST">
+          <form method="POST" action="{{ route('pegawai.update', $record->id) }}">
+            @csrf @method('put')
             <div class="mb-3">
-              <label for="edit_id_pegawai" class="form-label">ID Pegawai:</label>
-              <input type="text" class="form-control" id="edit_id_pegawai" name="edit_id_pegawai" readonly required>
+              <label for="id_pegawai" class="form-label">ID Pegawai:</label>
+              <input type="text" class="form-control" id="id_pegawai" value="{{ $record->id_pegawai }}" name="id_pegawai" readonly required>
             </div>
             <div class="mb-3">
-              <label for="edit_nama_pegawai" class="form-label">Nama Pegawai:</label>
-              <input type="text" class="form-control" id="edit_nama_pegawai" name="edit_nama_pegawai" required>
+              <label for="nama_pegawai" class="form-label">Nama Pegawai:</label>
+              <input type="text" class="form-control" id="nama_pegawai" value="{{ $record->nama_pegawai }}" name="nama_pegawai" required>
             </div>
             <div class="mb-3">
-              <label for="edit_alamat_pegawai" class="form-label">Alamat Pegawai:</label>
-              <input type="text" class="form-control" id="edit_alamat_pegawai" name="edit_alamat_pegawai" required>
+              <label for="alamat_pegawai" class="form-label">Alamat Pegawai:</label>
+              <input type="text" class="form-control" id="alamat_pegawai" value="{{ $record->alamat_pegawai }}" name="alamat_pegawai" required>
             </div>
             <div class="mb-3">
-              <label for="edit_telp_pegawai" class="form-label">Telepon Pegawai:</label>
-              <input type="text" class="form-control" id="edit_telp_pegawai" name="edit_telp_pegawai" required>
+              <label for="telp_pegawai" class="form-label">Telepon Pegawai:</label>
+              <input type="text" class="form-control" id="telp_pegawai" value="{{ $record->telp_pegawai }}" name="telp_pegawai" required>
             </div>
             <div class="mb-3">
-              <label for="edit_posisi" class="form-label">Posisi:</label>
+              <label for="posisi" class="form-label">Posisi:</label>
               <br>
-              <select class="form-select" id="edit_posisi" name="edit_posisi" required>
+              <select class="form-select" id="posisi" name="posisi" required>
+                @if (isset($record->posisi))
+                <option value="{{ $record->posisi }}">{{ $record->posisi }}</option>
+                @else
                 <option value="">Pilih Posisi</option>
+                @endif
                 <option value="Direktur">Direktur</option>
-                <option value="Direktur">Manajer</option>
+                <option value="Manajer">Manajer</option>
                 <option value="Admin">Admin</option>
                 <option value="Operasional">Operasional</option>
                 <option value="Keuangan">Keuangan</option>
-                <option value="Keuangan">Fumigator</option>
-                <option value="Direktur">Staff Lainnya</option>
+                <option value="Fumigator">Fumigator</option>
+                <option value="Staff Lainnya">Staff Lainnya</option>
               </select>
             </div>
             <div class="mb-3">
-              <label for="edit_noreg_fumigasi" class="form-label">No. Registrasi Fumigasi:</label>
-              <input type="text" class="form-control" id="edit_noreg_fumigasi" name="edit_noreg_fumigasi">
+              <label for="noreg_fumigasi" class="form-label">No. Registrasi Fumigasi:</label>
+              <input type="text" class="form-control" id="noreg_fumigasi" value="{{ $record->noreg_fumigasi }}" name="noreg_fumigasi">
             </div>
             <div class="mb-3">
-              <label for="edit_gaji_pokok" class="form-label">Gaji Pokok:</label>
-              <input type="number" class="form-control" id="edit_gaji_pokok" name="edit_gaji_pokok" required>
+              <label for="gaji_pokok" class="form-label">Gaji Pokok:</label>
+              <input type="number" class="form-control" id="gaji_pokok" value="{{ $record->gaji_pokok }}" name="gaji_pokok" required>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -126,6 +133,25 @@
     </div>
   </div>
   <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
+  <!-- Modal Delete -->
+  <div class="modal fade" id="deleteRecord{{ $record->id }}" tabindex="-1" aria-labelledby="deleteRecordLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form method="POST" action="{{ route('pegawai.destroy', $record->id) }}">
+          @method('delete')@csrf
+          <div class="modal-body">
+            Apakah Anda sudah yakin ingin menghapus Record ini?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  @endforeach
 
   <!-- Row -->
   <div class="row">
@@ -173,6 +199,23 @@
               </tr>
             </thead>
             <tbody>
+              @foreach ($records as $record)
+              <tr>
+                <td>{{ $record->id_pegawai }}</td>
+                <td>{{ $record->nama_pegawai }}</td>
+                <td>{{ $record->alamat_pegawai }}</td>
+                <td>{{ $record->telp_pegawai }}</td>
+                <td>{{ $record->posisi }}</td>
+                <td>{{ $record->noreg_fumigasi }}</td>
+                <td>{{ $record->gaji_pokok }}</td>
+                <td>
+                  <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
+                    data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
+                  <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
+                    data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
+                </td>
+              </tr>
+              @endforeach
               {{--
               <?php
             $query = "SELECT * FROM data_pegawai";

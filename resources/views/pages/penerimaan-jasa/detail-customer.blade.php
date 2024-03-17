@@ -20,10 +20,17 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form method="POST">
+          <form method="POST" action="{{ route('Tambah Detail Customer') }}">
+            @csrf
             <div class="mb-3">
               <label for="id_customer" class="form-label">ID Customer:</label>
-              <input type="text" class="form-control" id="id_customer" name="id_customer" required>
+              <select class="custom-select form-select-lg mb-3" aria-label="Large select example" id="id_customer"
+                name="id_customer">
+                <option selected>Pilih ID Customer</option>
+                @foreach ($customers as $customer)
+                <option value="{{ $customer->id_customer }}">{{ $customer->id_customer }}</option>
+                @endforeach
+              </select>
             </div>
             <div class="mb-3">
               <label for="termin" class="form-label">Termin:</label>
@@ -58,8 +65,10 @@
       </div>
     </div>
   </div>
+  @foreach ($records as $record)
   <!-- Modal Edit Data -->
-  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal fade" id="editModal{{ $record->id }}" tabindex="-1" aria-labelledby="editModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -67,34 +76,42 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form method="POST">
+          <form method="POST" action="{{ route('Ubah Detail Customer', $record->id_customer) }}">
+            @method('put')
+            @csrf
             <div class="mb-3">
-              <label for="edit_id_customer" class="form-label">ID Customer:</label>
-              <input type="text" class="form-control" id="edit_id_customer" name="edit_id_customer" readonly required>
+              <label for="id_customer" class="form-label">ID Customer:</label>
+              <input type="text" class="form-control" id="id_customer" value="{{ $record->id_customer }}"
+                name="id_customer" readonly required>
             </div>
             <div class="mb-3">
-              <label for="edit_termin" class="form-label">Termin:</label>
-              <input type="text" class="form-control" id="edit_termin" name="edit_termin" required>
+              <label for="termin" class="form-label">Termin:</label>
+              <input type="text" class="form-control" id="termin" value="{{ $record->termin }}" name="termin" required>
             </div>
             <div class="mb-3">
-              <label for="edit_tanggal_input" class="form-label">Tanggal Input:</label>
-              <input type="date" class="form-control" id="edit_tanggal_input" name="edit_tanggal_input" required>
+              <label for="tanggal_input" class="form-label">Tanggal Input:</label>
+              <input type="date" class="form-control" id="tanggal_input" value="{{ $record->tanggal_input }}"
+                name="tanggal_input" required>
             </div>
             <div class="mb-3">
-              <label for="edit_saldo_awal" class="form-label">Saldo Awal:</label>
-              <input type="number" class="form-control" id="edit_saldo_awal" name="edit_saldo_awal" required>
+              <label for="saldo_awal" class="form-label">Saldo Awal:</label>
+              <input type="number" class="form-control" id="saldo_awal" value="{{ $record->saldo_awal }}"
+                name="saldo_awal" required>
             </div>
             <div class="mb-3">
-              <label for="edit_total_penjualan" class="form-label">Total Penjualan:</label>
-              <input type="number" class="form-control" id="edit_total_penjualan" name="edit_total_penjualan" required>
+              <label for="total_penjualan" class="form-label">Total Penjualan:</label>
+              <input type="number" class="form-control" id="total_penjualan" value="{{ $record->total_penjualan }}"
+                name="total_penjualan" required>
             </div>
             <div class="mb-3">
-              <label for="edit_penerimaan" class="form-label">Penerimaan:</label>
-              <input type="number" class="form-control" id="edit_penerimaan" name="edit_penerimaan" required>
+              <label for="penerimaan" class="form-label">Penerimaan:</label>
+              <input type="number" class="form-control" id="penerimaan" value="{{ $record->penerimaan }}"
+                name="penerimaan" required>
             </div>
             <div class="mb-3">
-              <label for="edit_saldo_akhir" class="form-label">Saldo Akhir:</label>
-              <input type="number" class="form-control" id="edit_saldo_akhir" name="edit_saldo_akhir" required>
+              <label for="saldo_akhir" class="form-label">Saldo Akhir:</label>
+              <input type="number" class="form-control" id="saldo_akhir" value="{{ $record->saldo_akhir }}"
+                name="saldo_akhir" required>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -106,6 +123,26 @@
     </div>
   </div>
   <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
+
+  <!-- Modal Delete -->
+  <div class="modal fade" id="deleteRecord{{ $record->id }}" tabindex="-1" aria-labelledby="deleteRecordLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form method="POST" action="{{ route('Hapus Detail Customer', $record->id) }}">
+          @method('delete')@csrf
+          <div class="modal-body">
+            Apakah Anda sudah yakin ingin menghapus Record ini?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  @endforeach
 
   <!-- Row -->
   <div class="row">
@@ -173,27 +210,23 @@
               </tr>
             </thead>
             <tbody>
-              {{--
-              <?php
-                            $query = "SELECT * FROM detail_customer";
-                            $result = mysqli_query($conn, $query);
-
-                            while ($data = mysqli_fetch_assoc($result)) {
-                                echo "<tr>";
-                                echo "<td>".$data['id_customer']."</td>";
-                                echo "<td>".$data['termin']."</td>";
-                                echo "<td>".$data['tanggal_input']."</td>";
-                                echo "<td>".number_format($data['saldo_awal'], 2, ',', '.')."</td>";
-                                echo "<td>".number_format($data['total_penjualan'], 2, ',', '.')."</td>";
-                                echo "<td>".number_format($data['penerimaan'], 2, ',', '.')."</td>";
-                                echo "<td>".number_format($data['saldo_akhir'], 2, ',', '.')."</td>";
-                                echo "<td>";
-                                echo "<button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal' data-bs-target='#editModal' onclick='openEditModal(\"".$data['id_customer']."\", \"".$data['termin']."\", \"".$data['tanggal_input']."\", \"".$data['saldo_awal']."\", \"".$data['total_penjualan']."\", \"".$data['penerimaan']."\", \"".$data['saldo_akhir']."\")'><i class='fas fa-edit'></i></button>";
-                                echo "<button type='button' class='btn btn-danger btn-sm' onclick='deleteData(\"".$data['id_customer']."\")'><i class='fas fa-trash'></i></button>";
-                                echo "</td>";
-                                echo "</tr>"; 
-                            }
-                            ?> --}}
+              @foreach ($records as $record)
+              <tr>
+                <th>{{ $record->id_customer }}</th>
+                <th>{{ $record->termin }}</th>
+                <th>{{ $record->tanggal_input }}</th>
+                <th>{{ $record->saldo_awal }}</th>
+                <th>{{ $record->total_penjualan }}</th>
+                <th>{{ $record->penerimaan }}</th>
+                <th>{{ $record->saldo_akhir }}</th>
+                <th>
+                  <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
+                    data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
+                  <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
+                    data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
+                </th>
+              </tr>
+              @endforeach
             </tbody>
             <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
           </table>

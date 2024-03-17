@@ -82,7 +82,8 @@
   </div>
   @foreach ($records as $record)
   <!-- Modal Edit Data -->
-  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal fade" id="editModal{{ $record->id }}" tabindex="-1" aria-labelledby="editModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -139,7 +140,8 @@
   <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
 
   <!-- Modal Delete -->
-  <div class="modal fade" id="deleteRecord" tabindex="-1" aria-labelledby="deleteRecordLabel" aria-hidden="true">
+  <div class="modal fade" id="deleteRecord{{ $record->id }}" tabindex="-1" aria-labelledby="deleteRecordLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <form method="POST" action="{{ route('Hapus Data Customer', $record->id_customer) }}">
@@ -216,9 +218,9 @@
                 <td><span class='badge badge-danger'>Process</span></td>
                 <td>
                   <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
-                    data-bs-target='#editModal'><i class='fas fa-edit'></i></button>
+                    data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
                   <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
-                    data-bs-target="#deleteRecord"><i class='fas fa-trash'></i></button>
+                    data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
                   <a href="" class='btn btn-primary btn-sm' target='_blank' role='button'><i
                       class='fas fa-print'></i></a>
                 </td>

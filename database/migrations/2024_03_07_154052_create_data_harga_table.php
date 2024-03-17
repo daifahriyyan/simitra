@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('data_harga', function (Blueprint $table) {
             $table->id();
             $table->string('id_standar');
+            $table->string('id_datastandar');
             $table->string('volume');
             $table->string('treatment');
             $table->decimal('bbb_standar', 10, 2);

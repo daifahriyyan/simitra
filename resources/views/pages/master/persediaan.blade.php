@@ -20,7 +20,8 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form method="POST">
+          <form method="POST" action="{{ route('Tambah Persediaan') }}">
+            @csrf
             <div class="mb-3">
               <label for="id_persediaan" class="form-label">ID Persediaan:</label>
               <input type="text" class="form-control" id="id_persediaan" name="id_persediaan" required>
@@ -46,8 +47,10 @@
       </div>
     </div>
   </div>
+  @foreach ($records as $record)
   <!-- Modal Edit Data -->
-  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal fade" id="editModal{{ $record->id }}" tabindex="-1" aria-labelledby="editModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -55,23 +58,26 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form method="POST">
+          <form method="POST" action="{{ route('Ubah Persediaan', $record->id) }}">
+            @csrf @method('put')
             <div class="mb-3">
-              <label for="edit_id_persediaan" class="form-label">ID Persediaan:</label>
-              <input type="text" class="form-control" id="edit_id_persediaan" name="edit_id_persediaan" readonly
+              <label for="id_persediaan" class="form-label">ID Persediaan:</label>
+              <input type="text" class="form-control" id="id_persediaan" value="{{ $record->id_persediaan }}"
+                name="id_persediaan" readonly required>
+            </div>
+            <div class="mb-3">
+              <label for="nama_persediaan" class="form-label">Nama Persediaan:</label>
+              <input type="text" class="form-control" id="nama_persediaan" value="{{ $record->nama_persediaan }}"
+                name="nama_persediaan" required>
+            </div>
+            <div class="mb-3">
+              <label for="quantity" class="form-label">Quantity:</label>
+              <input type="number" class="form-control" id="quantity" value="{{ $record->quantity }}" name="quantity"
                 required>
             </div>
             <div class="mb-3">
-              <label for="edit_nama_persediaan" class="form-label">Nama Persediaan:</label>
-              <input type="text" class="form-control" id="edit_nama_persediaan" name="edit_nama_persediaan" required>
-            </div>
-            <div class="mb-3">
-              <label for="edit_quantity" class="form-label">Quantity:</label>
-              <input type="number" class="form-control" id="edit_quantity" name="edit_quantity" required>
-            </div>
-            <div class="mb-3">
-              <label for="edit_saldo" class="form-label">Saldo:</label>
-              <input type="number" class="form-control" id="edit_saldo" name="edit_saldo" required>
+              <label for="saldo" class="form-label">Saldo:</label>
+              <input type="number" class="form-control" id="saldo" value="{{ $record->saldo }}" name="saldo" required>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -83,6 +89,25 @@
     </div>
   </div>
   <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
+  <!-- Modal Delete -->
+  <div class="modal fade" id="deleteRecord{{ $record->id }}" tabindex="-1" aria-labelledby="deleteRecordLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form method="POST" action="{{ route('Hapus Harga Jasa', $record->id) }}">
+          @method('delete')@csrf
+          <div class="modal-body">
+            Apakah Anda sudah yakin ingin menghapus Record ini?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  @endforeach
 
   <!-- Row -->
   <div class="row">
@@ -127,6 +152,20 @@
               </tr>
             </thead>
             <tbody>
+              @foreach ($records as $record)
+              <tr>
+                <td>{{ $record->id_persediaan }}</td>
+                <td>{{ $record->nama_persediaan }}</td>
+                <td>{{ $record->quantity }}</td>
+                <td>{{ $record->saldo }}</td>
+                <td>
+                  <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
+                    data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
+                  <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
+                    data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
+                </td>
+              </tr>
+              @endforeach
               {{--
               <?php
               $query = "SELECT * FROM data_persediaan";

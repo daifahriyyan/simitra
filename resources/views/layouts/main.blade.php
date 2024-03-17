@@ -8,7 +8,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>{{$title}} | SIMITRA</title>
+  <title> | SIMITRA</title>
 
   <link href="img/logo/logo.png" rel="icon">
   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">

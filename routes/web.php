@@ -1,10 +1,16 @@
 <?php
 
+use App\Http\Controllers\HargaJasaController;
 use Livewire\Livewire;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DataCustomer;
+use App\Http\Controllers\DataOrderController;
 use App\Http\Controllers\DataCustomerController;
 use App\Http\Controllers\DetailCustomerController;
+use App\Http\Controllers\ImporterController;
+use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\PersediaanController;
+use App\Http\Controllers\StandarHPPController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,24 +24,50 @@ use App\Http\Controllers\DetailCustomerController;
 */
 
 Route::view('/', 'welcome');
+Route::view('/ajax', 'ajax.input');
 
 Route::view('/index', 'index')->name('Dashboard');
 
 // Master
-Route::view('/standar-hpp', 'pages.master.standar-hpp')->name('Standar HPP');
-Route::view('/harga-jasa', 'pages.master.harga-jasa')->name('Harga Jasa');
-Route::view('/persediaan', 'pages.master.persediaan')->name('Persediaan');
-Route::view('/importer', 'pages.master.importer')->name('Importer');
-Route::view('/pegawai', 'pages.master.pegawai')->name('Pegawai');
+Route::resource('/standar-hpp', StandarHPPController::class)->names([
+    'index'     => 'Standar HPP',
+    'store'     => 'Tambah Standar HPP',
+    'update'    => 'Ubah Standar HPP',
+    'destroy'   => 'Hapus Standar HPP',
+])->except(['edit', 'create', 'show']);
+Route::resource('/harga-jasa', HargaJasaController::class)->names([
+    'index'     => 'Harga Jasa',
+    'store'     => 'Tambah Harga Jasa',
+    'update'    => 'Ubah Harga Jasa',
+    'destroy'   => 'Hapus Harga Jasa',
+])->except(['edit', 'create', 'show']);
+Route::resource('/persediaan', PersediaanController::class)->names([
+    'index'     => 'Persediaan',
+    'store'     => 'Tambah Persediaan',
+    'update'    => 'Ubah Persediaan',
+    'destroy'   => 'Hapus Persediaan',
+])->except(['edit', 'create', 'show']);
+Route::resource('/importer', ImporterController::class)->names([
+    'index'     => 'Importer',
+    'store'     => 'Tambah Importer',
+    'update'    => 'Ubah Importer',
+    'destroy'   => 'Hapus Importer',
+]);
+Route::resource('/pegawai', PegawaiController::class)->except(['edit', 'create', 'show']);
 
 // Penerimaan Jasa
-Route::resource('customer', DataCustomer::class)->names([
+Route::resource('customer', DataCustomerController::class)->names([
     'index' => 'Data Customer',
     'store' => 'Tambah Data Customer',
     'update'=> 'Ubah Data Customer',
     'destroy'=> 'Hapus Data Customer'
 ])->except(['edit', 'create', 'show']);
-Route::view('/order', 'pages.penerimaan-jasa.order')->name('Order');
+Route::resource('/order', DataOrderController::class)->names([
+    'index' => 'Data Order',
+    'store' => 'Tambah Data Order',
+    'update'=> 'Ubah Data Order',
+    'destroy'=> 'Hapus Data Order',
+])->except(['edit', 'show']);
 Route::view('/dokumen-order', 'pages.penerimaan-jasa.dokumen-order')->name('Dokumen Order');
 Route::view('/sertifikat', 'pages.penerimaan-jasa.sertifikat')->name('Sertifikat');
 Route::view('/invoice', 'pages.penerimaan-jasa.invoice')->name('Invoice');

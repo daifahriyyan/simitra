@@ -38,25 +38,28 @@
               <label for="id_customer" class="form-label">ID Customer:</label>
               <select class="form-control" id="id_customer" name="id_customer" required>
                 <option value="">Pilih ID Customer</option>
-                <!-- Isi dropdown dengan data dari tabel data_customer -->
-                <?php
-                        // Tambahkan skrip PHP untuk mengambil data dari tabel data_customer
-                        // Contoh: $customers = mysqli_query($koneksi, "SELECT id_customer, nama_customer FROM data_customer");
-                        // while ($row = mysqli_fetch_assoc($customers)) {
-                        //     echo "<option value='" . $row['id_customer'] . "'>" . $row['nama_customer'] . "</option>";
-                        // }
-                        ?>
+                @foreach ($dataCustomers as $dataCustomer)
+                <option value="{{ $dataCustomer->id_customer }}">{{$dataCustomer->id_customer}}</option>
+                @endforeach
               </select>
             </div>
             <div class="mb-3">
               <label for="nama_customer" class="form-label">Nama Customer:</label>
-              <!-- Input ini akan diisi otomatis berdasarkan pilihan ID Customer -->
-              <input type="text" class="form-control" id="nama_customer" name="nama_customer" required readonly>
+              <select class="form-control" id="nama_customer" name="nama_customer" required>
+                <option value="">Pilih ID Customer</option>
+                @foreach ($dataCustomers as $dataCustomer)
+                <option value="{{ $dataCustomer->nama_customer }}">{{$dataCustomer->nama_customer}}</option>
+                @endforeach
+              </select>
             </div>
             <div class="mb-3">
               <label for="telp_customer" class="form-label">Telepon Customer:</label>
-              <!-- Input ini akan diisi otomatis berdasarkan pilihan ID Customer -->
-              <input type="text" class="form-control" id="telp_customer" name="telp_customer" required readonly>
+              <select class="form-control" id="telp_customer" name="telp_customer" required>
+                <option value="">Pilih ID Customer</option>
+                @foreach ($dataCustomers as $dataCustomer)
+                <option value="{{ $dataCustomer->telp_customer }}">{{$dataCustomer->telp_customer}}</option>
+                @endforeach
+              </select>
             </div>
             <div class="mb-3">
               <label for="jumlah_order" class="form-label">Jumlah Order:</label>
@@ -340,6 +343,7 @@
     </div>
   </div>
 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script>
     function updateTanggalJam() {
       var date = new Date();
