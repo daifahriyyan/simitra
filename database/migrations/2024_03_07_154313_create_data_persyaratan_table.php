@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('data_persyaratan', function (Blueprint $table) {
             $table->id();
-            $table->string('id_data_order');
+            $table->string('id_order');
+            $table->string('id_order_container');
             $table->string('nama_driver');
-            $table->integer('telp_driver');
+            $table->bigInteger('telp_driver');
             $table->string('shipment_instruction');
             $table->string('packing_list');
             $table->timestamps();

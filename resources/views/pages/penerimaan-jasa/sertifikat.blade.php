@@ -21,7 +21,8 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form method="POST">
+          <form method="POST" action="{{ route('Sertifikat') }}">
+            @csrf
             <div class="mb-3">
               <label for="id_sertif" class="form-label">ID Sertif:</label>
               <input type="text" class="form-control" id="id_sertif" name="id_sertif" required>

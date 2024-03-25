@@ -2,6 +2,19 @@
 
 @section('container-fluid')
 <div class="container-fluid" id="container-wrapper">
+  @if ($errors->any())
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <h3>Pesan Error</h3>
+    <ul>
+      @foreach ($errors->all() as $error)
+      <li>{{ $error }}</li>
+      @endforeach
+    </ul>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  @endif
 	<!-- Your container content -->
 	<div class="d-sm-flex align-items-center justify-content-between mb-4">
 		<h1 class="h3 mb-0 text-gray-800">Importer</h1> <!-- EDIT NAMA -->

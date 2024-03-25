@@ -1,8 +1,21 @@
 @extends('layouts.main')
 
 @section('container-fluid')
-
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <div class="container-fluid" id="container-wrapper">
+  @if ($errors->any())
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <h3>Pesan Error</h3>
+    <ul>
+      @foreach ($errors->all() as $error)
+      <li>{{ $error }}</li>
+      @endforeach
+    </ul>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  @endif
   <!-- Your container content -->
   <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Order</h1> <!-- EDIT NAMA -->
@@ -36,30 +49,22 @@
             </div>
             <div class="mb-3">
               <label for="id_customer" class="form-label">ID Customer:</label>
-              <select class="form-control" id="id_customer" name="id_customer" required>
+              <select class="form-control" id="id_customer" name="id_customer" onchange="addData()" required>
                 <option value="">Pilih ID Customer</option>
                 @foreach ($dataCustomers as $dataCustomer)
-                <option value="{{ $dataCustomer->id_customer }}">{{$dataCustomer->id_customer}}</option>
+                <option value="{{ $dataCustomer->id }}">{{$dataCustomer->id_customer}}</option>
                 @endforeach
               </select>
             </div>
             <div class="mb-3">
               <label for="nama_customer" class="form-label">Nama Customer:</label>
-              <select class="form-control" id="nama_customer" name="nama_customer" required>
-                <option value="">Pilih ID Customer</option>
-                @foreach ($dataCustomers as $dataCustomer)
-                <option value="{{ $dataCustomer->nama_customer }}">{{$dataCustomer->nama_customer}}</option>
-                @endforeach
-              </select>
+              <!-- Input ini akan diisi otomatis berdasarkan pilihan ID Customer -->
+              <input type="text" class="form-control" id="vnama_customer" name="nama_customer" required readonly>
             </div>
             <div class="mb-3">
               <label for="telp_customer" class="form-label">Telepon Customer:</label>
-              <select class="form-control" id="telp_customer" name="telp_customer" required>
-                <option value="">Pilih ID Customer</option>
-                @foreach ($dataCustomers as $dataCustomer)
-                <option value="{{ $dataCustomer->telp_customer }}">{{$dataCustomer->telp_customer}}</option>
-                @endforeach
-              </select>
+              <!-- Input ini akan diisi otomatis berdasarkan pilihan ID Customer -->
+              <input type="text" class="form-control" id="vtelp_customer" name="telp_customer" required readonly>
             </div>
             <div class="mb-3">
               <label for="jumlah_order" class="form-label">Jumlah Order:</label>
@@ -69,6 +74,9 @@
               <label for="treatment" class="form-label">Treatment:</label>
               <select class="form-control" id="treatment" name="treatment" required>
                 <option value="">Pilih Treatment</option>
+                @foreach ($hargaJasa as $harga)
+                <option value="{{ $harga->treatment }}">{{$harga->treatment}}</option>
+                @endforeach
                 <!-- Isi dropdown dengan data dari tabel data_harga -->
                 <?php
                         // Tambahkan skrip PHP untuk mengambil data dari tabel data_harga
@@ -345,6 +353,27 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script>
+    function addData(){
+      alert('ajsgsdukasbd');
+      var id = $("#id_customer").val();
+      $.ajaxSetup({
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+        }
+      });
+      $.ajax({
+        url : "ajax-order",
+        method : "POST",
+        data : { 
+          id:id
+        },
+        dataType : "json",
+        success : function(data){
+          $('#vnama_customer').val(data.nama_customer),
+          $('#vtelp_customer').val(data.telp_customer)
+        }
+      })
+    }
     function updateTanggalJam() {
       var date = new Date();
       var options = {
