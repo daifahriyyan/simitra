@@ -3,6 +3,7 @@
 use App\Http\Controllers\BuktiPembayaranController;
 use App\Http\Controllers\DokumenOrderController;
 use App\Http\Controllers\HargaJasaController;
+use App\Http\Controllers\HomeController;
 use Livewire\Livewire;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DataCustomer;
@@ -29,6 +30,15 @@ Route::view('/', 'welcome');
 Route::view('/ajax', 'ajax.input');
 
 Route::view('/dashboard/index', 'index')->name('Dashboard');
+
+
+// Customer Side
+Route::get('/home', [HomeController::class, 'index']);
+Route::get('/contact', [HomeController::class, 'contact']);
+Route::get('/form-order', [HomeController::class, 'formOrder']);
+Route::post('/order', [HomeController::class, 'order'])->name('Order');
+Route::get('/daftar-order', [HomeController::class, 'daftarOrder']);
+Route::get('/status-order', [HomeController::class, 'statusOrder']);
 
 // Master
 Route::resource('/dashboard/standar-hpp', StandarHPPController::class)->names([
@@ -76,7 +86,7 @@ Route::resource('/dashboard/penerimaan-jasa/dokumen-order', DokumenOrderControll
     'update' => 'Ubah Dokumen Order',
     'destroy' => 'Hapus Dokumen Order'
 ])->except(['edit', 'show']);
-Route::resource('/dashboard/penerimaan-jasa/sertifikat', 'pages.penerimaan-jasa.sertifikat')->name('Sertifikat');
+Route::resource('/dashboard/penerimaan-jasa/sertifikat', 'pages.penerimaan-jasa.sertifikat')->names('Sertifikat');
 Route::view('/dashboard/penerimaan-jasa/invoice', 'pages.penerimaan-jasa.invoice')->name('Invoice');
 Route::resource('/dashboard/penerimaan-jasa/bukti-pembayaran', BuktiPembayaranController::class)->names([
     'index' => 'Bukti Pembayaran',

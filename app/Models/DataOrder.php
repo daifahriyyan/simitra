@@ -31,4 +31,8 @@ class DataOrder extends Model
         'pic',
         'phone_pic',
     ];
+
+    public function detailOrder(){
+        return $this->hasOne(DetailOrder::class, 'id_order');
+    }
 }

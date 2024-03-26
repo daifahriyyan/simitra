@@ -16,9 +16,9 @@
 						<!-- menu start -->
 						<nav class="main-menu">
 							<ul>
-								<li><a href="index_2.html">Home</a></li>
-								<li><a href="contact.html">Contact</a></li>
-								<li><a href="data_order.html">Order</a></li>
+								<li><a href="/home">Home</a></li>
+								<li><a href="/contact">Contact</a></li>
+								<li><a href="/daftar-order">Order</a></li>
 								<li>
 									<div class="header-icons">
 										<li><a class="account" href="register.html"><i class="fas fa-user"></i></a>
