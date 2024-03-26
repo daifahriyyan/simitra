@@ -1,4 +1,4 @@
-@extends('customer')
+@extends('layouts.customer')
 
 @section('section')
 
@@ -178,7 +178,24 @@
 					</div>
 				</div>
 			</div>
-
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+			<form action="/form-order" method="get">
+      	<div class="modal-body d-flex justify-content-center">
+					<div class="form-floating">
+						<input type="number" name="jumlah" placeholder="Jumlah Order" id="jumlah">
+						<label for="jumlah">Jumlah Order</label>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-primary">Order</button>
+				</div>
+			</form>
+    </div>
+  </div>
+</div>
 			<div class="row">
 				<div class="col-lg-4 col-md-6 text-center">
 					<div class="single-product-item">
@@ -187,7 +204,12 @@
 						</div>
 						<h3>20 Feet</h3>
 						<p class="product-price"><span>Full Container Load (FCL)</span> Rp2.000.000</p>
-						<a href="form_order.html" class="cart-btn"><i class="fas fa-shopping-cart"></i> Order</a>
+						<form action="/form-order" method="get">
+							<input type="number" name="jumlah_order" placeholder="Jumlah Order"><br>
+							<button type="submit" class="btn cart-btn">
+								<i class="fas fa-shopping-cart"></i> Order
+							</button>
+						</form>
 					</div>
 				</div>
 				<div class="col-lg-4 col-md-6 text-center">
