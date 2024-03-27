@@ -4,6 +4,7 @@ use App\Http\Controllers\BuktiPembayaranController;
 use App\Http\Controllers\DokumenOrderController;
 use App\Http\Controllers\HargaJasaController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\UserController;
 use Livewire\Livewire;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DataCustomer;
@@ -27,6 +28,11 @@ use App\Http\Controllers\StandarHPPController;
 */
 
 Route::view('/', 'welcome');
+Route::get('/login', [UserController::class, 'index'])->name('Login');
+Route::post('/signin', [UserController::class, 'authenticate'])->name('Sign In');
+Route::post('/logout', [UserController::class, 'logout'])->name('Logout');
+Route::get('/register', [UserController::class, 'register'])->name('Register');
+Route::post('/signup', [UserController::class, 'store'])->name('Sign Up');
 Route::view('/ajax', 'ajax.input');
 
 Route::view('/dashboard/index', 'index')->name('Dashboard');
@@ -145,7 +151,7 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
-require __DIR__.'/auth.php';
+// require __DIR__.'/auth.php';
 
 Livewire::setUpdateRoute(function ($handle) {
     return Route::post('/custom/livewire/update', $handle);

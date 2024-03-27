@@ -23,9 +23,9 @@
 									<div class="header-icons">
 										<li><a class="account" href="register.html"><i class="fas fa-user"></i></a>
 											<ul class="sub-menu">
-												<li><a href="Register.html">Register</a></li>
-												<li><a href="Login.html">Login</a></li>
-												<li><a href="#">Logout</a></li>
+												<li><a href="{{ route('Register') }}">Register</a></li>
+												<li><a href="{{ route('Login') }}">Login</a></li>
+												<li><a href="{{ route('Logout') }}">Logout</a></li>
 											</ul>
 										</li>
 									</div>
