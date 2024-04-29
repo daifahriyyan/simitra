@@ -64,7 +64,7 @@ class DataCustomerController extends Controller
   /**
    * Update the specified resource in storage.
    */
-  public function update($id)
+  public function update(Request $request, $id)
   {
     request()->validate([
       'id_customer' => 'required',

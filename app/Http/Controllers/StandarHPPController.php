@@ -31,15 +31,22 @@ class StandarHPPController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = request()->validate([
-          'id_standar' => 'required',
-          'bbb_feet' => 'required',
-          'btk_feet' => 'required',
-          'bop_feet' => 'required',
-          'jumlah_hpp_feet' => 'required',
+        $string = $request['bbb_feet'] + $request['btk_feet'] + $request['bop_feet'];
+        request()->jumlah_hpp_feet = strval($string);
+        $this->validate(request(), [
+            'id_standar' => 'required',
+            'bbb_feet' => 'required',
+            'btk_feet' => 'required',
+            'bop_feet' => 'required',
         ]);
-    
-        DataHppFeet::create($validator);
+        DataHppFeet::create([
+            'id_standar' => request()->id_standar,
+            'bbb_feet' => request()->bbb_feet,
+            'btk_feet' => request()->btk_feet,
+            'bop_feet' => request()->bop_feet,
+            'jumlah_hpp_feet' => request()->jumlah_hpp_feet,
+        ]);
+
         return redirect(route('Standar HPP'))->with('add', 'Data Berhasil Ditambahkan');
     }
 
@@ -64,16 +71,23 @@ class StandarHPPController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $validator = request()->validate([
+        $string = $request['bbb_feet'] + $request['btk_feet'] + $request['bop_feet'];
+        request()->jumlah_hpp_feet = strval($string);
+        $this->validate(request(), [
             'id_standar' => 'required',
             'bbb_feet' => 'required',
             'btk_feet' => 'required',
             'bop_feet' => 'required',
-            'jumlah_hpp_feet' => 'required',
         ]);
-    
-        DataHppFeet::where('id_standar', '=', $id)->update($validator);
-        return redirect(route('Standar HPP'))->with('add', 'Data Berhasil Ditambahkan');
+
+        DataHppFeet::where('id', '=', $id)->update([
+            'id_standar' => request()->id_standar,
+            'bbb_feet' => request()->bbb_feet,
+            'btk_feet' => request()->btk_feet,
+            'bop_feet' => request()->bop_feet,
+            'jumlah_hpp_feet' => request()->jumlah_hpp_feet,
+        ]);
+        return redirect(route('Standar HPP'))->with('edit', 'Data Berhasil Diubah');
     }
 
     /**
@@ -81,8 +95,8 @@ class StandarHPPController extends Controller
      */
     public function destroy(string $id)
     {
-        DataHppFeet::where('id_standar', $id)->delete();
-        
+        DataHppFeet::where('id', $id)->delete();
+
         return redirect(route('Standar HPP'))->with('delete', 'Data Berhasil Dihapus');
     }
 }

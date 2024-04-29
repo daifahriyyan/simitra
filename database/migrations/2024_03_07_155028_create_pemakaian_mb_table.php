@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('pemakaian_mb', function (Blueprint $table) {
             $table->id();
+            $table->string('id_pemakaian');
+            $table->string('tanggal_mulai');
+            $table->string('id_persediaan');
+            $table->string('tanggal_selesai');
+            $table->string('pemakaian_persediaan');
+            $table->string('berat_akhir');
+            $table->string('keterangan');
             $table->timestamps();
         });
     }

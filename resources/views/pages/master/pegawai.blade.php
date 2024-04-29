@@ -37,7 +37,7 @@
             @csrf
             <div class="mb-3">
               <label for="id_pegawai" class="form-label">ID Pegawai:</label>
-              <input type="text" class="form-control" id="id_pegawai" name="id_pegawai" required>
+              <input type="text" class="form-control" id="id_pegawai" name="id_pegawai" value="P00{{ $records->count()+1 }}" readonly>
             </div>
             <div class="mb-3">
               <label for="nama_pegawai" class="form-label">Nama Pegawai:</label>
@@ -52,17 +52,16 @@
               <input type="text" class="form-control" id="telp_pegawai" name="telp_pegawai" required>
             </div>
             <div class="mb-3">
-              <label for="posisi" class="form-label">Posisi:</label>
-              <br>
-              <select class="form-select" id="posisi" name="posisi" required>
-                <option value="">Pilih Posisi</option>
+              <label class="form-label" for="posisi">Posisi : </label>
+              <select class="form-control" id="posisi" name="posisi" required>
+                <option>Pilih Posisi</option>
                 <option value="Direktur">Direktur</option>
-                <option value="Direktur">Manajer</option>
+                <option value="Manajer">Manajer</option>
                 <option value="Admin">Admin</option>
                 <option value="Operasional">Operasional</option>
                 <option value="Keuangan">Keuangan</option>
-                <option value="Keuangan">Fumigator</option>
-                <option value="Direktur">Staff Lainnya</option>
+                <option value="Fumigator">Fumigator</option>
+                <option value="Staff Lainnya">Staff Lainnya</option>
               </select>
             </div>
             <div class="mb-3">
@@ -113,7 +112,7 @@
             <div class="mb-3">
               <label for="posisi" class="form-label">Posisi:</label>
               <br>
-              <select class="form-select" id="posisi" name="posisi" required>
+              <select class="form-control" id="posisi" name="posisi" required>
                 @if (isset($record->posisi))
                 <option value="{{ $record->posisi }}">{{ $record->posisi }}</option>
                 @else
@@ -219,7 +218,7 @@
                 <td>{{ $record->alamat_pegawai }}</td>
                 <td>{{ $record->telp_pegawai }}</td>
                 <td>{{ $record->posisi }}</td>
-                <td>{{ $record->noreg_fumigasi }}</td>
+                <td>{{ $record->noreg_fumigasi?? '-' }}</td>
                 <td>{{ $record->gaji_pokok }}</td>
                 <td>
                   <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'

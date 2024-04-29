@@ -13,6 +13,17 @@ return new class extends Migration
     {
         Schema::create('kartu_persediaan', function (Blueprint $table) {
             $table->id();
+            $table->string('id_kartu_persediaan');
+            $table->string('id_persediaan');
+            $table->integer('harga_masuk');
+            $table->integer('jumlah_masuk');
+            $table->integer('total_masuk');
+            $table->integer('harga_keluar');
+            $table->integer('jumlah_keluar');
+            $table->integer('total_keluar');
+            $table->integer('harga_saldo');
+            $table->integer('jumlah_saldo');
+            $table->integer('total_saldo');
             $table->timestamps();
         });
     }

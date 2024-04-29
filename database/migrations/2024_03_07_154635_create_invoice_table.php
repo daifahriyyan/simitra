@@ -13,28 +13,19 @@ return new class extends Migration
     {
         Schema::create('invoice', function (Blueprint $table) {
             $table->id();
-            $table->string('id_data_order');
-            $table->string('id_sertifikat');
-            $table->string('id_methyl_recordsheet');
-            $table->string('id_data_harga');
+            $table->string('id_order');
+            $table->string('id_invoice');
+            $table->string('id_sertif');
+            $table->string('id_recordsheet');
+            $table->string('id_data_standar');
             $table->date('tanggal_invoice');
-            $table->string('nama_customer');
-            $table->string('alamat_customer');
             $table->string('no_bl');
             $table->string('shipper');
-            $table->string('destination');
-            $table->string('commodity');
-            $table->date('tanggal_in');
-            $table->date('tanggal_out');
-            $table->integer('applied_dose_rate');
-            $table->string('treatment');
-            $table->integer('quantity');
-            $table->string('volume');
-            $table->string('container');
-            $table->decimal('harga_jual', 10, 2);
-            $table->decimal('total_penjualan', 10, 2);
-            $table->decimal('ppn', 10, 2);
-            $table->decimal('jumlah_dibayar', 10, 2);
+            $table->date('stuffing_date');
+            $table->dateTime('closing_time');
+            $table->decimal('total_penjualan', 65, 2);
+            $table->decimal('ppn', 65, 2);
+            $table->decimal('jumlah_dibayar', 65, 2);
             $table->timestamps();
         });
     }

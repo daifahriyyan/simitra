@@ -20,4 +20,12 @@ class DataHppFeet extends Model
         'bop_feet',
         'jumlah_hpp_feet',
     ];
+
+    public function dataHarga(){
+        return $this->hasOne(DataHargar::class, 'id', 'id_standar');
+    }
+
+    public function standarHPP(){
+        return $this->belongsTo(DataHargar::class, 'id', 'id_standar');
+    }
 }

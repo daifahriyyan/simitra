@@ -39,7 +39,7 @@
             @csrf
             <div class="mb-3">
               <label for="id_standar" class="form-label">ID Standar:</label>
-              <input type="text" class="form-control" id="id_standar" name="id_standar" required>
+              <input type="text" class="form-control" id="id_standar" name="id_standar" value="feet" readonly required>
             </div>
             <div class="mb-3">
               <label for="bbb_feet" class="form-label">BBB Feet:</label>
@@ -53,10 +53,10 @@
               <label for="bop_feet" class="form-label">BOP Feet:</label>
               <input type="number" class="form-control" id="bop_feet" name="bop_feet" required>
             </div>
-            <div class="mb-3">
+            {{-- <div class="mb-3">
               <label for="jumlah_hpp_feet" class="form-label">Jumlah HPP Feet:</label>
               <input type="number" class="form-control" id="jumlah_hpp_feet" name="jumlah_hpp_feet" required>
-            </div>
+            </div> --}}
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
               <button type="submit" class="btn btn-primary">Simpan</button>
@@ -84,7 +84,7 @@
             <div class="mb-3">
               <label for="id_standar" class="form-label">ID Standar:</label>
               <input type="text" class="form-control" id="id_standar" value="{{ $record->id_standar }}"
-                name="id_standar" readonly required>
+                name="id_standar" required>
             </div>
             <div class="mb-3">
               <label for="bbb_feet" class="form-label">BBB Feet:</label>
@@ -101,11 +101,6 @@
               <input type="number" class="form-control" id="bop_feet" value="{{ $record->bop_feet }}" name="bop_feet"
                 required>
             </div>
-            <div class="mb-3">
-              <label for="jumlah_hpp_feet" class="form-label">Jumlah HPP Feet:</label>
-              <input type="number" class="form-control" id="jumlah_hpp_feet" value="{{ $record->jumlah_hpp_feet }}"
-                name="jumlah_hpp_feet" required>
-            </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
               <button type="submit" class="btn btn-primary">Update</button>
@@ -121,7 +116,7 @@
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
-        <form method="POST" action="{{ route('Hapus Harga Jasa', $record->id) }}">
+        <form method="POST" action="{{ route('Hapus Standar HPP', $record->id) }}">
           @method('delete')@csrf
           <div class="modal-body">
             Apakah Anda sudah yakin ingin menghapus Record ini?

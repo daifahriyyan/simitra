@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DataOrder;
 use App\Models\DataCustomer;
 use App\Models\DataHargar;
+use App\Models\DetailOrder;
 use Illuminate\Http\Request;
 
 class DataOrderController extends Controller
@@ -18,6 +19,8 @@ class DataOrderController extends Controller
             'title' => 'Data Order',
             'dataCustomers' => DataCustomer::all(), 
             'hargaJasa' => DataHargar::all(), 
+            'dataOrder' => DataOrder::with('dataCustomer')->get(),
+            'detailOrder' => DetailOrder::get()
         ]);
     }
 
@@ -50,7 +53,7 @@ class DataOrderController extends Controller
           'id_order' => 'required|unique:data_order,id_order',
           'id_order_container' => 'required|unique:data_order,id_order_container',
           'tanggal_order' => 'required',
-          'id_customer' => 'required|',
+          'id_customer' => 'required',
           'nama_customer' => 'required',
           'telp_customer' => 'required',
           'jumlah_order' => 'required',
@@ -98,9 +101,14 @@ class DataOrderController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(DataOrder $dataOrder)
+    public function destroy(DataOrder $dataOrder, $id)
     {
-        //
+
+        $idOrder = DetailOrder::where('id', $id)->get()->first()->id_order;
+        DetailOrder::where('id', $id)->delete();
+        DataOrder::where('id', $idOrder)->delete();
+
+        return redirect(route('Data Order'));
     }
 
     public function ajaxOrder()

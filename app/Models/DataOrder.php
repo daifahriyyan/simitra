@@ -11,28 +11,75 @@ class DataOrder extends Model
 
     public $table = 'data_order';
 
-    public $fillable = [
-        'id_order',
-        'id_order_container',
-        'tanggal_order',
-        'id_customer',
-        'nama_customer',
-        'telp_customer',
-        'jumlah_order',
-        'treatment',
-        'stuffing_date',
-        'id_datastandar',
-        'volume',
-        'container',
-        'container_volume',
-        'commodity',
-        'vessel',
-        'place_fumigation',
-        'pic',
-        'phone_pic',
-    ];
+    public $guarded = ['id'];
 
-    public function detailOrder(){
-        return $this->hasOne(DetailOrder::class, 'id_order');
+    public function dataHarga()
+    {
+        return $this->belongsTo(DataHargar::class, 'id_data_harga', 'id');
+    }
+
+    public function dataCustomer()
+    {
+        return $this->belongsTo(DataCustomer::class, 'id_customer', 'id');
+    }
+
+    public function detailOrder()
+    {
+        return $this->hasMany(DetailOrder::class, 'id', 'id_order');
+    }
+
+    public function verifikasiOrder()
+    {
+        return $this->hasOne(VerifikasiOrder::class, 'id', 'id_order');
+    }
+
+    public function spk()
+    {
+        return $this->hasOne(SuratPerintahKerja::class, 'id', 'id_order');
+    }
+
+    public function sp()
+    {
+        return $this->hasOne(SuratPemberitahuan::class, 'id', 'id_order');
+    }
+
+    public function ceklist()
+    {
+        return $this->hasOne(CeklistFumigasi::class, 'id', 'id_order');
+    }
+
+    public function metilRecordsheet()
+    {
+        return $this->hasOne(MetilRecordsheet::class, 'id', 'id_order');
+    }
+
+    public function pemberitahuan()
+    {
+        return $this->hasOne(Pemberitahuan::class, 'id', 'id_order');
+    }
+
+    public function draftPelayaran()
+    {
+        return $this->hasOne(DraftPelayaran::class, 'id', 'id_order');
+    }
+
+    public function sertifikat()
+    {
+        return $this->hasOne(Sertifikat::class, 'id', 'id_order');
+    }
+
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class, 'id', 'id_order');
+    }
+
+    public function buktiPembayaran()
+    {
+        return $this->hasOne(BuktiPembayaran::class, 'id', 'id_order');
+    }
+
+    public function rekapPenjualan()
+    {
+        return $this->hasOne(RekapPenjualan::class, 'id', 'id_order');
     }
 }

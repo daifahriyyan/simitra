@@ -37,7 +37,8 @@
             @csrf
             <div class="mb-3">
               <label for="id_persediaan" class="form-label">ID Persediaan:</label>
-              <input type="text" class="form-control" id="id_persediaan" name="id_persediaan" required>
+              <input type="text" class="form-control" id="id_persediaan" name="id_persediaan"
+                value="B00{{ $records->count() + 1 }}" readonly>
             </div>
             <div class="mb-3">
               <label for="nama_persediaan" class="form-label">Nama Persediaan:</label>
@@ -107,7 +108,7 @@
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
-        <form method="POST" action="{{ route('Hapus Harga Jasa', $record->id) }}">
+        <form method="POST" action="{{ route('Hapus Persediaan', $record->id) }}">
           @method('delete')@csrf
           <div class="modal-body">
             Apakah Anda sudah yakin ingin menghapus Record ini?

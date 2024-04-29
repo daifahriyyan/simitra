@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('keu_penggajian', function (Blueprint $table) {
             $table->id();
+            $table->string('id_penggajian');
+            $table->date('tanggal_input');
+            $table->string('id_pegawai');
+            $table->decimal('bonus', 65, 2);
+            $table->decimal('tunjangan_lembur', 65, 2);
+            $table->decimal('iuran', 65, 2);
+            $table->decimal('gaji_bersih', 65, 2);
             $table->timestamps();
         });
     }

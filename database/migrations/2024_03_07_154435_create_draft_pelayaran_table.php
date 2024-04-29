@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('draft_pelayaran', function (Blueprint $table) {
             $table->id();
-            $table->string('id_data_order');
+            $table->string('id_draft');
+            $table->string('id_order');
+            $table->date('tanggal_order');
             $table->string('draft_pelayaran');
             $table->timestamps();
         });

@@ -42,11 +42,16 @@
             </div>
             <div class="mb-3">
               <label for="id_standar" class="form-label">ID Standar:</label>
-              <input type="text" class="form-control" id="id_standar" name="id_standar">
+              <select class="form-control" id="id_standar" name="id_standar">
+                <option>Pilih ID Standar</option>
+                @foreach ($datahppfeet as $data)
+                <option value="{{ $data->id }}">{{ $data->id_standar }}</option>
+                @endforeach
+              </select>
             </div>
             <div class="mb-3">
               <label for="volume" class="form-label">Volume:</label>
-              <input type="text" class="form-control" id="volume" name="volume">
+              <input type="number" class="form-control" id="volume" name="volume">
             </div>
             <div class="mb-3">
               <label for="treatment" class="form-label">Treatment:</label>
@@ -56,28 +61,8 @@
               </select>
             </div>
             <div class="mb-3">
-              <label for="bbb_standar" class="form-label">BBB Standar:</label>
-              <input type="number" class="form-control" id="bbb_standar" name="bbb_standar">
-            </div>
-            <div class="mb-3">
-              <label for="btk_standar" class="form-label">BTK Standar:</label>
-              <input type="number" class="form-control" id="btk_standar" name="btk_standar">
-            </div>
-            <div class="mb-3">
-              <label for="bop_standar" class="form-label">BOP Standar:</label>
-              <input type="number" class="form-control" id="bop_standar" name="bop_standar">
-            </div>
-            <div class="mb-3">
-              <label for="hpp" class="form-label">HPP:</label>
-              <input type="number" class="form-control" id="hpp" name="hpp">
-            </div>
-            <div class="mb-3">
               <label for="markup" class="form-label">Markup:</label>
               <input type="number" class="form-control" id="markup" name="markup">
-            </div>
-            <div class="mb-3">
-              <label for="harga_jual" class="form-label">Harga Jual:</label>
-              <input type="number" class="form-control" id="harga_jual" name="harga_jual">
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -128,21 +113,21 @@
             <div class="mb-3">
               <label for="bbb_standar" class="form-label">BBB Standar:</label>
               <input type="number" class="form-control" id="bbb_standar" value="{{ $record->bbb_standar }}"
-                name="bbb_standar" required>
+                name="bbb_standar" readonly>
             </div>
             <div class="mb-3">
               <label for="btk_standar" class="form-label">BTK Standar:</label>
               <input type="number" class="form-control" id="btk_standar" value="{{ $record->btk_standar }}"
-                name="btk_standar" required>
+                name="btk_standar" readonly>
             </div>
             <div class="mb-3">
               <label for="bop_standar" class="form-label">BOP Standar:</label>
               <input type="number" class="form-control" id="bop_standar" value="{{ $record->bop_standar }}"
-                name="bop_standar" required>
+                name="bop_standar" readonly>
             </div>
             <div class="mb-3">
               <label for="hpp" class="form-label">HPP:</label>
-              <input type="number" class="form-control" id="hpp" value="{{ $record->hpp }}" name="hpp" required>
+              <input type="number" class="form-control" id="hpp" value="{{ $record->hpp }}" name="hpp" readonly>
             </div>
             <div class="mb-3">
               <label for="markup" class="form-label">Markup:</label>
@@ -152,7 +137,7 @@
             <div class="mb-3">
               <label for="harga_jual" class="form-label">Harga Jual:</label>
               <input type="number" class="form-control" id="harga_jual" value="{{ $record->harga_jual }}"
-                name="harga_jual" required>
+                name="harga_jual" readonly>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -236,7 +221,7 @@
               @foreach ($records as $record)
               <tr>
                 <td>{{ $record->id_datastandar }}</td>
-                <td>{{$record->id_standar }}</td>
+                <td>{{ $record->standarHPP->id_standar }}</td>
                 <td>{{ $record->volume }}</td>
                 <td>{{ $record->treatment }}</td>
                 <td>{{ number_format($record->bbb_standar, 2, ',', '.') }}</td>

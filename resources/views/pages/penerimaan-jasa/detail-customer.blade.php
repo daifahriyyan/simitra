@@ -212,19 +212,22 @@
             <tbody>
               @foreach ($records as $record)
               <tr>
-                <th>{{ $record->id_customer }}</th>
-                <th>{{ $record->termin }}</th>
-                <th>{{ $record->tanggal_input }}</th>
-                <th>{{ $record->saldo_awal }}</th>
-                <th>{{ $record->total_penjualan }}</th>
-                <th>{{ $record->penerimaan }}</th>
-                <th>{{ $record->saldo_akhir }}</th>
-                <th>
+                <td>{{ $record->id_customer }}</td>
+                <td>{{ $record->termin }}</td>
+                <td>{{ $record->tanggal_input }}</td>
+                <td>{{ $record->saldo_awal }}</td>
+                <td>{{ $record->total_penjualan }}</td>
+                <td>{{ $record->penerimaan }}</td>
+                <td>{{ $record->saldo_akhir }}</td>
+                <td>
                   <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
                     data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
                   <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
                     data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
-                </th>
+                  <a href='generate_pdf.php?id_detail_customer=".htmlspecialchars($data[' id_detail_customer'])."'
+                    class='btn btn-primary btn-sm' style='width: 30px; height: 30px;' target='_blank' role='button'><i
+                      class='fas fa-print'></i></a>
+                </td>
               </tr>
               @endforeach
             </tbody>

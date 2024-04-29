@@ -1,7 +1,7 @@
 <ul class="navbar-nav sidebar sidebar-light accordion" id="accordionSidebar">
   <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
     <div class="sidebar-brand-icon">
-      <img src="img/logo/logo2.png">
+      <img src="{{ asset('img/logo/logo2.png') }}">
     </div>
     <div class="sidebar-brand-text mx-3">SIMITRA</div>
   </a>
@@ -42,7 +42,7 @@
         <h6 class="collapse-header">Penerimaan Jasa</h6>
         <a class="collapse-item" href="{{ route('Data Customer') }}">Customer</a>
         <a class="collapse-item" href="{{ route('Data Order') }}">Order</a>
-        <a class="collapse-item" href="{{ route('Dokumen Order') }}">Dokumen Order</a>
+        {{-- <a class="collapse-item" href="{{ route('Dokumen Order') }}">Dokumen Order</a> --}}
         <a class="collapse-item" href="{{ route('Sertifikat') }}">Sertifikat</a>
         <a class="collapse-item" href="{{ route('Invoice') }}">Invoice</a>
         <a class="collapse-item" href="{{ route('Bukti Pembayaran') }}">Bukti Pembayaran</a>
@@ -86,6 +86,7 @@
         <h6 class="collapse-header">Akuntansi</h6>
         <a class="collapse-item" href="{{ route('Daftar Akun') }}">Daftar Akun</a>
         <a class="collapse-item" href="{{ route('Supplier') }}">Supplier</a>
+        <a class="collapse-item" href="{{ route('Detail Supplier') }}">Detail Supplier</a>
         <a class="collapse-item" href="{{ route('Penggajian') }}">Penggajian</a>
         <a class="collapse-item" href="{{ route('Aset Tetap') }}">Aset Tetap</a>
         <a class="collapse-item" href="{{ route('Penyusutan Aset Tetap') }}">Penyusutan Aset Tetap</a>

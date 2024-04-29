@@ -37,7 +37,7 @@
 						@csrf
 						<div class="mb-3">
 							<label for="id_importer" class="form-label">ID Importer:</label>
-							<input type="text" class="form-control" id="id_importer" name="id_importer" required>
+							<input type="text" class="form-control" id="id_importer" name="id_importer" value="I00{{ $records->count()+1 }}" readonly>
 						</div>
 						<div class="mb-3">
 							<label for="nama_importer" class="form-label">Nama Importer:</label>

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('id_customer');
             $table->string('treatment');
             $table->string('volume');
+            $table->string('place_fumigation');
             $table->integer('jumlah_order');
             $table->timestamps();
         });

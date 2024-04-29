@@ -13,12 +13,11 @@ return new class extends Migration
     {
         Schema::create('surat_perintah_kerja', function (Blueprint $table) {
             $table->id();
+            $table->string('id_spk');
+            $table->string('id_order');
             $table->date('tanggal');
             $table->string('place_fumigation');
             $table->integer('jumlah_container');
-            $table->string('id_data_order');
-            $table->string('container');
-            $table->string('volume');
             $table->string('fumigan');
             $table->string('dosis');
             $table->string('fumigator');

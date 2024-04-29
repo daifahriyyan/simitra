@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Pemberitahuan extends Model
 {
     use HasFactory;
+
+    public $table = 'pemberitahuan';
+
+    public $guarded = ['id'];
+
+    public function dataOrder()
+    {
+        return $this->belongsTo(DataOrder::class, 'id_order', 'id');
+    }
 }

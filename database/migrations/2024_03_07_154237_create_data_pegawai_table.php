@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('alamat_pegawai');
             $table->string('telp_pegawai');
             $table->string('posisi');
-            $table->string('noreg_fumigasi');
-            $table->string('gaji_pokok');
+            $table->string('noreg_fumigasi')->nullable();
+            $table->decimal('gaji_pokok', 65, 2);
             $table->timestamps();
         });
     }

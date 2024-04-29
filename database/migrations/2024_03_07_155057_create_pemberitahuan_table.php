@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('pemberitahuan', function (Blueprint $table) {
             $table->id();
-            $table->string('container');
-            $table->string('ukuran');
-            $table->dateTime('jam_mulai');
-            $table->dateTime('jam_selesai');
+            $table->string('id_kegiatan');
+            $table->string('id_order');
+            $table->time('jam_mulai');
+            $table->time('jam_selesai');
             $table->string('keterangan');
             $table->timestamps();
         });

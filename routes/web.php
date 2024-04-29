@@ -1,20 +1,40 @@
 <?php
 
-use App\Http\Controllers\BuktiPembayaranController;
-use App\Http\Controllers\DokumenOrderController;
-use App\Http\Controllers\HargaJasaController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\UserController;
 use Livewire\Livewire;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DataCustomer;
-use App\Http\Controllers\DataOrderController;
-use App\Http\Controllers\DataCustomerController;
-use App\Http\Controllers\DetailCustomerController;
-use App\Http\Controllers\ImporterController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\ImporterController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\AsetTetapController;
+use App\Http\Controllers\DataOrderController;
+use App\Http\Controllers\HargaJasaController;
+use App\Http\Controllers\DaftarAkunController;
+use App\Http\Controllers\JurnalUmumController;
+use App\Http\Controllers\PenggajianController;
 use App\Http\Controllers\PersediaanController;
+use App\Http\Controllers\SertifikatController;
 use App\Http\Controllers\StandarHPPController;
+use App\Http\Controllers\DataCustomerController;
+use App\Http\Controllers\DokumenOrderController;
+use App\Http\Controllers\DetailCustomerController;
+use App\Http\Controllers\DetailSupplierController;
+use App\Http\Controllers\DraftPelayaranController;
+use App\Http\Controllers\RekapPenjualanController;
+use App\Http\Controllers\BuktiPembayaranController;
+use App\Http\Controllers\CeklistFumigasiController;
+use App\Http\Controllers\HPPSesungguhnyaController;
+use App\Http\Controllers\PemakaianMethylController;
+use App\Http\Controllers\RekapHPPStandarController;
+use App\Http\Controllers\VerifikasiOrderController;
+use App\Http\Controllers\MethylRecordsheetController;
+use App\Http\Controllers\SuratPemberitahuanController;
+use App\Http\Controllers\SuratPerintahKerjaController;
+use App\Http\Controllers\KartuStokPersediaanController;
+use App\Http\Controllers\PenyusutanAsetTetapController;
+use App\Http\Controllers\PemberitahuanKegiatanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,7 +47,7 @@ use App\Http\Controllers\StandarHPPController;
 |
 */
 
-Route::view('/', 'welcome');
+Route::get('/', [HomeController::class, 'index'])->name('Home');
 Route::get('/login', [UserController::class, 'index'])->name('Login');
 Route::post('/signin', [UserController::class, 'authenticate'])->name('Sign In');
 Route::post('/logout', [UserController::class, 'logout'])->name('Logout');
@@ -39,12 +59,16 @@ Route::view('/dashboard/index', 'index')->name('Dashboard');
 
 
 // Customer Side
-Route::get('/home', [HomeController::class, 'index']);
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [UserController::class, 'profile'])->name('Profile');
+    Route::post('/profile/update', [UserController::class, 'update'])->name('Update Profile');
+    Route::get('/form-order', [HomeController::class, 'formOrder']);
+});
+Route::get('/home', [HomeController::class, 'index'])->name('Home');
 Route::get('/contact', [HomeController::class, 'contact']);
-Route::get('/form-order', [HomeController::class, 'formOrder']);
 Route::post('/order', [HomeController::class, 'order'])->name('Order');
 Route::get('/daftar-order', [HomeController::class, 'daftarOrder']);
-Route::get('/status-order', [HomeController::class, 'statusOrder']);
+Route::get('/status-order', [HomeController::class, 'statusOrder'])->name('Status Order');
 
 // Master
 Route::resource('/dashboard/standar-hpp', StandarHPPController::class)->names([
@@ -74,17 +98,17 @@ Route::resource('/dashboard/importer', ImporterController::class)->names([
 Route::resource('/dashboard/pegawai', PegawaiController::class)->except(['edit', 'create', 'show']);
 
 // Penerimaan Jasa
-Route::resource('/customer/penerimaan-jasa', DataCustomerController::class)->names([
+Route::resource('/dashboard/penerimaan-jasa/customer', DataCustomerController::class)->names([
     'index' => 'Data Customer',
     'store' => 'Tambah Data Customer',
-    'update'=> 'Ubah Data Customer',
-    'destroy'=> 'Hapus Data Customer'
+    'update' => 'Ubah Data Customer',
+    'destroy' => 'Hapus Data Customer'
 ])->except(['edit', 'create', 'show']);
 Route::resource('/dashboard/penerimaan-jasa/order', DataOrderController::class)->names([
     'index' => 'Data Order',
     'store' => 'Tambah Data Order',
-    'update'=> 'Ubah Data Order',
-    'destroy'=> 'Hapus Data Order',
+    'update' => 'Ubah Data Order',
+    'destroy' => 'Hapus Data Order',
 ])->except(['edit', 'show']);
 Route::resource('/dashboard/penerimaan-jasa/dokumen-order', DokumenOrderController::class)->names([
     'index' => 'Dokumen Order',
@@ -92,8 +116,18 @@ Route::resource('/dashboard/penerimaan-jasa/dokumen-order', DokumenOrderControll
     'update' => 'Ubah Dokumen Order',
     'destroy' => 'Hapus Dokumen Order'
 ])->except(['edit', 'show']);
-Route::resource('/dashboard/penerimaan-jasa/sertifikat', 'pages.penerimaan-jasa.sertifikat')->names('Sertifikat');
-Route::view('/dashboard/penerimaan-jasa/invoice', 'pages.penerimaan-jasa.invoice')->name('Invoice');
+Route::resource('/dashboard/penerimaan-jasa/sertifikat', SertifikatController::class)->names([
+    'index' => 'Sertifikat',
+    'store' => 'Tambah Sertifikat',
+    'update' => 'Ubah Sertifikat',
+    'destroy' => 'Hapus Sertifikat',
+]);
+Route::resource('/dashboard/penerimaan-jasa/invoice', InvoiceController::class)->names([
+    'index' => 'Invoice',
+    'store' => 'Tambah Invoice',
+    'update' => 'Ubah Invoice',
+    'destroy' => 'Hapus Invoice',
+]);
 Route::resource('/dashboard/penerimaan-jasa/bukti-pembayaran', BuktiPembayaranController::class)->names([
     'index' => 'Bukti Pembayaran',
     'store' => 'Tambah Bukti Pembayaran',
@@ -103,38 +137,141 @@ Route::resource('/dashboard/penerimaan-jasa/bukti-pembayaran', BuktiPembayaranCo
 Route::resource('/dashboard/penerimaan-jasa/detail-customer', DetailCustomerController::class)->names([
     'index' => 'Detail Customer',
     'store' => 'Tambah Detail Customer',
-    'update'=> 'Ubah Detail Customer',
-    'destroy'=> 'Hapus Detail Customer'
+    'update' => 'Ubah Detail Customer',
+    'destroy' => 'Hapus Detail Customer'
 ])->except(['edit', 'create', 'show']);
-Route::view('/dashboard/penerimaan-jasa/rekap-penjualan', 'pages.penerimaan-jasa.rekap-penjualan')->name('Rekap Penjualan');
+Route::resource('/dashboard/penerimaan-jasa/rekap-penjualan', RekapPenjualanController::class)->names([
+    'index' => 'Rekap Penjualan',
+    'store' => 'Tambah Rekap Penjualan',
+    'update' => 'Ubah Rekap Penjualan',
+    'destroy' => 'Hapus Rekap Penjualan',
+])->except(['edit', 'create', 'show']);
 
 // Operasional
-Route::view('/dashboard/operasional/ceklist-fumigasi', 'pages.operasional.ceklist-fumigasi')->name('Ceklist Fumigasi');
-Route::view('/dashboard/operasional/draft-pelayaran', 'pages.operasional.draft-pelayaran')->name('Draft Pelayaran');
-Route::view('/dashboard/operasional/hpp-sesungguhnya', 'pages.operasional.hpp-sesungguhnya')->name('HPP Sesungguhnya');
-Route::view('/dashboard/operasional/kartu-stok-persediaan', 'pages.operasional.kartu-stok-persediaan')->name('Kartu Stok Persediaan');
-Route::view('/dashboard/operasional/methyl-recordsheet', 'pages.operasional.methyl-recordsheet')->name('Methyl Recordsheet');
-Route::view('/dashboard/operasional/pemakaian-methyl', 'pages.operasional.pemakaian-methyl')->name('Pemakaian Methyl');
-Route::view('/dashboard/operasional/pemberitahuan-kegiatan', 'pages.operasional.pemberitahuan-kegiatan')->name('Pemberitahuan Kegiatan');
-Route::view('/dashboard/operasional/surat-pemberitahuan', 'pages.operasional.surat-pemberitahuan')->name('Surat Pemberitahuan');
-Route::view('/dashboard/operasional/surat-perintah-kerja', 'pages.operasional.surat-perintah-kerja')->name('Surat Perintah Kerja');
-Route::view('/dashboard/operasional/verifikasi-order', 'pages.operasional.verifikasi-order')->name('Verifikasi Order');
+Route::resource('/dashboard/operasional/ceklist-fumigasi', CeklistFumigasiController::class)->names([
+    'index' => 'Ceklist Fumigasi',
+    'store' => 'Tambah Ceklist Fumigasi',
+    'update' => 'Ubah Ceklist Fumigasi',
+    'destroy' => 'Hapus Ceklist Fumigasi',
+]);
+Route::resource('/dashboard/operasional/draft-pelayaran', DraftPelayaranController::class)->names([
+    'index' => 'Draft Pelayaran',
+    'store' => 'Tambah Draft Pelayaran',
+    'update' => 'Ubah Draft Pelayaran',
+    'destroy' => 'Hapus Draft Pelayaran',
+]);
+Route::resource('/dashboard/operasional/hpp-sesungguhnya', HPPSesungguhnyaController::class)->names([
+    'index' => 'HPP Sesungguhnya',
+    'store' => 'Tambah HPP Sesungguhnya',
+    'update' => 'Ubah HPP Sesungguhnya',
+    'destroy' => 'Hapus HPP Sesungguhnya',
+]);
+Route::resource('/dashboard/operasional/kartu-stok-persediaan', KartuStokPersediaanController::class)->names([
+    'index' => 'Kartu Stok Persediaan',
+    'store' => 'Tambah Kartu Stok Persediaan',
+    'update' => 'Ubah Kartu Stok Persediaan',
+    'destroy' => 'Hapus Kartu Stok Persediaan',
+]);
+Route::resource('/dashboard/operasional/methyl-recordsheet', MethylRecordsheetController::class)->names([
+    'index' => 'Methyl Recordsheet',
+    'store' => 'Tambah Methyl Recordsheet',
+    'update' => 'Ubah Methyl Recordsheet',
+    'destroy' => 'Hapus Methyl Recordsheet'
+]);
+Route::resource('/dashboard/operasional/pemakaian-methyl', PemakaianMethylController::class)->names([
+    'index' => 'Pemakaian Methyl',
+    'store' => 'Tambah Pemakaian Methyl',
+    'update' => 'Ubah Pemakaian Methyl',
+    'destroy' => 'Hapus Pemakaian Methyl'
+]);
+Route::resource('/dashboard/operasional/pemberitahuan-kegiatan', PemberitahuanKegiatanController::class)->names([
+    'index' => 'Pemberitahuan Kegiatan',
+    'store' => 'Tambah Pemberitahuan Kegiatan',
+    'update' => 'Ubah Pemberitahuan Kegiatan',
+    'destroy' => 'Hapus Pemberitahuan Kegiatan'
+]);
+Route::resource('/dashboard/operasional/surat-pemberitahuan', SuratPemberitahuanController::class)->names([
+    'index' => 'Surat Pemberitahuan',
+    'store' => 'Tambah Surat Pemberitahuan',
+    'update' => 'Ubah Surat Pemberitahuan',
+    'destroy' => 'Hapus Surat Pemberitahuan',
+]);
+Route::resource('/dashboard/operasional/surat-perintah-kerja', SuratPerintahKerjaController::class)->names([
+    'index' => 'Surat Perintah Kerja',
+    'store' => 'Tambah Surat Perintah Kerja',
+    'update' => 'Ubah Surat Perintah Kerja',
+    'destroy' => 'Hapus Surat Perintah Kerja',
+]);
+Route::resource('/dashboard/operasional/verifikasi-order', VerifikasiOrderController::class)->names([
+    'index' => 'Verifikasi Order',
+    'store' => 'Tambah Verifikasi Order',
+    'update' => 'Ubah Verifikasi Order',
+    'destroy' => 'Hapus Verifikasi Order',
+    'show' => 'PDF Verifikasi Order',
+]);
+
+// Akuntansi
+Route::resource('/dashboard/akuntansi/akun', DaftarAkunController::class)->names([
+    'index' => 'Daftar Akun',
+    'store' => 'Tambah Daftar Akun',
+    'update' => 'Ubah Daftar Akun',
+    'destroy' => 'Hapus Daftar Akun',
+]);
+Route::resource('/dashboard/akuntansi/aset-tetap', AsetTetapController::class)->names([
+    'index' => 'Aset Tetap',
+    'store' => 'Tambah Aset Tetap',
+    'update' => 'Ubah Aset Tetap',
+    'destroy' => 'Hapus Aset Tetap',
+]);
+Route::resource('/dashboard/akuntansi/jurnal-umum', JurnalUmumController::class)->names([
+    'index' => 'Jurnal Umum',
+    'store' => 'Tambah Jurnal Umum',
+    'update' => 'Ubah Jurnal Umum',
+    'destroy' => 'Hapus Jurnal Umum',
+]);
+Route::resource('/dashboard/akuntansi/penggajian', PenggajianController::class)->names([
+    'index' => 'Penggajian',
+    'store' => 'Tambah Penggajian',
+    'update' => 'Ubah Penggajian',
+    'destroy' => 'Hapus Penggajian',
+]);
+Route::resource('/dashboard/akuntansi/penyusutan-aset-tetap', PenyusutanAsetTetapController::class)->names([
+    'index' => 'Penyusutan Aset Tetap',
+    'store' => 'Tambah Penyusutan Aset Tetap',
+    'update' => 'Ubah Penyusutan Aset Tetap',
+    'destroy' => 'Hapus Penyusutan Aset Tetap',
+]);
+Route::resource('/dashboard/akuntansi/rekap-hpp-standar', RekapHPPStandarController::class)->names([
+    'index' => 'Rekap HPP Standar',
+    'store' => 'Tambah Rekap HPP Standar',
+    'update' => 'Ubah Rekap HPP Standar',
+    'destroy' => 'Hapus Rekap HPP Standar',
+]);
+Route::resource('/dashboard/akuntansi/supplier', SupplierController::class)->names([
+    'index' => 'Supplier',
+    'store' => 'Tambah Supplier',
+    'update' => 'Ubah Supplier',
+    'destroy' => 'Hapus Supplier',
+]);
+Route::resource('/dashboard/akuntansi/detail-supplier', DetailSupplierController::class)->names([
+    'index' => 'Detail Supplier',
+    'store' => 'Tambah Detail Supplier',
+    'update' => 'Ubah Detail Supplier',
+    'destroy' => 'Hapus Detail Supplier',
+]);
 
 // Laporan Keuangan
-Route::view('/dashboard/laporan-keuangan/buku-besar', 'pages.laporan-keuangan.buku-besar')->name('Buku Besar');
+Route::resource('/dashboard/laporan-keuangan/buku-besar', DaftarAkunController::class)->names([
+    'index' => 'Buku Besar',
+    'store' => 'Tambah Buku Besar',
+    'update' => 'Ubah Buku Besar',
+    'destroy' => 'Hapus Buku Besar',
+]);
 Route::view('/dashboard/laporan-keuangan/hpp', 'pages.laporan-keuangan.hpp')->name('Harga Pokok Penjualan');
 Route::view('/dashboard/laporan-keuangan/laba-rugi', 'pages.laporan-keuangan.laba-rugi')->name('Laporan Laba Rugi');
 Route::view('/dashboard/laporan-keuangan/neraca-saldo', 'pages.laporan-keuangan.neraca-saldo')->name('Neraca Saldo');
 Route::view('/dashboard/laporan-keuangan/posisi-keuangan', 'pages.laporan-keuangan.posisi-keuangan')->name('Posisi Keuangan');
 
-// Akuntansi
-Route::view('/dashboard/akuntansi/akun', 'pages.akuntansi.akun')->name('Daftar Akun');
-Route::view('/dashboard/akuntansi/aset-tetap', 'pages.akuntansi.aset-tetap')->name('Aset Tetap');
-Route::view('/dashboard/akuntansi/jurnal-umum', 'pages.akuntansi.jurnal-umum')->name('Jurnal Umum');
-Route::view('/dashboard/akuntansi/penggajian', 'pages.akuntansi.penggajian')->name('Penggajian');
-Route::view('/dashboard/akuntansi/penyusutan-aset-tetap', 'pages.akuntansi.penyusutan-aset-tetap')->name('Penyusutan Aset Tetap');
-Route::view('/dashboard/akuntansi/rekap-hpp-standar', 'pages.akuntansi.rekap-hpp-standar')->name('Rekap HPP Standar');
-Route::view('/dashboard/akuntansi/supplier', 'pages.akuntansi.supplier')->name('Supplier');
 
 // Route::post('/dashboard/ajax-order', [DataOrderController::class, 'ajaxOrder'])->name('ajax-order');
 Route::view('/dashboard/ajax-order', 'ajax.ajax')->name('ajax-order');
@@ -147,9 +284,9 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-Route::view('profile', 'profile')
-    ->middleware(['auth'])
-    ->name('profile');
+// Route::view('profile', 'profile')
+//     ->middleware(['auth'])
+//     ->name('profile');
 
 // require __DIR__.'/auth.php';
 

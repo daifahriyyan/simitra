@@ -25,7 +25,23 @@
             <!-- Perhatikan penambahan enctype -->
             <div class="mb-3">
               <label for="id_order" class="form-label">ID Order:</label>
-              <input type="text" class="form-control" id="id_order" name="id_order" required>
+              {{-- <input type="number" class="form-control" id="id_order" name="id_order" required> --}}
+              <select class="form-control form-select-lg" name="id_order" id="id_order">
+                <option selected>Pilih ID Order</option>
+                @foreach ($dataOrder as $item)
+                <option value="{{ $item->id }}">{{ $item->id_order }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="id_invoice" class="form-label">ID Invoice:</label>
+              {{-- <input type="number" class="form-control" id="id_invoice" name="id_invoice" required> --}}
+              <select class="form-control form-select-lg" name="id_invoice" id="id_invoice">
+                <option selected>Pilih ID Invoice</option>
+                @foreach ($invoice as $item)
+                <option value="{{ $item->id }}">{{ $item->id_invoice }}</option>
+                @endforeach
+              </select>
             </div>
             <div class="mb-3">
               <label for="tanggal_pembayaran" class="form-label">Tanggal Pembayaran:</label>
@@ -46,7 +62,8 @@
   </div>
   @foreach ($records as $record)
   <!-- Modal Edit Data -->
-  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal fade" id="editModal{{ $record->id }}" tabindex="-1" aria-labelledby="editModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -57,17 +74,34 @@
           <form method="POST" enctype="multipart/form-data">
             <!-- Perhatikan penambahan enctype -->
             <div class="mb-3">
-              <label for="edit_id_order" class="form-label">ID Order:</label>
-              <input type="text" class="form-control" id="edit_id_order" name="edit_id_order" readonly required>
+              <label for="id_order" class="form-label">ID Order:</label>
+              {{-- <input type="number" class="form-control" id="id_order" name="id_order" required> --}}
+              <select class="form-control form-select-lg" name="id_order" id="id_order">
+                <option value="{{ $record->id_order }}">{{ $record->dataOrder->id_order }}</option>
+                @foreach ($dataOrder as $item)
+                <option value="{{ $item->id }}">{{ $item->id_order }}</option>
+                @endforeach
+              </select>
             </div>
             <div class="mb-3">
-              <label for="edit_tanggal_pembayaran" class="form-label">Tanggal Pembayaran:</label>
-              <input type="date" class="form-control" id="edit_tanggal_pembayaran" name="edit_tanggal_pembayaran"
-                required>
+              <label for="id_invoice" class="form-label">ID Invoice:</label>
+              {{-- <input type="number" class="form-control" id="id_invoice" name="id_invoice" required> --}}
+              <select class="form-control form-select-lg" name="id_invoice" id="id_invoice">
+                <option value="{{ $record->id_order }}">{{ $record->Invoice->id_invoice }}</option>
+                @foreach ($invoice as $item)
+                <option value="{{ $item->id }}">{{ $item->id_invoice }}</option>
+                @endforeach
+              </select>
             </div>
             <div class="mb-3">
-              <label for="edit_bukti_pembayaran" class="form-label">Upload Bukti Pembayaran:</label>
-              <input type="file" class="form-control" id="edit_bukti_pembayaran" name="edit_bukti_pembayaran" required>
+              <label for="tanggal_pembayaran" class="form-label">Tanggal Pembayaran:</label>
+              <input type="date" class="form-control" id="tanggal_pembayaran" name="tanggal_pembayaran"
+                value="{{ $record->tanggal_pembayaran }}" required>
+            </div>
+            <div class="mb-3">
+              <label for="bukti_pembayaran" class="form-label">Upload Bukti Pembayaran:</label>
+              <input type="file" class="form-control" id="bukti_pembayaran" name="bukti_pembayaran">
+              <span>current: {{ $record->bukti_pembayaran }}</span>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -174,28 +208,13 @@
                     data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
                   <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
                     data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
-                  <a href="" class='btn btn-primary btn-sm' target='_blank' role='button'><i
-                      class='fas fa-print'></i></a>
+                  <button type='button' class='btn btn-info btn-sm' style='width: 30px; height: 30px;'><i
+                      class='fas fa-check'></i></button>
+                  <button type='button' class='btn btn-danger btn-sm' style='width: 30px; height: 30px;'><i
+                      class='fas fa-times'></i></button>
                 </td>
               </tr>
               @endforeach
-              {{--
-              <?php
-              $query = "SELECT * FROM bukti_pembayaran";
-              $result = mysqli_query($conn, $query);
-              while ($data = mysqli_fetch_assoc($result)) {
-                  echo "<tr>";
-                  echo "<td>".$data['id_order']."</td>";
-                  echo "<td>".$data['tanggal_pembayaran']."</td>";
-                  echo "<td>".$data['bukti_pembayaran_path']."</td>";
-                  echo "<td><span class='badge badge-success'>Lunas</span></td>";
-                  echo "<td>";
-                  echo "<button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal' data-bs-target='#editModal' onclick='openEditModal(\"".$data['id_order']."\", \"".$data['tanggal_pembayaran']."\", \"".$data['bukti_pembayaran_path']."\")'><i class='fas fa-edit'></i></button>";
-                  echo "<button type='button' class='btn btn-danger btn-sm' onclick='deleteData(\"".$data['id_order']."\")'><i class='fas fa-trash'></i></button>"; 
-                  echo "</td>";
-                  echo "</tr>"; 
-              }
-            ?> --}}
             </tbody>
             <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
           </table>

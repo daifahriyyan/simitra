@@ -32,12 +32,12 @@ class PersediaanController extends Controller
     public function store(Request $request)
     {
         $validator = request()->validate([
-          'id_persediaan' => 'required',
-          'nama_persediaan' => 'required',
-          'quantity' => 'required',
-          'saldo' => 'required',
+            'id_persediaan' => 'required',
+            'nama_persediaan' => 'required',
+            'quantity' => 'required',
+            'saldo' => 'required',
         ]);
-    
+
         DataPersediaan::create($validator);
         return redirect(route('Persediaan'))->with('add', 'Data Berhasil Ditambahkan');
     }
@@ -69,7 +69,7 @@ class PersediaanController extends Controller
             'quantity' => 'required',
             'saldo' => 'required',
         ]);
-        
+
         DataPersediaan::where('id', '=', $id)->update($validator);
         return redirect(route('Persediaan'))->with('add', 'Data Berhasil Ditambahkan');
     }
@@ -80,7 +80,7 @@ class PersediaanController extends Controller
     public function destroy(string $id)
     {
         DataPersediaan::where('id', $id)->delete();
-        
-        return redirect(route('Standar HPP'))->with('delete', 'Data Berhasil Dihapus');
+
+        return redirect(route('Persediaan'))->with('delete', 'Data Berhasil Dihapus');
     }
 }

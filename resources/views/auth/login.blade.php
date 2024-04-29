@@ -9,7 +9,20 @@
       </div>
       <br>
       <br>
-      <form action="index.html">
+      @if (session()->has('error'))
+      <div class="row">
+          <div class="col d-flex justify-content-center">
+              <div class="alert alert-danger alert-dismissible fade show" style="min-height: 50px; width:500px;" role="alert">
+                  <div>
+                      {{ session('error') }}
+                  </div>
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+          </div>
+      </div>
+      @endif
+      <form action="{{ route('Sign In') }}" method="POST">
+        @csrf
         <p class="input-with-label">
           <label for="username">Username</label>
           <input type="text" id="username" name="username" required>

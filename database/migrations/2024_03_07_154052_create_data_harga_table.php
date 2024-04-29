@@ -17,12 +17,12 @@ return new class extends Migration
             $table->string('id_datastandar');
             $table->string('volume');
             $table->string('treatment');
-            $table->decimal('bbb_standar', 10, 2);
-            $table->decimal('btk_standar', 10, 2);
-            $table->decimal('bop_standar', 10, 2);
-            $table->decimal('hpp', 10, 2);
-            $table->decimal('markup', 10, 2);
-            $table->decimal('harga_jual', 10, 2);
+            $table->decimal('bbb_standar', 65, 2);
+            $table->decimal('btk_standar', 65, 2);
+            $table->decimal('bop_standar', 65, 2);
+            $table->decimal('hpp', 65, 2);
+            $table->decimal('markup', 65, 2);
+            $table->decimal('harga_jual', 65, 2);
             $table->timestamps();
         });
     }

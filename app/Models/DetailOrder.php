@@ -13,7 +13,7 @@ class DetailOrder extends Model
 
     public $fillable = [
         'id_order',
-        'id_data_standar',
+        'id_detailorder',
         'stuffing_date',
         'id_data_harga',
         'container',
@@ -22,12 +22,32 @@ class DetailOrder extends Model
         'vessel',
         'closing_time',
         'destination',
-        'place_fumigation',
+        // 'place_fumigation',
         'pic',
         'phone_pic',
+        'nama_driver',
+        'telp_driver',
+        'shipment_instruction',
+        'packing_list',
     ];
 
-    public function dataOrder(){
-        return $this->belongsTo(DataOrder::class, 'id_order');
+    public function dataOrder()
+    {
+        return $this->belongsTo(DataOrder::class, 'id_order', 'id');
+    }
+
+    public function invoice()
+    {
+        return $this->belongsTo(Invoice::class, 'id_order', 'id');
+    }
+
+    public function suratPemberitahuan()
+    {
+        return $this->hasOne(SuratPemberitahuan::class, 'id', 'id_order');
+    }
+
+    public function spk()
+    {
+        return $this->hasOne(SuratPerintahKerja::class, 'id', 'id_order');
     }
 }

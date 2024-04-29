@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('id_customer');
             $table->string('nama_customer');
             $table->string('alamat_customer');
-            $table->string('telp_customer');
+            $table->string('telepon_customer');
             $table->string('email_customer');
             $table->string('pic');
             $table->string('phone_pic');

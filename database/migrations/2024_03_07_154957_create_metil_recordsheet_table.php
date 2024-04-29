@@ -13,13 +13,15 @@ return new class extends Migration
     {
         Schema::create('metil_recordsheet', function (Blueprint $table) {
             $table->id();
-            $table->string('id_data_order');
+            $table->string('id_order');
+            $table->string('id_recordsheet');
             $table->date('tanggal_selesai');
             $table->integer('daff_prescribed_doses_rate');
             $table->string('forecast_minimum_temperature');
             $table->string('exposure_period');
             $table->integer('applied_dose_rate');
             $table->string('dokumen_metil_recordsheet');
+            $table->timestamps();
         });
     }
 

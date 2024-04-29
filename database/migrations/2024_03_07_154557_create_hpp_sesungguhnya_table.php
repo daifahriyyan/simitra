@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('hpp_sesungguhnya', function (Blueprint $table) {
             $table->id();
+            $table->string('id_beban_hpp');
+            $table->date('tanggal_input');
+            $table->decimal('bbb_sesungguhnya', 20, 0);
+            $table->decimal('btk_sesungguhnya', 20, 0);
+            $table->decimal('bop_sesungguhnya', 20, 0);
+            $table->decimal('hpp_sesungguhnya', 20, 0);
             $table->timestamps();
         });
     }

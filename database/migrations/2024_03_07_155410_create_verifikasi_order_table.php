@@ -13,23 +13,15 @@ return new class extends Migration
     {
         Schema::create('verifikasi_order', function (Blueprint $table) {
             $table->id();
-            $table->string('id_data_order');
-            $table->date('tanggal_order');
-            $table->string('id_customer');
-            $table->string('nama_customer');
-            $table->string('alamat_customer');
-            $table->string('commodity');
-            $table->date('stuffing_date');
-            $table->date('closing_time');
-            $table->tinyInteger('waktu');
-            $table->tinyInteger('export_status');
+            $table->string('id_verifikasi');
+            $table->string('id_order');
+            $table->string('waktu');
+            $table->string('tujuan');
             $table->string('destination');
-            $table->tinyInteger('import_status');
-            $table->string('origin');
-            $table->tinyInteger('packing_status');
-            $table->tinyInteger('kondisi_status');
+            $table->string('packing');
+            $table->string('kondisi_status');
             $table->string('place_fumigation');
-            $table->tinyInteger('kesimpulan');
+            $table->string('kesimpulan');
             $table->timestamps();
         });
     }

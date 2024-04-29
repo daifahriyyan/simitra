@@ -20,7 +20,8 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form method="POST">
+          <form method="POST" action="{{ route('Tambah Daftar Akun') }}">
+            @csrf
             <div class="mb-3">
               <label for="kode_akun" class="form-label">Kode Akun:</label>
               <input type="text" class="form-control" id="kode_akun" name="kode_akun" required>
@@ -33,7 +34,7 @@
               <label for="jenis_akun" class="form-label">Jenis Akun:</label>
               <br>
               <select class="form-select" id="jenis_akun" name="jenis_akun" required>
-                <option value="">Pilih Jenis Akun</option>
+                <option selected>Pilih Jenis Akun</option>
                 <option value="debet">Debet</option>
                 <option value="kredit">Kredit</option>
               </select>
@@ -42,7 +43,7 @@
               <label for="kelompok_akun" class="form-label">Kelompok Akun:</label>
               <br>
               <select class="form-select" id="kelompok_akun" name="kelompok_akun" required>
-                <option value="">Pilih Kelompok Akun</option>
+                <option selected>Pilih Kelompok Akun</option>
                 <option value="aset">Aset</option>
                 <option value="liabilitas">Liabilitas</option>
                 <option value="ekuitas">Ekuitas</option>
@@ -64,8 +65,10 @@
       </div>
     </div>
   </div>
+  @foreach ($keuAkun as $record)
   <!-- Modal Edit Data -->
-  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal fade" id="editModal{{ $record->id }}" tabindex="-1" aria-labelledby="editModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -73,29 +76,32 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form method="POST">
+          <form method="POST" action="{{ route('Ubah Daftar Akun', $record->id) }}">
+            @method('put')@csrf
             <div class="mb-3">
-              <label for="edit_kode_akun" class="form-label">Kode Akun:</label>
-              <input type="text" class="form-control" id="edit_kode_akun" name="edit_kode_akun" readonly required>
+              <label for="kode_akun" class="form-label">Kode Akun:</label>
+              <input type="text" class="form-control" id="kode_akun" name="kode_akun" value="{{ $record->kode_akun }}"
+                readonly required>
             </div>
             <div class="mb-3">
-              <label for="edit_nama_akun" class="form-label">Nama Akun:</label>
-              <input type="text" class="form-control" id="edit_nama_akun" name="edit_nama_akun" required>
+              <label for="nama_akun" class="form-label">Nama Akun:</label>
+              <input type="text" class="form-control" id="nama_akun" name="nama_akun" value="{{ $record->nama_akun }}"
+                required>
             </div>
             <div class="mb-3">
-              <label for="edit_jenis_akun" class="form-label">Jenis Akun:</label>
+              <label for="jenis_akun" class="form-label">Jenis Akun:</label>
               <br>
-              <select class="form-select" id="edit_jenis_akun" name="edit_jenis_akun" required>
-                <option value="">Pilih Jenis Akun</option>
+              <select class="form-select" id="jenis_akun" name="jenis_akun" required>
+                <option value="{{ $record->jenis_akun }}">{{ $record->jenis_akun }}
                 <option value="debet">Debet</option>
                 <option value="kredit">Kredit</option>
               </select>
             </div>
             <div class="mb-3">
-              <label for="edit_kelompok_akun" class="form-label">Kelompok Akun:</label>
+              <label for="kelompok_akun" class="form-label">Kelompok Akun:</label>
               <br>
-              <select class="form-select" id="edit_kelompok_akun" name="edit_kelompok_akun" required>
-                <option value="">Pilih Kelompok Akun</option>
+              <select class="form-select" id="kelompok_akun" name="kelompok_akun" required>
+                <option value="{{ $record->kelompok_akun }}">{{ $record->kelompok_akun }}
                 <option value="aset">Aset</option>
                 <option value="liabilitas">Liabilitas</option>
                 <option value="ekuitas">Ekuitas</option>
@@ -105,8 +111,9 @@
               </select>
             </div>
             <div class="mb-3">
-              <label for="edit_saldo_akun" class="form-label">Saldo Akun:</label>
-              <input type="number" class="form-control" id="edit_saldo_akun" name="edit_saldo_akun" required>
+              <label for="saldo_akun" class="form-label">Saldo Akun:</label>
+              <input type="number" class="form-control" id="saldo_akun" name="saldo_akun"
+                value="{{ $record->saldo_akun }}" required>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -118,6 +125,25 @@
     </div>
   </div>
   <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
+  <!-- Modal Delete -->
+  <div class="modal fade" id="deleteRecord{{ $record->id }}" tabindex="-1" aria-labelledby="deleteRecordLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form method="POST" action="{{ route('Hapus Daftar Akun', $record->id) }}">
+          @method('delete')@csrf
+          <div class="modal-body">
+            Apakah Anda sudah yakin ingin menghapus Record ini?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  @endforeach
 
   <!-- Row -->
   <div class="row">
@@ -174,7 +200,7 @@
             <!-- AWAL EDIT SESUAIKAN TABEL DATABASE -->
             <thead class="thead-light">
               <tr>
-                <th>Kode AKun</th>
+                <th>Kode Akun</th>
                 <th>Nama Akun</th>
                 <th>Jenis Akun</th>
                 <th>Kelompok Akun</th>
@@ -183,24 +209,22 @@
               </tr>
             </thead>
             <tbody>
-              {{--
-              <?php
-              $query = "SELECT * FROM keu_akun";
-              $result = mysqli_query($conn, $query);
-              while ($data = mysqli_fetch_assoc($result)) {
-                echo "<tr>";
-                echo "<td>" . $data['kode_akun'] . "</td>";
-                echo "<td>" . $data['nama_akun'] . "</td>";
-                echo "<td>" . $data['jenis_akun'] . "</td>";
-                echo "<td>" . $data['kelompok_akun'] . "</td>";
-                echo "<td>" . number_format($data['saldo_akun'], 2, ',', '.') . "</td>";
-                echo "<td>";
-                echo "<button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal' data-bs-target='#editModal' onclick='openEditModal(\"" . $data['kode_akun'] . "\", \"" . $data['nama_akun'] . "\", \"" . $data['jenis_akun'] . "\", \"" . $data['kelompok_akun'] . "\", \"" . $data['saldo_akun'] . "\")'><i class='fas fa-edit'></i></button>";
-                echo "<button type='button' class='btn btn-danger btn-sm' onclick='deleteData(\"" . $data['kode_akun'] . "\")'><i class='fas fa-trash'></i></button>";
-                echo "</td>";
-                echo "</tr>";
-              }
-              ?> --}}
+              @foreach ($keuAkun as $record)
+
+              <tr>
+                <td>{{ $record->kode_akun }}</td>
+                <td>{{ $record->nama_akun }}</td>
+                <td>{{ $record->jenis_akun }}</td>
+                <td>{{ $record->kelompok_akun }}</td>
+                <td>{{ number_format($record->saldo_akun, 2, ',', '.') }}</td>
+                <td>
+                  <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
+                    data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
+                  <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
+                    data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
+                </td>
+              </tr>
+              @endforeach
             </tbody>
             <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
           </table>

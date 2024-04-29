@@ -17,4 +17,14 @@ class DataPersediaan extends Model
         'quantity',
         'saldo',
     ];
+
+    public function pemakaianMethyl()
+    {
+        return $this->hasOne(PemakaianMb::class, 'id', 'id_persediaan');
+    }
+
+    public function kartuPersediaan()
+    {
+        return $this->hasOne(KartuPersediaan::class, 'id', 'id_persediaan');
+    }
 }

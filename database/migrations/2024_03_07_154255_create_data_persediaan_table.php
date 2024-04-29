@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('id_persediaan');
             $table->string('nama_persediaan');
-            $table->string('quantity');
-            $table->string('saldo');
+            $table->integer('quantity');
+            $table->decimal('saldo', 20, 2);
             $table->timestamps();
         });
     }

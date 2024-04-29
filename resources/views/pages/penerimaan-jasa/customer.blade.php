@@ -111,7 +111,7 @@
             </div>
             <div class="mb-3">
               <label for="telp_customer" class="form-label">Telepon Customer:</label>
-              <input type="number" class="form-control" id="telp_customer" value="{{ $record->telp_customer }}"
+              <input type="number" class="form-control" id="telp_customer" value="{{ $record->telepon_customer }}"
                 name="telp_customer" required>
             </div>
             <div class="mb-3">
@@ -190,7 +190,7 @@
         </div>
 
         <div class="table-responsive p-3">
-          <table class="table align-items-center table-flush table-hover" id="dataTableHover">
+          <table class="table align-items-center table-flush table-hover text-nowrap" id="dataTableHover">
             <!-- AWAL EDIT SESUAIKAN TABEL DATABASE -->
             <thead class="thead-light">
               <tr>
@@ -202,7 +202,7 @@
                 <th>Nama PIC</th>
                 <th>Telp PIC</th>
                 <th>Status</th>
-                <th>Aksi</th>
+                {{-- <th>Aksi</th> --}}
               </tr>
             </thead>
             <tbody>
@@ -211,18 +211,18 @@
                 <td>{{ $record->id_customer }}</td>
                 <td>{{ $record->nama_customer }}</td>
                 <td>{{ $record->alamat_customer }}</td>
-                <td>{{ $record->telp_customer }}</td>
+                <td>{{ $record->telepon_customer }}</td>
                 <td>{{ $record->email_customer }}</td>
                 <td>{{ $record->pic }}</td>
                 <td>{{ $record->phone_pic }}</td>
                 <td><span class='badge badge-danger'>Process</span></td>
                 <td>
-                  <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
+                  {{-- <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
                     data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
                   <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
                     data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
                   <a href="" class='btn btn-primary btn-sm' target='_blank' role='button'><i
-                      class='fas fa-print'></i></a>
+                      class='fas fa-print'></i></a> --}}
                 </td>
               </tr>
               @endforeach

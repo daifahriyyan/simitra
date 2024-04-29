@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('rekap_hpp', function (Blueprint $table) {
             $table->id();
-            $table->string('id_rekap_penjualan');
+            $table->string('id_rekap');
+            $table->date('tanggal_input');
             $table->string('id_data_harga');
-            $table->string('volume');
-            $table->integer('quantity');
-            $table->decimal('hpp', 10, 2);
-            $table->decimal('total_hpp', 10, 2);
+            $table->string('id_rekap_penjualan');
+            $table->decimal('total_hpp', 65, 2);
+            $table->timestamps();
         });
     }
 

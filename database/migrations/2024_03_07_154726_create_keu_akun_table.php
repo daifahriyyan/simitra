@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('keu_akun', function (Blueprint $table) {
             $table->id();
+            $table->string('kode_akun');
+            $table->string('nama_akun');
+            $table->string('jenis_akun');
+            $table->string('kelompok_akun');
+            $table->decimal('saldo_akun', 65, 2);
             $table->timestamps();
         });
     }

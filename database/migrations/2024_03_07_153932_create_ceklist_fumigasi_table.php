@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('ceklist_fumigasi', function (Blueprint $table) {
             $table->id();
+            $table->string('id_ceklist');
             $table->string('id_order');
-            $table->string('id_order_container');
-            $table->string('input_scan');
+            $table->date('tanggal_order');
+            $table->string('ceklist_fumigasi');
             $table->timestamps();
         });
     }

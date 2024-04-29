@@ -21,19 +21,27 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form method="POST" action="{{ route('Sertifikat') }}">
+          <form method="POST" action="{{ route('Tambah Sertifikat') }}">
             @csrf
             <div class="mb-3">
               <label for="id_sertif" class="form-label">ID Sertif:</label>
-              <input type="text" class="form-control" id="id_sertif" name="id_sertif" required>
+              <input type="text" class="form-control" id="id_sertif" name="id_sertif"
+                value="MIM/24.0000{{ $sertifikat->count()+1 }}" readonly required>
             </div>
             <div class="mb-3">
               <label for="id_reg" class="form-label">ID Reg:</label>
-              <input type="text" class="form-control" id="id_reg" name="id_reg" required>
+              <input type="text" class="form-control" id="id_reg" name="id_reg"
+                value="ID-0000{{ $sertifikat->count()+1 }}-MB" readonly required>
             </div>
             <div class="mb-3">
-              <label for="target" class="form-label">Target:</label>
-              <input type="number" class="form-control" id="target" name="target" required>
+              <label for="target" class="form-label">Target :</label>
+              {{-- <input type="number" class="form-control" id="target" name="target" required> --}}
+              <select class="form-control form-select-lg" name="target" id="target">
+                <option selected>Pilih Target Fumigasi</option>
+                <option value="Commodity">Commodity</option>
+                <option value="Packing">Packing</option>
+                <option value="Both Commodity And Packing">Both Commodity And Packing</option>
+              </select>
             </div>
             <div class="mb-3">
               <label for="commodity" class="form-label">Commodity:</label>
@@ -49,67 +57,65 @@
             </div>
             <div class="mb-3">
               <label for="pol" class="form-label">POL:</label>
-              <input type="text" class="form-control" id="pol" name="pol" required>
+              <input type="text" class="form-control" id="pol" name="pol" value="SEMARANG, INDONESIA" readonly required>
             </div>
             <div class="mb-3">
               <label for="destination" class="form-label">Destination:</label>
               <input type="text" class="form-control" id="destination" name="destination" required>
             </div>
             <div class="mb-3">
-              <label for="id_order_container" class="form-label">ID Order Container:</label>
-              <input type="text" class="form-control" id="id_order_container" name="id_order_container" required>
+              <label for="id_order" class="form-label">ID Order:</label>
+              {{-- <input type="number" class="form-control" id="id_order" name="id_order" required> --}}
+              <select class="form-control form-select-lg" name="id_order" id="id_order">
+                <option selected>Pilih ID Order</option>
+                @foreach ($dataOrder as $item)
+                <option value="{{ $item->id }}">{{ $item->id_order }}</option>
+                @endforeach
+              </select>
             </div>
             <div class="mb-3">
-              <label for="nama_customer" class="form-label">Nama Customer:</label>
-              <input type="text" class="form-control" id="nama_customer" name="nama_customer" required readonly>
+              <label for="attn" class="form-label">ATTN :</label>
+              <input type="text" class="form-control" id="attn" name="attn" required>
             </div>
             <div class="mb-3">
-              <label for="telp_customer" class="form-label">Telepon Customer:</label>
-              <input type="text" class="form-control" id="telp_customer" name="telp_customer" required readonly>
+              <label for="tin" class="form-label">TIN :</label>
+              <input type="number" class="form-control" id="tin" name="tin" required>
             </div>
             <div class="mb-3">
-              <label for="jumlah_order" class="form-label">Jumlah Order:</label>
-              <input type="number" class="form-control" id="jumlah_order" name="jumlah_order" required>
+              <label for="id_importer" class="form-label">ID Importer:</label>
+              {{-- <input type="number" class="form-control" id="id_importer" name="id_importer" required> --}}
+              <select class="form-control form-select-lg" name="id_importer" id="id_importer">
+                <option selected>Pilih ID Importer</option>
+                @foreach ($dataImporter as $item)
+                <option value="{{ $item->id }}">{{ $item->id_importer }}</option>
+                @endforeach
+              </select>
             </div>
             <div class="mb-3">
-              <label for="treatment" class="form-label">Treatment:</label>
-              <input type="text" class="form-control" id="treatment" name="treatment" required>
+              <label for="id_recordsheet" class="form-label">ID Recordsheet:</label>
+              {{-- <input type="number" class="form-control" id="id_recordsheet" name="id_recordsheet" required> --}}
+              <select class="form-control form-select-lg" name="id_recordsheet" id="id_recordsheet">
+                <option selected>Pilih ID Recordsheet</option>
+                @foreach ($metilRecordsheet as $item)
+                <option value="{{ $item->id }}">{{ $item->id_order }}</option>
+                @endforeach
+              </select>
             </div>
             <div class="mb-3">
-              <label for="stuffing_date" class="form-label">Stuffing Date:</label>
-              <input type="date" class="form-control" id="stuffing_date" name="stuffing_date" required>
+              <label for="wrapping" class="form-label">Wrapping :</label>
+              <select class="form-control" id="wrapping" name="wrapping" required>
+                <option value="">Pilih Status Wrapping</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
             </div>
             <div class="mb-3">
-              <label for="id_datastandar" class="form-label">ID Data Standar:</label>
-              <input type="text" class="form-control" id="id_datastandar" name="id_datastandar" required>
+              <label for="tanggal_sertif" class="form-label">Tanggal Sertifikat:</label>
+              <input type="date" class="form-control" id="tanggal_sertif" name="tanggal_sertif" required>
             </div>
             <div class="mb-3">
-              <label for="volume" class="form-label">Volume:</label>
-              <input type="number" class="form-control" id="volume" name="volume" required>
-            </div>
-            <div class="mb-3">
-              <label for="container" class="form-label">Container:</label>
-              <input type="text" class="form-control" id="container" name="container" required>
-            </div>
-            <div class="mb-3">
-              <label for="container_volume" class="form-label">Container Volume:</label>
-              <input type="number" class="form-control" id="container_volume" name="container_volume" required>
-            </div>
-            <div class="mb-3">
-              <label for="vessel" class="form-label">Vessel:</label>
-              <input type="text" class="form-control" id="vessel" name="vessel" required>
-            </div>
-            <div class="mb-3">
-              <label for="place_fumigation" class="form-label">Place Fumigation:</label>
-              <input type="date" class="form-control" id="place_fumigation" name="place_fumigation" required>
-            </div>
-            <div class="mb-3">
-              <label for="pic" class="form-label">PIC:</label>
-              <input type="text" class="form-control" id="pic" name="pic" required>
-            </div>
-            <div class="mb-3">
-              <label for="phone_pic" class="form-label">Phone PIC:</label>
-              <input type="number" class="form-control" id="phone_pic" name="phone_pic" required>
+              <label for="no_reg" class="form-label">Nomor Registrasi:</label>
+              <input type="text" class="form-control" id="no_reg" name="no_reg" required>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -120,9 +126,10 @@
       </div>
     </div>
   </div>
-
+  @foreach ($sertifikat as $record)
   <!-- Modal Edit Data -->
-  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal fade" id="editModal{{ $record->id }}" tabindex="-1" aria-labelledby="editModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -130,98 +137,106 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form method="POST">
+          <form method="POST" action="{{ route('Ubah Sertifikat', $record->id) }}">
+            @csrf @method('put')
             <div class="mb-3">
-              <label for="edit_id_sertif" class="form-label">ID Sertif:</label>
-              <input type="text" class="form-control" id="edit_id_sertif" name="edit_id_sertif" required>
+              <label for="id_sertif" class="form-label">ID Sertif:</label>
+              <input type="text" class="form-control" id="id_sertif" name="id_sertif" value="{{ $record->id_sertif }}"
+                readonly required>
             </div>
             <div class="mb-3">
-              <label for="edit_id_reg" class="form-label">ID Reg:</label>
-              <input type="text" class="form-control" id="edit_id_reg" name="edit_id_reg" required>
-            </div>
-            <div class="mb-3">
-              <label for="edit_target" class="form-label">Target:</label>
-              <input type="number" class="form-control" id="edit_target" name="edit_target" required>
-            </div>
-            <div class="mb-3">
-              <label for="edit_commodity" class="form-label">Commodity:</label>
-              <input type="text" class="form-control" id="edit_commodity" name="edit_commodity" required>
-            </div>
-            <div class="mb-3">
-              <label for="edit_consignment" class="form-label">Consignment:</label>
-              <input type="text" class="form-control" id="edit_consignment" name="edit_consignment" required>
-            </div>
-            <div class="mb-3">
-              <label for="edit_country" class="form-label">Country:</label>
-              <input type="text" class="form-control" id="edit_country" name="edit_country" required>
-            </div>
-            <div class="mb-3">
-              <label for="edit_pol" class="form-label">POL:</label>
-              <input type="text" class="form-control" id="edit_pol" name="edit_pol" required>
-            </div>
-            <div class="mb-3">
-              <label for="edit_destination" class="form-label">Destination:</label>
-              <input type="text" class="form-control" id="edit_destination" name="edit_destination" required>
-            </div>
-            <div class="mb-3">
-              <label for="edit_id_order_container" class="form-label">ID Order Container:</label>
-              <input type="text" class="form-control" id="edit_id_order_container" name="edit_id_order_container"
+              <label for="id_reg" class="form-label">ID Reg:</label>
+              <input type="text" class="form-control" id="id_reg" name="id_reg" value="{{ $record->id_reg }}" readonly
                 required>
             </div>
             <div class="mb-3">
-              <label for="edit_nama_customer" class="form-label">Nama Customer:</label>
-              <input type="text" class="form-control" id="edit_nama_customer" name="edit_nama_customer" required
-                readonly>
+              <label for="target" class="form-label">Target :</label>
+              {{-- <input type="number" class="form-control" id="target" name="target" required> --}}
+              <select class="form-control form-select-lg" name="target" id="target">
+                <option value="{{ $record->target }}">{{ $record->target }}</option>
+                <option value="Commodity">Commodity</option>
+                <option value="Packing">Packing</option>
+                <option value="Both Commodity And Packing">Both Commodity And Packing</option>
+              </select>
             </div>
             <div class="mb-3">
-              <label for="edit_telp_customer" class="form-label">Telepon Customer:</label>
-              <input type="text" class="form-control" id="edit_telp_customer" name="edit_telp_customer" required
-                readonly>
-            </div>
-            <div class="mb-3">
-              <label for="edit_jumlah_order" class="form-label">Jumlah Order:</label>
-              <input type="number" class="form-control" id="edit_jumlah_order" name="edit_jumlah_order" required>
-            </div>
-            <div class="mb-3">
-              <label for="edit_treatment" class="form-label">Treatment:</label>
-              <input type="text" class="form-control" id="edit_treatment" name="edit_treatment" required>
-            </div>
-            <div class="mb-3">
-              <label for="edit_stuffing_date" class="form-label">Stuffing Date:</label>
-              <input type="date" class="form-control" id="edit_stuffing_date" name="edit_stuffing_date" required>
-            </div>
-            <div class="mb-3">
-              <label for="edit_id_datastandar" class="form-label">ID Data Standar:</label>
-              <input type="text" class="form-control" id="edit_id_datastandar" name="edit_id_datastandar" required>
-            </div>
-            <div class="mb-3">
-              <label for="edit_volume" class="form-label">Volume:</label>
-              <input type="number" class="form-control" id="edit_volume" name="edit_volume" required>
-            </div>
-            <div class="mb-3">
-              <label for="edit_container" class="form-label">Container:</label>
-              <input type="text" class="form-control" id="edit_container" name="edit_container" required>
-            </div>
-            <div class="mb-3">
-              <label for="edit_container_volume" class="form-label">Container Volume:</label>
-              <input type="number" class="form-control" id="edit_container_volume" name="edit_container_volume"
+              <label for="commodity" class="form-label">Commodity:</label>
+              <input type="text" class="form-control" id="commodity" name="commodity" value="{{ $record->commodity }}"
                 required>
             </div>
             <div class="mb-3">
-              <label for="edit_vessel" class="form-label">Vessel:</label>
-              <input type="text" class="form-control" id="edit_vessel" name="edit_vessel" required>
+              <label for="consignment" class="form-label">Consignment:</label>
+              <input type="text" class="form-control" id="consignment" name="consignment"
+                value="{{ $record->consignment }}" required>
             </div>
             <div class="mb-3">
-              <label for="edit_place_fumigation" class="form-label">Place Fumigation:</label>
-              <input type="date" class="form-control" id="edit_place_fumigation" name="edit_place_fumigation" required>
+              <label for="country" class="form-label">Country:</label>
+              <input type="text" class="form-control" id="country" name="country" value="{{ $record->country }}"
+                required>
             </div>
             <div class="mb-3">
-              <label for="edit_pic" class="form-label">PIC:</label>
-              <input type="text" class="form-control" id="edit_pic" name="edit_pic" required>
+              <label for="pol" class="form-label">POL:</label>
+              <input type="text" class="form-control" id="pol" name="pol" value="SEMARANG, INDONESIA" readonly required>
             </div>
             <div class="mb-3">
-              <label for="edit_phone_pic" class="form-label">Phone PIC:</label>
-              <input type="number" class="form-control" id="edit_phone_pic" name="edit_phone_pic" required>
+              <label for="destination" class="form-label">Destination:</label>
+              <input type="text" class="form-control" id="destination" name="destination"
+                value="{{ $record->destination }}" required>
+            </div>
+            <div class="mb-3">
+              <label for="id_order" class="form-label">ID Order:</label>
+              {{-- <input type="number" class="form-control" id="id_order" name="id_order" required> --}}
+              <select class="form-control form-select-lg" name="id_order" id="id_order">
+                <option value="{{ $record->id_order }}">{{ $record->dataOrder->id_order }}</option>
+                @foreach ($dataOrder as $item)
+                <option value="{{ $item->id }}">{{ $item->id_order }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="attn" class="form-label">ATTN :</label>
+              <input type="text" class="form-control" id="attn" name="attn" value="{{ $record->attn }}" required>
+            </div>
+            <div class="mb-3">
+              <label for="tin" class="form-label">TIN :</label>
+              <input type="number" class="form-control" id="tin" name="tin" value="{{ $record->tin }}" required>
+            </div>
+            <div class="mb-3">
+              <label for="id_importer" class="form-label">ID Importer:</label>
+              {{-- <input type="number" class="form-control" id="id_importer" name="id_importer" required> --}}
+              <select class="form-control form-select-lg" name="id_importer" id="id_importer">
+                <option value="{{ $record->id_importer }}">{{ $record->dataImporter->id_importer }}</option>
+                @foreach ($dataImporter as $item)
+                <option value="{{ $item->id }}">{{ $item->id_importer }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="id_recordsheet" class="form-label">ID Recordsheet:</label>
+              {{-- <input type="number" class="form-control" id="id_recordsheet" name="id_recordsheet" required> --}}
+              <select class="form-control form-select-lg" name="id_recordsheet" id="id_recordsheet">
+                <option value="{{ $record->id_recordsheet }}">{{ $record->dataRecordsheet->id_recordsheet }}</option>
+                @foreach ($metilRecordsheet as $item)
+                <option value="{{ $item->id }}">{{ $item->id_order }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="wrapping" class="form-label">Wrapping :</label>
+              <select class="form-control" id="wrapping" name="wrapping" required>
+                <option value="{{ $record->wrapping }}">{{ $record->wrapping }}</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="tanggal_sertif" class="form-label">Tanggal Sertifikat:</label>
+              <input type="date" class="form-control" id="tanggal_sertif" name="tanggal_sertif"
+                value="{{ $record->tanggal_sertif }}" required>
+            </div>
+            <div class="mb-3">
+              <label for="no_reg" class="form-label">Nomor Registrasi:</label>
+              <input type="text" class="form-control" id="no_reg" name="no_reg" value="{{ $record->no_reg }}" required>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -229,100 +244,29 @@
             </div>
           </form>
         </div>
-
-        <div class="mb-3">
-          <label for="id_reg" class="form-label">ID Reg:</label>
-          <input type="text" class="form-control" id="id_reg" name="id_reg" required>
-        </div>
-        <div class="mb-3">
-          <label for="target" class="form-label">Target:</label>
-          <input type="number" class="form-control" id="target" name="target" required>
-        </div>
-        <div class="mb-3">
-          <label for="commodity" class="form-label">Commodity:</label>
-          <input type="text" class="form-control" id="commodity" name="commodity" required>
-        </div>
-        <div class="mb-3">
-          <label for="consignment" class="form-label">Consignment:</label>
-          <input type="text" class="form-control" id="consignment" name="consignment" required>
-        </div>
-        <div class="mb-3">
-          <label for="country" class="form-label">Country:</label>
-          <input type="text" class="form-control" id="country" name="country" required>
-        </div>
-        <div class="mb-3">
-          <label for="pol" class="form-label">POL:</label>
-          <input type="text" class="form-control" id="pol" name="pol" required>
-        </div>
-        <div class="mb-3">
-          <label for="destination" class="form-label">Destination:</label>
-          <input type="text" class="form-control" id="destination" name="destination" required>
-        </div>
-        <div class="mb-3">
-          <label for="id_order_container" class="form-label">ID Order Container:</label>
-          <input type="text" class="form-control" id="id_order_container" name="id_order_container" required>
-        </div>
-        <div class="mb-3">
-          <label for="nama_customer" class="form-label">Nama Customer:</label>
-          <input type="text" class="form-control" id="nama_customer" name="nama_customer" required readonly>
-        </div>
-        <div class="mb-3">
-          <label for="telp_customer" class="form-label">Telepon Customer:</label>
-          <input type="text" class="form-control" id="telp_customer" name="telp_customer" required readonly>
-        </div>
-        <div class="mb-3">
-          <label for="jumlah_order" class="form-label">Jumlah Order:</label>
-          <input type="number" class="form-control" id="jumlah_order" name="jumlah_order" required>
-        </div>
-        <div class="mb-3">
-          <label for="treatment" class="form-label">Treatment:</label>
-          <input type="text" class="form-control" id="treatment" name="treatment" required>
-        </div>
-        <div class="mb-3">
-          <label for="stuffing_date" class="form-label">Stuffing Date:</label>
-          <input type="date" class="form-control" id="stuffing_date" name="stuffing_date" required>
-        </div>
-        <div class="mb-3">
-          <label for="id_datastandar" class="form-label">ID Data Standar:</label>
-          <input type="text" class="form-control" id="id_datastandar" name="id_datastandar" required>
-        </div>
-        <div class="mb-3">
-          <label for="volume" class="form-label">Volume:</label>
-          <input type="number" class="form-control" id="volume" name="volume" required>
-        </div>
-        <div class="mb-3">
-          <label for="container" class="form-label">Container:</label>
-          <input type="text" class="form-control" id="container" name="container" required>
-        </div>
-        <div class="mb-3">
-          <label for="container_volume" class="form-label">Container Volume:</label>
-          <input type="number" class="form-control" id="container_volume" name="container_volume" required>
-        </div>
-        <div class="mb-3">
-          <label for="vessel" class="form-label">Vessel:</label>
-          <input type="text" class="form-control" id="vessel" name="vessel" required>
-        </div>
-        <div class="mb-3">
-          <label for="place_fumigation" class="form-label">Place Fumigation:</label>
-          <input type="date" class="form-control" id="place_fumigation" name="place_fumigation" required>
-        </div>
-        <div class="mb-3">
-          <label for="pic" class="form-label">PIC:</label>
-          <input type="text" class="form-control" id="pic" name="pic" required>
-        </div>
-        <div class="mb-3">
-          <label for="phone_pic" class="form-label">Phone PIC:</label>
-          <input type="number" class="form-control" id="phone_pic" name="phone_pic" required>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-          <button type="submit" class="btn btn-primary">Simpan</button>
-        </div>
-        </form>
       </div>
     </div>
   </div>
   <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
+  <!-- Modal Delete -->
+  <div class="modal fade" id="deleteRecord{{ $record->id }}" tabindex="-1" aria-labelledby="deleteRecordLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form method="POST" action="{{ route('Hapus Sertifikat', $record->id) }}">
+          @method('delete')@csrf
+          <div class="modal-body">
+            Apakah Anda sudah yakin ingin menghapus Data ini?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  @endforeach
 
   <!-- Row -->
   <div class="row">
@@ -375,77 +319,93 @@
         </div>
 
         <div class="table-responsive p-3">
-          <table class="table align-items-center table-flush table-hover" id="dataTableHover">
+          <table class="table align-items-center table-flush table-hover text-nowrap" id="dataTableHover">
             <!-- AWAL EDIT SESUAIKAN TABEL DATABASE -->
             <thead class="thead-light">
               <tr>
-                <th>ID Sertif</th>
-                <th>ID Reg</th>
-                <th>Target</th>
+                <th>Id Sertifikat</th>
+                <th>Id Reg</th>
+                <th>Target of Fumigation</th>
                 <th>Commodity</th>
                 <th>Consignment</th>
                 <th>Country</th>
-                <th>POL</th>
+                <th>Port of Loading</th>
                 <th>Destination</th>
-                <th>ID Order Container</th>
+                <th>Id Order</th>
+                <th>Id Order Container</th>
                 <th>Nama Customer</th>
-                <th>Telepon Customer</th>
-                <th>Jumlah Order</th>
-                <th>Treatment</th>
-                <th>Stuffing Date</th>
-                <th>ID Data Standar</th>
-                <th>Volume</th>
+                <th>Telp Customer</th>
+                <th>ATTN</th>
+                <th>TIN</th>
+                <th>Id Importer</th>
+                <th>Nama Importer</th>
+                <th>Alamat Importer</th>
+                <th>Telp Importer</th>
+                <th>Fax Importer</th>
+                <th>USCI Importer</th>
+                <th>PIC Importer</th>
+                <th>Id Recordsheet</th>
+                <th>Tanggal Selesai</th>
+                <th>Daff Prescribed Doses Rate</th>
+                <th>Forecast Minimum Temperature</th>
+                <th>Exposure Period</th>
+                <th>Applied Dose Rate</th>
+                <th>Fumigation Conducted</th>
                 <th>Container</th>
-                <th>Container Volume</th>
-                <th>Vessel</th>
-                <th>Place Fumigation</th>
-                <th>PIC</th>
-                <th>Phone PIC</th>
+                <th>Wrapping</th>
                 <th>Tanggal Sertif</th>
-                <th>NoReg</th>
+                <th>No Reg</th>
+                <th>Status</th>
                 <th>Aksi</th>
               </tr>
             </thead>
             <tbody>
-              {{--
-              <?php
-              $query = "SELECT * FROM data_order";
-              $result = mysqli_query($conn, $query);
-              while ($data = mysqli_fetch_assoc($result)) {
-                echo "<tr>";
-                echo "<td>" . $data['id_sertif'] . "</td>";
-                echo "<td>" . $data['Id_reg'] . "</td>";
-                echo "<td>" . $data['Target'] . "</td>";
-                echo "<td>" . $data['commodity'] . "</td>";
-                echo "<td>" . $data['Consignment'] . "</td>";
-                echo "<td>" . $data['Country'] . "</td>";
-                echo "<td>" . $data['POL'] . "</td>";
-                echo "<td>" . $data['destination'] . "</td>";
-                echo "<td>" . $data['id_order_container'] . "</td>";
-                echo "<td>" . $data['nama_customer'] . "</td>";
-                echo "<td>" . $data['telp_customer'] . "</td>";
-                echo "<td>" . $data['jumlah_order'] . "</td>";
-                echo "<td>" . $data['treatment'] . "</td>";
-                echo "<td>" . $data['stuffing_date'] . "</td>";
-                echo "<td>" . $data['id_datastandar'] . "</td>";
-                echo "<td>" . $data['volume'] . "</td>";
-                echo "<td>" . $data['container'] . "</td>";
-                echo "<td>" . $data['container_volume'] . "</td>";
-                echo "<td>" . $data['vessel'] . "</td>";
-                echo "<td>" . $data['place_fumigation'] . "</td>";
-                echo "<td>" . $data['pic'] . "</td>";
-                echo "<td>" . $data['phone_pic'] . "</td>";
-                echo "<td>" . $data['Tanggal_sertif'] . "</td>";
-                echo "<td>" . $data['NoReg'] . "</td>";
-                echo "<td><span class='badge badge-success'>Delivered</span></td>";
-                echo "<td>";
-                echo "<button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal' data-bs-target='#editModal' onclick='openEditModal(\"" . $data['id_order_container'] . "\", \"" . $data['tanggal_order'] . "\", \"" . $data['id_customer'] . "\", \"" . $data['nama_customer'] . "\", \"" . $data['telp_customer'] . "\")'><i class='fas fa-edit'></i></button>";
-                echo "<button type='button' class='btn btn-danger btn-sm' onclick='deleteData(\"" . $data['id_order_container'] . "\")'><i class='fas fa-trash'></i></button>";
-                echo "<a href='generate_pdf.php?id_order_container=" . htmlspecialchars($data['id_order_container']) . "' class='btn btn-primary btn-sm' target='_blank' role='button'><i class='fas fa-print'></i></a>";
-                echo "</td>";
-                echo "</tr>";
-              }
-              ?> --}}
+              @foreach ($sertifikat as $record)
+              <tr>
+                <td>{{ $record->id_sertif }}</td>
+                <td>{{ $record->id_reg }}</td>
+                <td>{{ $record->target }}</td>
+                <td>{{ $record->commodity }}</td>
+                <td>{{ $record->consignment }}</td>
+                <td>{{ $record->country }}</td>
+                <td>{{ $record->pol }}</td>
+                <td>{{ $record->destination }}</td>
+                <td>{{ $record->dataOrder->id_order }}</td>
+                <td>ID Order Container</td>
+                <td>{{ $record->dataOrder->dataCustomer->nama_customer }}</td>
+                <td>{{ $record->dataOrder->dataCustomer->telepon_customer }}</td>
+                <td>{{ $record->attn }}</td>
+                <td>{{ $record->tin }}</td>
+                <td>{{ $record->dataImporter->id_importer }}</td>
+                <td>{{ $record->dataImporter->nama_importer }}</td>
+                <td>{{ $record->dataImporter->alamat_importer }}</td>
+                <td>{{ $record->dataImporter->telp_importer }}</td>
+                <td>{{ $record->dataImporter->fax }}</td>
+                <td>{{ $record->dataImporter->usci }}</td>
+                <td>{{ $record->dataImporter->pic }}</td>
+                <td>{{ $record->dataRecordsheet->id_recordsheet }}</td>
+                <td>{{ $record->dataRecordsheet->tanggal_selesai }}</td>
+                <td>{{ $record->dataRecordsheet->daff_prescribed_doses_rate }}</td>
+                <td>{{ $record->dataRecordsheet->forecast_minimum_temperature }}</td>
+                <td>{{ $record->dataRecordsheet->exposure_period }}</td>
+                <td>{{ $record->dataRecordsheet->applied_dose_rate }}</td>
+                <td>{{ $record->dataRecordsheet->dokumen_metil_recordsheet }}</td>
+                <td>Container</td>
+                <td>{{ $record->wrapping }}</td>
+                <td>{{ $record->tanggal_sertif }}</td>
+                <td>{{ $record->no_reg }}</td>
+                <td><span class='badge badge-success'>Delivered</span></td>
+                <td>
+                  <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
+                    data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
+                  <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
+                    data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
+                  <a href='generate_pdf.php?id_order_container=" . htmlspecialchars($data[' id_order_container'])
+                    . "' class='btn btn-primary btn-sm' target='_blank' role='button'><i class='fas fa-print'></i></a>
+                  <button type='button' class='btn btn-info btn-sm' style='width: 30px; height: 30px;' onclick='approveData(\"".$data['id_sertif']." \")'><i class='fas fa-check'></i></button>
+                </td>
+              </tr>
+              @endforeach
             </tbody>
             <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
           </table>
@@ -476,51 +436,5 @@
 
     // Memperbarui tanggal dan jam setiap detik
     setInterval(updateTanggalJam, 1000);
-    
-    function openEditModal(id_sertif, Id_reg, Target, commodity, Consignment, Country, POL, destination, id_order_container, nama_customer, telp_customer, ATTN, TIN, id_importer, nama_importer, alamat_importer, telp_importer, fax, usci, pic, id_recorsheet, tanggal_selesai, daff_prescribed_doses_rate, forecast_minimum_temperature, exposure_period, applied_dose_rate, Fumigation_Conducted, Container, Wrapping, Tanggal_sertif, NoReg) {
-      document.getElementById("edit_id_sertif").value = id_sertif;
-      document.getElementById("edit_Id_reg").value = Id_reg;
-      document.getElementById("edit_Target").value = Target;
-      document.getElementById("edit_commodity").value = commodity;
-      document.getElementById("edit_Consignment").value = Consignment;
-      document.getElementById("edit_Country").value = Country;
-      document.getElementById("edit_POL").value = POL;
-      document.getElementById("edit_destination").value = destination;
-      document.getElementById("edit_id_order_container").value = id_order_container;
-      document.getElementById("edit_nama_customer").value = nama_customer;
-      document.getElementById("edit_telp_customer").value = telp_customer;
-      document.getElementById("edit_ATTN").value = ATTN;
-      document.getElementById("edit_TIN").value = TIN;
-      document.getElementById("edit_id_importer").value = id_importer;
-      document.getElementById("edit_nama_importer").value = nama_importer;
-      document.getElementById("edit_alamat_importer").value = alamat_importer;
-      document.getElementById("edit_telp_importer").value = telp_importer;
-      document.getElementById("edit_fax").value = fax;
-      document.getElementById("edit_usci").value = usci;
-      document.getElementById("edit_pic").value = pic;
-      document.getElementById("edit_id_recorsheet").value = id_recorsheet;
-      document.getElementById("edit_tanggal_selesai").value = tanggal_selesai;
-      document.getElementById("edit_daff_prescribed_doses_rate").value = daff_prescribed_doses_rate;
-      document.getElementById("edit_forecast_minimum_temperature").value = forecast_minimum_temperature;
-      document.getElementById("edit_exposure_period").value = exposure_period;
-      document.getElementById("edit_applied_dose_rate").value = applied_dose_rate;
-      document.getElementById("edit_Fumigation_Conducted").value = Fumigation_Conducted;
-      document.getElementById("edit_Container").value = Container;
-      document.getElementById("edit_Wrapping").value = Wrapping;
-      document.getElementById("edit_Tanggal_sertif").value = Tanggal_sertif;
-      document.getElementById("edit_NoReg").value = NoReg;
-    }
-
-
-    function deleteData(idordercontainer) {
-      if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
-        window.location.href = "?id_order=" + idorder;
-      }
-    }
-    
-	// Ajax Data Table 
-	$(document).ready(function () {
-	  $('#dataTableHover').DataTable();
-	});
   </script>
   @endsection

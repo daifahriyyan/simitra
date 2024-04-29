@@ -1,7 +1,8 @@
 @extends('layouts.main')
 
 @section('container-fluid')
-<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <div class="container-fluid" id="container-wrapper">
   @if ($errors->any())
   <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -38,10 +39,6 @@
             <div class="mb-3">
               <label for="id_order" class="form-label">ID Order:</label>
               <input type="text" class="form-control" id="id_order" name="id_order" required>
-            </div>
-            <div class="mb-3">
-              <label for="id_order_container" class="form-label">ID Order Container:</label>
-              <input type="text" class="form-control" id="id_order_container" name="id_order_container" required>
             </div>
             <div class="mb-3">
               <label for="tanggal_order" class="form-label">Tanggal Order:</label>
@@ -137,8 +134,10 @@
     </div>
   </div>
 
+  @foreach ($detailOrder as $record)
   <!-- Modal Edit Data -->
-  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal fade" id="editModal{{ $record->id }}" tabindex="-1" aria-labelledby="editModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -148,75 +147,71 @@
         <div class="modal-body">
           <form method="POST">
             <div class="mb-3">
-              <label for="edit_id_order" class="form-label">ID Standar:</label>
-              <input type="text" class="form-control" id="edit_id_order" name="edit_id_order" readonly required>
+              <label for="id_order" class="form-label">ID Standar:</label>
+              <input type="text" class="form-control" id="id_order" name="id_order"
+                value="{{ $record->dataOrder->id_order }}" readonly required>
             </div>
             <div class="mb-3">
-              <label for="edit_tanggal_order" class="form-label">tanggal_order:</label>
-              <input type="number" class="form-control" id="edit_tanggal_order" name="edit_tanggal_order" required>
+              <label for="tanggal_order" class="form-label">tanggal_order:</label>
+              <input type="text" class="form-control" id="tanggal_order" name="tanggal_order"
+                value="{{ $record->dataOrder->tanggal_order }}" readonly required>
             </div>
             <div class="mb-3">
-              <label for="edit_id_customer" class="form-label">id_customer:</label>
-              <input type="number" class="form-control" id="edit_id_customer" name="edit_id_customer" required>
+              <label for="id_order" class="form-label">ID Order:</label>
+              {{-- <input type="number" class="form-control" id="id_order" name="id_order" required> --}}
+              <select class="form-control form-select-lg" name="id_order" id="id_order">
+                <option selected>{{ $record->dataOrder->id_order }}</option>
+                @foreach ($dataOrder as $item)
+                <option value="{{ $item->id }}">{{ $item->id_order }}</option>
+                @endforeach
+              </select>
             </div>
             <div class="mb-3">
-              <label for="edit_nama_customer" class="form-label">Nama Customer:</label>
-              <input type="number" class="form-control" id="edit_nama_customer" name="edit_nama_customer" required>
+              <label for="id_customer" class="form-label">id_customer:</label>
+              {{-- <input type="number" class="form-control" id="id_customer" name="id_customer" required> --}}
+              <select class="form-control form-select-lg" name="id_customer" id="id_customer">
+                <option selected>{{ $record->dataOrder->dataCustomer->nama_customer }} ({{
+                  $record->dataOrder->dataCustomer->id_customer }})</option>
+                @foreach ($dataCustomers as $customer)
+                <option value="{{ $customer->id }}">{{ $customer->nama_customer }} ({{ $customer->id_customer }})
+                </option>
+                @endforeach
+              </select>
             </div>
             <div class="mb-3">
-              <label for="edit_telp_customer" class="form-label">Telepon Customer:</label>
-              <input type="number" class="form-control" id="edit_telp_customer" name="edit_telp_customer" required>
+              <label for="stuffing_date" class="form-label">Stuffing Date:</label>
+              <input type="date" class="form-control" id="stuffing_date" name="stuffing_date"
+                value="{{ $record->stuffing_date }}" readonly required>
             </div>
             <div class="mb-3">
-              <label for="edit_jumlah_order" class="form-label">Jumlah Order:</label>
-              <input type="number" class="form-control" id="edit_jumlah_order" name="edit_jumlah_order" required>
-            </div>
-            <div class="mb-3">
-              <label for="edit_treatment" class="form-label">Treatment:</label>
-              <input type="dropdown" class="form-control" id="edit_treatment" name="edit_treatment" required>
-            </div>
-            <div class="mb-3">
-              <label for="edit_stuffing_date" class="form-label">Stuffing Date:</label>
-              <input type="number" class="form-control" id="edit_stuffing_date" name="edit_stuffing_date" required>
-            </div>
-            <div class="mb-3">
-              <label for="edit_id_datastandar" class="form-label">ID Data Standar:</label>
-              <input type="number" class="form-control" id="edit_id_datastandar" name="edit_id_datastandar" required>
-            </div>
-            <div class="mb-3">
-              <label for="edit_volume" class="form-label">Volume:</label>
-              <input type="number" class="form-control" id="edit_volume" name="edit_volume" required>
+              <label for="id_datastandar" class="form-label">ID Data Standar:</label>
+              <input type="text" class="form-control" id="id_datastandar" name="id_datastandar"
+                value="{{ $record->id_datastandar }}" readonly required>
             </div>
             <div class="mb-3">
               <label for="container" class="form-label">Container:</label>
-              <input type="text" class="form-control" id="container" name="container" required>
-            </div>
-            <div class="mb-3">
-              <label for="edit_container_volume" class="form-label"> Container Volume:</label>
-              <input type="number" class="form-control" id="edit_container_volume" name="edit_container_volume"
+              <input type="text" class="form-control" id="container" name="container" value="{{ $record->container }}"
                 required>
             </div>
             <div class="mb-3">
-              <label for="edit_commodity" class="form-label">Commodity:</label>
-              <input type="text" class="form-control" id="edit_commodity" name="edit_commodity" required>
+              <label for="container_volume" class="form-label"> Container Volume:</label>
+              <input type="number" class="form-control" id="container_volume" name="container_volume"
+                value="{{ $record->container_volume }}" required>
             </div>
             <div class="mb-3">
-              <label for="edit_vessel" class="form-label">Vessel:</label>
-              <input type="text" class="form-control" id="edit_vessel" name="edit_vessel" required>
+              <label for="commodity" class="form-label">Commodity:</label>
+              <input type="text" class="form-control" id="commodity" name="commodity" value="{{ $record->commodity }}"
+                required>
             </div>
             <div class="mb-3">
-              <label for="edit_place_fumigation" class="form-label">Place Fumigation:</label>
-              <input type="date" class="form-control" id="edit_place_fumigation" name="edit_place_fumigation" required>
+              <label for="vessel" class="form-label">Vessel:</label>
+              <input type="text" class="form-control" id="vessel" name="vessel" value="{{ $record->vessel }}" required>
             </div>
             <div class="mb-3">
-              <label for="edit_pic" class="form-label">PIC:</label>
-              <input type="text" class="form-control" id="edit_pic" name="edit_pic" required>
+              <label for="destination" class="form-label">Destination:</label>
+              <input type="text" class="form-control" id="destination" name="destination"
+                value="{{ $record->destination }}" required>
             </div>
-            <div class="mb-3">
-              <label for="edit_phone_pic" class="form-label">Phone PIC:</label>
-              <input type="number" class="form-control" id="edit_phone_pic" name="edit_phone_pic" required>
-            </div>
-
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
               <button type="submit" class="btn btn-primary">Update</button>
@@ -227,6 +222,25 @@
     </div>
   </div>
   <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
+  <!-- Modal Delete -->
+  <div class="modal fade" id="deleteRecord{{ $record->id }}" tabindex="-1" aria-labelledby="deleteRecordLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form method="POST" action="{{ route('Hapus Data Order', $record->id) }}">
+          @method('delete')@csrf
+          <div class="modal-body">
+            Apakah Anda sudah yakin ingin menghapus Record ini?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  @endforeach
 
   <!-- Row -->
   <div class="row">
@@ -279,35 +293,83 @@
         </div>
 
         <div class="table-responsive p-3">
-          <table class="table align-items-center table-flush table-hover" id="dataTableHover">
+          <table class="table align-items-center table-flush table-hover text-nowrap" id="dataTableHover">
             <!-- AWAL EDIT SESUAIKAN TABEL DATABASE -->
             <thead class="thead-light">
               <tr>
                 <th>Id Order</th>
-                <th>Id Order Container</th>
+                <th>Id Detail Order</th>
                 <th>Tanggal Order</th>
                 <th>ID Customer</th>
                 <th>Nama Customer</th>
                 <th>Telepon Customer</th>
+                <th>Alamat Customer</th>
+                <th>PIC</th>
+                <th>Phone PIC</th>
                 <th>Jumlah Order</th>
-                <th>Treatment</th>
-                <th>Stuffing Date</th>
                 <th>ID Data Standar</th>
+                <th>Treatment</th>
                 <th>Volume</th>
+                <th>Place Fumigation</th>
+                <th>Stuffing Date</th>
                 <th>Container</th>
                 <th>Container Volume</th>
                 <th>Commodity</th>
                 <th>Vessel</th>
                 <th>Closing Time</th>
                 <th>Destination</th>
-                <th>Place Fumigation</th>
-                <th>PIC</th>
-                <th>Phone PIC</th>
+                <th>Nama Driver</th>
+                <th>Telp Driver</th>
+                <th>Berkas Shipment Instruction</th>
+                <th>Berkas Packing List</th>
                 <th>Status</th>
                 <th>Aksi</th>
               </tr>
             </thead>
             <tbody>
+              @foreach ($detailOrder as $item)
+              <tr>
+                <td>{{ $item->dataOrder->id_order }}</td>
+                <td>{{ $item->id_detailorder }}</td>
+                <td>{{ $item->dataOrder->tanggal_order }}</td>
+                <td>{{ $item->dataOrder->dataCustomer->id_customer }}</td>
+                <td>{{ $item->dataOrder->dataCustomer->nama_customer }}</td>
+                <td>{{ $item->dataOrder->dataCustomer->telepon_customer }}</td>
+                <td>{{ $item->dataOrder->dataCustomer->alamat_customer }}</td>
+                <td>{{ $item->dataOrder->dataCustomer->pic }}</td>
+                <td>{{ $item->dataOrder->dataCustomer->phone_pic }}</td>
+                <td>{{ $item->dataOrder->jumlah_order }}</td>
+                <td>{{ $item->id_datastandar }}</td>
+                <td>{{ $item->dataOrder->treatment }}</td>
+                <td>{{ $item->dataOrder->volume}}</td>
+                <td>{{ $item->dataOrder->place_fumigation }}</td>
+                <td>{{ $item->stuffing_date }}</td>
+                <td>{{ $item->container }}</td>
+                <td>{{ $item->container_volume }}</td>
+                <td>{{ $item->commodity }}</td>
+                <td>{{ $item->vessel }}</td>
+                <td>{{ $item->closing_time}}</td>
+                <td>{{ $item->destination }}</td>
+                <td>{{ $item->nama_driver }}</td>
+                <td>{{ $item->telp_driver }}</td>
+                <td>{{ $item->shipment_instruction }}</td>
+                <td>{{ $item->packing_list }}</td>
+                <td><span class="badge-pill badge-warning">process</span></td>
+                <td>
+                  {{-- <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
+                    data-bs-target='#editModal{{ $item->id }}'><i class='fas fa-edit'></i></button> --}}
+                  <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
+                    data-bs-target="#deleteRecord{{ $item->id }}"><i class='fas fa-trash'></i></button>
+                  <a href='generate_pdf.php?id_order=".htmlspecialchars($data[' id_order'])."'
+                    class='btn btn-primary btn-sm' style='width: 30px; height: 30px;' target='_blank' role='button'><i
+                      class='fas fa-print'></i></a>
+                  <button type='button' class='btn btn-info btn-sm' style='width: 30px; height: 30px;'
+                    onclick='approveData(\"".$data[' id_order']."\")'><i class='fas fa-check'></i></button>
+                  <button type='button' class='btn btn-danger btn-sm' style='width: 30px; height: 30px;'
+                    onclick='rejectData(\"".$data[' id_order']."\")'><i class='fas fa-times'></i></button>"
+                </td>
+              </tr>
+              @endforeach
               {{--
               <?php
                 $query = "SELECT * FROM data_order";

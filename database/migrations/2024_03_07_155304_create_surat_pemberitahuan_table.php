@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('surat_pemberitahuan', function (Blueprint $table) {
             $table->id();
-            $table->string('id_data_order');
-            $table->string('commodity');
-            $table->string('container');
+            $table->string('id_sp');
+            $table->string('id_order');
             $table->string('place_fumigation');
             $table->string('fumigan');
             $table->date('tanggal');
             $table->date('tanggal_selesai');
-            $table->tinyInteger('dimohon_kesediaan');
+            $table->string('dimohon_kesediaan');
+            $table->timestamps();
         });
     }
 

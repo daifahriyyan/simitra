@@ -31,17 +31,15 @@ class PegawaiController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = request()->validate([
-          'id_pegawai' => 'required',
-          'nama_pegawai' => 'required',
-          'alamat_pegawai' => 'required',
-          'telp_pegawai' => 'required',
-          'posisi' => 'required',
-          'noreg_fumigasi' => 'required',
-          'gaji_pokok' => 'required',
-        ]);
-    
-        DataPegawai::create($validator);
+        DataPegawai::create([
+            'id_pegawai' => request()->id_pegawai,
+            'nama_pegawai' => request()->nama_pegawai,
+            'alamat_pegawai' => request()->alamat_pegawai,
+            'telp_pegawai' => request()->telp_pegawai,
+            'posisi' => request()->posisi,
+            'noreg_fumigasi' => request()->noreg_fumigasi,
+            'gaji_pokok' => request()->gaji_pokok,
+          ]);
         return redirect(route('pegawai.index'))->with('add', 'Data Berhasil Ditambahkan');
     }
 
@@ -66,17 +64,15 @@ class PegawaiController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $validator = request()->validate([
-            'id_pegawai' => 'required',
-            'nama_pegawai' => 'required',
-            'alamat_pegawai' => 'required',
-            'telp_pegawai' => 'required',
-            'posisi' => 'required',
-            'noreg_fumigasi' => 'required',
-            'gaji_pokok' => 'required',
+        DataPegawai::where('id', '=', $id)->update([
+            'id_pegawai' => request()->id_pegawai,
+            'nama_pegawai' => request()->nama_pegawai,
+            'alamat_pegawai' => request()->alamat_pegawai,
+            'telp_pegawai' => request()->telp_pegawai,
+            'posisi' => request()->posisi,
+            'noreg_fumigasi' => request()->noreg_fumigasi,
+            'gaji_pokok' => request()->gaji_pokok,
         ]);
-        
-        DataPegawai::where('id', '=', $id)->update($validator);
         return redirect(route('pegawai.index'))->with('add', 'Data Berhasil Ditambahkan');
     }
 

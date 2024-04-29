@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('rekap_penjualan', function (Blueprint $table) {
             $table->id();
             $table->string('id_invoice');
-            $table->string('volume');
-            $table->integer('quantity');
-            $table->decimal('total_penjualan', 10, 2);
+            $table->string('id_rekap_penjualan');
+            $table->string('id_order');
+            $table->decimal('total_penjualan', 65, 2);
+            $table->timestamps();
         });
     }
 

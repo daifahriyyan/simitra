@@ -8,34 +8,36 @@
         <h1>Register</h1>
       </div>
       <br>
-      <form action="index.html">
+      <form action="{{ route('Sign Up') }}" method="POST">
+        @csrf
+        <input type="hidden" name="id_customer" value="C_00{{ App\Models\DataCustomer::get()->count()+1 }}">
         <p class="input-with-label">
           <label for="username">Username</label>
           <input type="text" id="username" name="username">
         </p>	
         <p class="input-with-label">
-          <label for="nama_perusahaan">Nama Perusahaan</label>
-          <input type="text" id="nama_perusahaan" name="nama_perusahaan">
+          <label for="nama_customer">Nama Perusahaan</label>
+          <input type="text" id="nama_customer" name="nama_customer">
         </p>
         <p class="input-with-label">
-          <label for="alamat_perusahaan">Alamat Perusahaan</label>
-          <input type="text" id="alamat_perusahaan" name="alamat_perusahaan">
+          <label for="alamat_customer">Alamat Perusahaan</label>
+          <input type="text" id="alamat_customer" name="alamat_customer">
         </p>
         <p class="input-with-label">
-          <label for="telepon_perusahaan">Telepon Perusahaan</label>
-          <input type="tel" id="telepon_perusahaan" name="telepon_perusahaan">
+          <label for="telepon_customer">Telepon Perusahaan</label>
+          <input type="tel" id="telepon_customer" name="telepon_customer">
         </p>
         <p class="input-with-label">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email">
+          <label for="email_customer">Email</label>
+          <input type="email" id="email_customer" name="email_customer">
         </p>
         <p class="input-with-label">
-          <label for="nama_pic">Nama PIC</label>
-          <input type="text" id="nama_pic" name="nama_pic">
+          <label for="pic">Nama PIC</label>
+          <input type="text" id="pic" name="pic">
         </p>
         <p class="input-with-label">
-          <label for="telepon_pic">No. Telp (PIC)</label>
-          <input type="tel" id="telepon_pic" name="telepon_pic">
+          <label for="phone_pic">No. Telp (PIC)</label>
+          <input type="tel" id="phone_pic" name="phone_pic">
         </p>				
         <p class="password-input">
           <label for="password">Password </label>

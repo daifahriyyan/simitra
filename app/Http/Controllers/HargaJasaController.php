@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DataHargar;
+use App\Models\DataHppFeet;
 use Illuminate\Http\Request;
 
 class HargaJasaController extends Controller
@@ -14,7 +15,8 @@ class HargaJasaController extends Controller
     {
         return view('pages.master.harga-jasa', [
             'title' => 'Harga Jasa',
-            'records' => DataHargar::get()
+            'records' => DataHargar::get(),
+            'datahppfeet' => DataHppFeet::with('standarHPP')->get()
         ]);
     }
 
@@ -31,20 +33,33 @@ class HargaJasaController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = request()->validate([
-          'id_datastandar' => 'required|unique:data_harga,id_datastandar',
-          'id_standar' => 'required',
-          'volume' => 'required',
-          'treatment' => 'required',
-          'bbb_standar' => 'required',
-          'btk_standar' => 'required',
-          'bop_standar' => 'required',
-          'hpp' => 'required',
-          'markup' => 'required',
-          'harga_jual' => 'required',
+        $this->validate(request(), [
+            'id_datastandar' => 'required|unique:data_harga,id_datastandar',
+            'id_standar' => 'required',
+            'volume' => 'required',
+            'treatment' => 'required',
+            'markup' => 'required',
         ]);
-    
-        DataHargar::create($validator);
+
+        $datahppfeet = DataHppFeet::where('id', $request['id_standar'])->get()->first();
+        intval($request['volume']);
+        $bbb_feet = $datahppfeet->bbb_feet * $request['volume'];
+        $btk_feet = $datahppfeet->btk_feet * $request['volume'];
+        $bop_feet = $datahppfeet->bop_feet * $request['volume'];
+        $hpp = $bbb_feet + $btk_feet + $bop_feet;
+        $markup = intval(request()->markup);
+        DataHargar::create([
+            'id_datastandar' => request()->id_datastandar,
+            'id_standar' => request()->id_standar,
+            'volume' => request()->volume,
+            'treatment' => request()->treatment,
+            'bbb_standar' => $bbb_feet,
+            'btk_standar' => $btk_feet,
+            'bop_standar' => $bop_feet,
+            'hpp' => $hpp,
+            'markup' => $markup,
+            'harga_jual' => $hpp * $markup,
+        ]);
         return redirect(route('Harga Jasa'))->with('add', 'Data Berhasil Ditambahkan');
     }
 
@@ -69,20 +84,30 @@ class HargaJasaController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $validator = request()->validate([
-          'id_datastandar' => 'required',
-          'id_standar' => 'required',
-          'volume' => 'required',
-          'treatment' => 'required',
-          'bbb_standar' => 'required',
-          'btk_standar' => 'required',
-          'bop_standar' => 'required',
-          'hpp' => 'required',
-          'markup' => 'required',
-          'harga_jual' => 'required',
+        $this->validate(request(), [
+            'volume' => 'required',
+            'treatment' => 'required',
+            'markup' => 'required',
         ]);
-    
-        DataHargar::where('id_standar', '=', $id)->update($validator);
+
+        $datahppfeet = DataHppFeet::where('id', $request['id_standar'])->get()->first();
+        intval($request['volume']);
+        $bbb_feet = $datahppfeet->bbb_feet * $request['volume'];
+        $btk_feet = $datahppfeet->btk_feet * $request['volume'];
+        $bop_feet = $datahppfeet->bop_feet * $request['volume'];
+        $hpp = $bbb_feet + $btk_feet + $bop_feet;
+        $markup = intval(request()->markup);
+        DataHargar::where('id', '=', $id)->update([
+            'volume' => request()->volume,
+            'treatment' => request()->treatment,
+            'bbb_standar' => $bbb_feet,
+            'btk_standar' => $btk_feet,
+            'bop_standar' => $bop_feet,
+            'hpp' => $hpp,
+            'markup' => $markup,
+            'harga_jual' => $hpp * $markup,
+        ]);
+
         return redirect(route('Harga Jasa'))->with('add', 'Data Berhasil Ditambahkan');
     }
 
@@ -91,8 +116,8 @@ class HargaJasaController extends Controller
      */
     public function destroy(string $id)
     {
-        DataHargar::where('id_standar', $id)->delete();
-        
+        DataHargar::where('id', $id)->delete();
+
         return redirect(route('Harga Jasa'))->with('delete', 'Data Berhasil Dihapus');
     }
 }

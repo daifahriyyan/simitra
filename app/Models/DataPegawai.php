@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class DataPegawai extends Model
 {
     use HasFactory;
-    
+
     public $table = 'data_pegawai';
 
     public $fillable = [
@@ -21,4 +21,14 @@ class DataPegawai extends Model
         'noreg_fumigasi',
         'gaji_pokok',
     ];
+
+    public function spk()
+    {
+        return $this->hasOne(SuratPerintahKerja::class, 'id', 'id_pegawai');
+    }
+
+    public function penggajian()
+    {
+        return $this->hasOne(KeuPenggajian::class, 'id', 'id_pegawai');
+    }
 }
