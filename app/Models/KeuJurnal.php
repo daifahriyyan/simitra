@@ -12,4 +12,9 @@ class KeuJurnal extends Model
     public $table = "keu_jurnal";
 
     protected $guarded = ['id'];
+
+    public function jurnal()
+    {
+        return $this->hasOne(KeuDetailJurnal::class, 'no_jurnal', 'no_jurnal');
+    }
 }

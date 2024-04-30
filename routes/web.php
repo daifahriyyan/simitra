@@ -55,7 +55,7 @@ Route::get('/register', [UserController::class, 'register'])->name('Register');
 Route::post('/signup', [UserController::class, 'store'])->name('Sign Up');
 Route::view('/ajax', 'ajax.input');
 
-Route::view('/dashboard/index', 'index')->name('Dashboard');
+Route::view('/dashboard', 'index')->name('Dashboard');
 
 
 // Customer Side
@@ -280,9 +280,9 @@ Route::view('/dashboard/ajax-order', 'ajax.ajax')->name('ajax-order');
 Route::view('/dashboard/user', 'user')->name('Daftar User');
 Route::view('/dashboard/user-logs', 'user-logs')->name('User Logs');
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+// Route::view('dashboard', 'dashboard')
+//     ->middleware(['auth', 'verified'])
+//     ->name('dashboard');
 
 // Route::view('profile', 'profile')
 //     ->middleware(['auth'])

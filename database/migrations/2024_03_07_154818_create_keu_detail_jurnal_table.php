@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('keu_detail_jurnal', function (Blueprint $table) {
             $table->id();
+            $table->string('no_jurnal')->nullable();
+            $table->string('id_akun')->nullable();
+            $table->string('debet')->nullable();
+            $table->string('kredit')->nullable();
             $table->timestamps();
         });
     }

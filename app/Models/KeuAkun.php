@@ -12,4 +12,10 @@ class KeuAkun extends Model
     public $table = 'keu_akun';
 
     protected $guarded = ['id'];
+
+
+    public function akun()
+    {
+        return $this->hasOne(KeuDetailJurnal::class, 'kode_akun', 'kode_akun');
+    }
 }
