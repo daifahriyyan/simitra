@@ -56,7 +56,7 @@
                     <div class="mb-3">
                       <label for="id_penggajian" class="form-label">ID Penggajian:</label>
                       <input type="text" class="form-control" id="id_penggajian" name="id_penggajian"
-                        value="GJ00{{ $penggajian->count() + 1 }}" required>
+                        value="PG00{{ $penggajian->count() + 1 }}" required>
                     </div>
                     <div class="mb-3">
                       <label for="tanggal_input" class="form-label">Tanggal Input:</label>
@@ -120,7 +120,7 @@
                       <label for="id_pegawai" class="form-label">ID Pegawai:</label>
                       <select class="custom-select form-select-lg mb-3" aria-label="Large select example"
                         id="id_pegawai" name="id_pegawai">
-                        <option value="{{ $record->id }}">{{ $record->pegawai->id_pegawai }}</option>
+                        <option value="{{ $record->id_pegawai }}">{{ $record->pegawai->id_pegawai }}</option>
                         @foreach ($pegawai as $item)
                         <option value="{{ $item->id }}">{{ $item->id_pegawai }}</option>
                         @endforeach

@@ -190,7 +190,7 @@
                         <td>{{ $record->no_jurnal}}</td>
                         <td>{{ $record->jurnal->tanggal_jurnal }}</td>
                         <td>{{ $record->jurnal->no_bukti }}</td>
-                        <td>{{ $record->uraian_jurnal }}</td>
+                        <td>{{ $record->jurnal->uraian_jurnal }}</td>
                         <td>{{ $record->akun->kode_akun}}</td>
                         <td>{{ $record->akun->nama_akun}}</td>
                         <td>{{ $record->debet }}</td>
