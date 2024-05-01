@@ -205,7 +205,7 @@
                     <div>
                       <button type="button" class="btn btn-sm btn-info" style='width: 70px; height: 30px;'
                         data-bs-toggle="modal" data-bs-target="#addModal">
-                        Tambah
+                        Bayar
                       </button>
                     </div>
                     <!-- Tombol Filter Id Supplier dan Tanggal dengan Icon -->

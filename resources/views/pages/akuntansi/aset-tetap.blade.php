@@ -62,7 +62,8 @@
                       <label for="jenis_at" class="form-label">Jenis Aset Tetap:</label>
                       <select class="form-select" id="jenis_at" name="jenis_at" required>
                         <option value="">Pilih Jenis Aset Tetap</option>
-                        <option value="Tanah dan Bangunan">Tanah dan Bangunan</option>
+                        <option value="Tanah">Tanah</option>
+                        <option value="Bangunan">Bangunan</option>
                         <option value="Kendaraan Bermotor">Kendaraan Bermotor</option>
                         <option value="Inventaris Kantor">Inventaris Kantor</option>
                         <option value="Peralatan dan Mesin">Peralatan dan Mesin</option>
@@ -131,7 +132,8 @@
                       <label for="jenis_at" class="form-label">Jenis Aset Tetap:</label>
                       <select class="form-select" id="jenis_at" name="jenis_at" required>
                         <option value="{{ $record->jenis_at }}">{{ $record->jenis_at }}
-                        <option value="Tanah dan Bangunan">Tanah dan Bangunan</option>
+                        <option value="Tanah">Tanah</option>
+                        <option value="Bangunan">Bangunan</option>
                         <option value="Kendaraan Bermotor">Kendaraan Bermotor</option>
                         <option value="Inventaris Kantor">Inventaris Kantor</option>
                         <option value="Peralatan dan Mesin">Peralatan dan Mesin</option>
@@ -293,6 +295,7 @@
                         <th>Tahun Perolehan</th>
                         <th>Umur Ekonomis</th>
                         <th>Harga Perolehan</th>
+                        <th>Total Perolehan</th>
                         <th>Status</th>
                         <th>Aksi</th>
                       </tr>
@@ -308,7 +311,19 @@
                         <td>{{ $record->tahun_perolehan }}</td>
                         <td>{{ $record->umur_ekonomis }}</td>
                         <td>{{ number_format($record->harga_perolehan, 2, ',', '.') }}</td>
-                        <td><span class='badge badge-success'>Aktif</span></td>
+                        <td>{{ number_format($record->harga_perolehan * $record->jumlah_at, 2, ',', '.') }}</td>
+                        <td>
+                          @php
+                          date_default_timezone_set('Asia/Jakarta');
+
+                          $tgl = explode( "-", date('Y-m-d H:i:s'));
+                          $sisa_umur_ekonomis = ($record->tahun_perolehan + $record->umur_ekonomis) - intval($tgl[0])
+                          @endphp
+                          @if ($sisa_umur_ekonomis <= 0) <span class='badge badge-success'>Tidak Aktif</span>
+                            @elseif($sisa_umur_ekonomis > 0)
+                            <span class='badge badge-danger'>Aktif</span>
+                            @endif
+                        </td>
                         <td>
                           <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
                             data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>

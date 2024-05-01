@@ -56,7 +56,7 @@
                     <div class="mb-3">
                       <label for="kode_penyusutan_at" class="form-label">Kode Penyusutan Aset Tetap:</label>
                       <input type="text" class="form-control" id="kode_penyusutan_at" name="kode_penyusutan_at"
-                        value="PAT00{{ $penyusutanAt->count() + 1 }}" required>
+                        value="PAT{{ str_pad($id_PAT, 6, 0, STR_PAD_LEFT) }}" required>
                     </div>
                     <div class="mb-3">
                       <label for="kode_at" class="form-label">Kode Aset Tetap:</label>
@@ -72,23 +72,6 @@
                       <label for="tanggal_penyusutan" class="form-label">Tanggal Penyusutan:</label>
                       <input type="date" class="form-control" id="tanggal_penyusutan" name="tanggal_penyusutan"
                         required>
-                    </div>
-                    <div class="mb-3">
-                      <label for="tahun_ke" class="form-label">Tahun Ke:</label>
-                      <input type="number" class="form-control" id="tahun_ke" name="tahun_ke" required>
-                    </div>
-                    <div class="mb-3">
-                      <label for="beban_penyusutan" class="form-label">Beban Penyusutan:</label>
-                      <input type="number" class="form-control" id="beban_penyusutan" name="beban_penyusutan" required>
-                    </div>
-                    <div class="mb-3">
-                      <label for="akumulasi_penyusutan" class="form-label">Akumulasi Penyusutan:</label>
-                      <input type="number" class="form-control" id="akumulasi_penyusutan" name="akumulasi_penyusutan"
-                        required>
-                    </div>
-                    <div class="mb-3">
-                      <label for="nilai_buku" class="form-label">Nilai Buku:</label>
-                      <input type="number" class="form-control" id="nilai_buku" name="nilai_buku" required>
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -121,7 +104,7 @@
                       <label for="kode_at" class="form-label">Kode Aset Tetap:</label>
                       <select class="custom-select form-select-lg mb-3" aria-label="Large select example" id="kode_at"
                         name="kode_at">
-                        <option value="{{ $record->id }}">{{ $record->asetTetap->kode_at }}
+                        <option value="{{ $record->asetTetap->id }}">{{ $record->asetTetap->kode_at }}
                           @foreach ($asetTetap as $item)
                         <option value="{{ $item->id }}">{{ $item->kode_at }}</option>
                         @endforeach
@@ -131,26 +114,6 @@
                       <label for="tanggal_penyusutan" class="form-label">Tanggal Penyusutan:</label>
                       <input type="date" class="form-control" id="tanggal_penyusutan" name="tanggal_penyusutan"
                         value="{{ $record->tanggal_penyusutan }}" required>
-                    </div>
-                    <div class="mb-3">
-                      <label for="tahun_ke" class="form-label">Tahun Ke:</label>
-                      <input type="number" class="form-control" id="tahun_ke" name="tahun_ke"
-                        value="{{ $record->tahun_ke }}" required>
-                    </div>
-                    <div class="mb-3">
-                      <label for="beban_penyusutan" class="form-label">Beban Penyusutan:</label>
-                      <input type="number" class="form-control" id="beban_penyusutan" name="beban_penyusutan"
-                        value="{{ $record->beban_penyusutan }}" required>
-                    </div>
-                    <div class="mb-3">
-                      <label for="akumulasi_penyusutan" class="form-label">Akumulasi Penyusutan:</label>
-                      <input type="number" class="form-control" id="akumulasi_penyusutan" name="akumulasi_penyusutan"
-                        value="{{ $record->akumulasi_penyusutan }}" required>
-                    </div>
-                    <div class="mb-3">
-                      <label for="nilai_buku" class="form-label">Nilai Buku:</label>
-                      <input type="number" class="form-control" id="nilai_buku" name="nilai_buku"
-                        value="{{ $record->nilai_buku }}" required>
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
