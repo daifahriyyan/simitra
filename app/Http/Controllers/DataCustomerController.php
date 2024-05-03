@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DataCustomer as ModelsDataCustomer;
+use App\Models\DataOrder;
+use App\Models\DetailOrder;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\DataCustomer as ModelsDataCustomer;
 
 class DataCustomerController extends Controller
 {
@@ -12,9 +15,26 @@ class DataCustomerController extends Controller
    */
   public function index()
   {
+    $dataCustomer = ModelsDataCustomer::all();
+    $detailOrder = DetailOrder::get();
+
+    if (request()->get('export') == 'pdf') {
+      Pdf::setOption([
+        'enabled' => true,
+        'isRemoteEnabled' => true,
+        'chroot' => realpath(''),
+        'isPhpEnabled' => true,
+        'isFontSubsettingEnabled' => true,
+        'pdfBackend' => 'CPDF',
+        'isHtml5ParserEnabled' => true
+      ]);
+      $pdf = Pdf::loadView('generate-pdf.request-order')->setPaper('a3');
+      return $pdf->stream('Data Customer.pdf');
+    }
+
     return view('pages.penerimaan-jasa.customer', [
       'title' => 'Data Customer',
-      'records' => ModelsDataCustomer::all()
+      'records' => $dataCustomer
     ]);
   }
 
@@ -50,7 +70,7 @@ class DataCustomerController extends Controller
    */
   public function show(string $id)
   {
-    //
+    // 
   }
 
   /**
@@ -95,7 +115,7 @@ class DataCustomerController extends Controller
   public function destroy($id)
   {
     ModelsDataCustomer::where('id_customer', $id)->delete();
-    
+
     return redirect(route('Data Customer'))->with('delete', 'Data Berhasil Dihapus');
   }
 }

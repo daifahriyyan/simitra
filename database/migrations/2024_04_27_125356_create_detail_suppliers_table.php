@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('id_detail_supplier');
             $table->string('id_supplier');
             $table->string('termin_pembayaran');
-            $table->date('tanggal_input');
+            $table->date('tanggal_input')->nullable();
+            $table->date('tanggal_jatuh_tempo')->nullable();
             $table->decimal('pembelian', 65, 2);
             $table->decimal('pembayaran', 65, 2);
             $table->string('saldo_akhir_supplier');

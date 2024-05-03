@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DataCustomer;
 use App\Models\User;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Auth;
+use App\Models\DataCustomer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\RedirectResponse;
 
 class UserController extends Controller
 {
@@ -100,5 +101,44 @@ class UserController extends Controller
         ]);
 
         return redirect()->route('Profile');
+    }
+
+    public function daftarUser()
+    {
+        return view('auth.account', [
+            'dataUsers' => User::where('posisi', '!=', null)->get()
+        ]);
+    }
+    public function tambahUser()
+    {
+        User::create([
+            'username' => request()->username,
+            'nama_lengkap' => request()->nama_lengkap,
+            'posisi' => request()->posisi,
+            'email' => request()->email,
+            'pass' => request()->password,
+            'password' => Hash::make(request()->password),
+        ]);
+
+        return redirect()->route('Daftar User');
+    }
+    public function updateUser(string $id)
+    {
+        User::where('id', $id)->update([
+            'username' => request()->username,
+            'nama_lengkap' => request()->nama_lengkap,
+            'posisi' => request()->posisi,
+            'email' => request()->email,
+            'pass' => request()->password,
+            'password' => Hash::make(request()->password),
+        ]);
+
+        return redirect()->route('Daftar User');
+    }
+    public function deleteUser(string $id)
+    {
+        User::where('id', $id)->delete();
+
+        return redirect()->route('Daftar User');
     }
 }

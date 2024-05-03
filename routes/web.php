@@ -57,7 +57,6 @@ Route::view('/ajax', 'ajax.input');
 
 Route::view('/dashboard', 'index')->name('Dashboard');
 
-
 // Customer Side
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [UserController::class, 'profile'])->name('Profile');
@@ -98,6 +97,7 @@ Route::resource('/dashboard/importer', ImporterController::class)->names([
 Route::resource('/dashboard/pegawai', PegawaiController::class)->except(['edit', 'create', 'show']);
 
 // Penerimaan Jasa
+Route::get('/dashboard/penerimaan-jasa/customer/{export}', [DataCustomerController::class, 'index']);
 Route::resource('/dashboard/penerimaan-jasa/customer', DataCustomerController::class)->names([
     'index' => 'Data Customer',
     'store' => 'Tambah Data Customer',
@@ -277,7 +277,10 @@ Route::view('/dashboard/laporan-keuangan/posisi-keuangan', 'pages.laporan-keuang
 Route::view('/dashboard/ajax-order', 'ajax.ajax')->name('ajax-order');
 
 // users
-Route::view('/dashboard/user', 'user')->name('Daftar User');
+Route::get('/dashboard/user', [UserController::class, 'daftarUser'])->name('Daftar User');
+Route::post('/dashboard/user/create', [UserController::class, 'tambahUser'])->name('Tambah User');
+Route::put('/dashboard/user/edit/{id}', [UserController::class, 'updateUser'])->name('Ubah User');
+Route::delete('/dashboard/user/delete/{id}', [UserController::class, 'deleteUser'])->name('Hapus User');
 Route::view('/dashboard/user-logs', 'user-logs')->name('User Logs');
 
 // Route::view('dashboard', 'dashboard')

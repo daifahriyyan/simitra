@@ -17,8 +17,8 @@ class DataOrderController extends Controller
     {
         return view('pages.penerimaan-jasa.order', [
             'title' => 'Data Order',
-            'dataCustomers' => DataCustomer::all(), 
-            'hargaJasa' => DataHargar::all(), 
+            'dataCustomers' => DataCustomer::all(),
+            'hargaJasa' => DataHargar::all(),
             'dataOrder' => DataOrder::with('dataCustomer')->get(),
             'detailOrder' => DetailOrder::get()
         ]);
@@ -32,14 +32,14 @@ class DataOrderController extends Controller
         $id_customer = $_GET['id_customer'];
         $data_customer = DataCustomer::where('id_customer', $id_customer)->get();
         $data = array(
-                    'nama'      =>  $data_customer[0]->id_customer,
-                    'jeniskelamin'=>  $data_customer[0]->nama_customer,
-                    'jurusan'   =>  $data_customer[0]->alamat_customer,
-                    'notelp'      =>  $data_customer[0]->telp_customer,
-                    'email'      =>  $data_customer[0]->email_customer,
-                    'alamat'    =>  $data_customer[0]->alamat
-                );
-        
+            'nama'      =>  $data_customer[0]->id_customer,
+            'jeniskelamin' =>  $data_customer[0]->nama_customer,
+            'jurusan'   =>  $data_customer[0]->alamat_customer,
+            'notelp'      =>  $data_customer[0]->telp_customer,
+            'email'      =>  $data_customer[0]->email_customer,
+            'alamat'    =>  $data_customer[0]->alamat
+        );
+
         //tampil data
         echo json_encode($data);
     }
@@ -50,26 +50,26 @@ class DataOrderController extends Controller
     public function store(Request $request)
     {
         $validator = request()->validate([
-          'id_order' => 'required|unique:data_order,id_order',
-          'id_order_container' => 'required|unique:data_order,id_order_container',
-          'tanggal_order' => 'required',
-          'id_customer' => 'required',
-          'nama_customer' => 'required',
-          'telp_customer' => 'required',
-          'jumlah_order' => 'required',
-          'treatment' => 'required',
-          'stuffing_date' => 'required',
-          'id_datastandar' => 'required',
-          'volume' => 'required',
-          'container' => 'required',
-          'container_volume' => 'required',
-          'commodity' => 'required',
-          'vessel' => 'required',
-          'place_fumigation' => 'required',
-          'pic' => 'required',
-          'phone_pic' => 'required',
+            'id_order' => 'required|unique:data_order,id_order',
+            'id_order_container' => 'required|unique:data_order,id_order_container',
+            'tanggal_order' => 'required',
+            'id_customer' => 'required',
+            'nama_customer' => 'required',
+            'telp_customer' => 'required',
+            'jumlah_order' => 'required',
+            'treatment' => 'required',
+            'stuffing_date' => 'required',
+            'id_datastandar' => 'required',
+            'volume' => 'required',
+            'container' => 'required',
+            'container_volume' => 'required',
+            'commodity' => 'required',
+            'vessel' => 'required',
+            'place_fumigation' => 'required',
+            'pic' => 'required',
+            'phone_pic' => 'required',
         ]);
-    
+
         DataOrder::create($validator);
         return redirect(route('Detail Customer'))->with('add', 'Data Berhasil Ditambahkan');
     }

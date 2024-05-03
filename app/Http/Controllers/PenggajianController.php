@@ -183,58 +183,59 @@ class PenggajianController extends Controller
         // Ambil id_penggajian dari table Penggajian dimana id sesuai dengan id yang dikirimkan
         $id_penggajian = KeuPenggajian::where('id', $id)->get()->first()->id_penggajian;
         // Ambil no jurnal dari table jurnal umum dimana no bukti sesuai dengan id penggajian
-        $no_jurnal = KeuJurnal::where('no_bukti', $id_penggajian)->get()->first()->no_jurnal;
+        $no_jurnal = KeuJurnal::where('no_bukti', $id_penggajian)->get()->first()->no_jurnal ?? null;
+        if (isset($no_jurnal)) {
+            // ambil seluruh data detail jurnal
+            $detail_jurnal = KeuDetailJurnal::where('no_jurnal', $no_jurnal)->get();
 
-        // ambil seluruh data detail jurnal
-        $detail_jurnal = KeuDetailJurnal::where('no_jurnal', $no_jurnal)->get();
+            // lakukan pengembalian saldo tiap tiap akun dari jurnal umum yang dihapus
+            foreach ($detail_jurnal as $record) {
+                // dapatkan kode akun dari tiap akun yang dihapus
+                $kode_akun = $record->kode_akun;
 
-        // lakukan pengembalian saldo tiap tiap akun dari jurnal umum yang dihapus
-        foreach ($detail_jurnal as $record) {
-            // dapatkan kode akun dari tiap akun yang dihapus
-            $kode_akun = $record->kode_akun;
+                // dapatkan akun berdasarkan kode akun yang dihapus
+                $akun = KeuAkun::where('kode_akun', $kode_akun)->get()->first();
+                // ambil saldo debet tiap akun
+                $saldoDebet = $record->debet;
+                // ambil saldo kredit tiap akun
+                $saldoKredit = $record->kredit;
 
-            // dapatkan akun berdasarkan kode akun yang dihapus
-            $akun = KeuAkun::where('kode_akun', $kode_akun)->get()->first();
-            // ambil saldo debet tiap akun
-            $saldoDebet = $record->debet;
-            // ambil saldo kredit tiap akun
-            $saldoKredit = $record->kredit;
+                // jika jenis akun kredit dan saldo kreditnya berisi maka saldo akun dikurangi saldo kredit dari tiap akun jurnal
+                if ($akun->jenis_akun == 'kredit' && !is_null($saldoKredit)) {
+                    KeuAkun::where('kode_akun', $kode_akun)->update([
+                        'saldo_akun' => $akun->saldo_akun - $saldoKredit
+                    ]);
 
-            // jika jenis akun kredit dan saldo kreditnya berisi maka saldo akun dikurangi saldo kredit dari tiap akun jurnal
-            if ($akun->jenis_akun == 'kredit' && !is_null($saldoKredit)) {
-                KeuAkun::where('kode_akun', $kode_akun)->update([
-                    'saldo_akun' => $akun->saldo_akun - $saldoKredit
-                ]);
+                    $keterangan = 'kredit berhasil dikurangi kredit';
+                    // jika jenis akun debet dan saldo kredit berisi maka saldo akun ditambahi saldo kredit dari tiap akun jurnal
+                } else if ($akun->jenis_akun == 'debet' && !is_null($saldoKredit)) {
+                    KeuAkun::where('kode_akun', $kode_akun)->update([
+                        'saldo_akun' => $akun->saldo_akun + $saldoKredit
+                    ]);
 
-                $keterangan = 'kredit berhasil dikurangi kredit';
-                // jika jenis akun debet dan saldo kredit berisi maka saldo akun ditambahi saldo kredit dari tiap akun jurnal
-            } else if ($akun->jenis_akun == 'debet' && !is_null($saldoKredit)) {
-                KeuAkun::where('kode_akun', $kode_akun)->update([
-                    'saldo_akun' => $akun->saldo_akun + $saldoKredit
-                ]);
+                    $keterangan = 'Debet berhasil ditambah Kredit';
+                    // jika jenis akun kredit dan saldo debet berisi maka saldo akun ditambahi saldo debet dari tiap akun jurnal
+                } else if ($akun->jenis_akun == 'kredit' && !is_null($saldoDebet)) {
+                    KeuAkun::where('kode_akun', $kode_akun)->update([
+                        'saldo_akun' => $akun->saldo_akun + $saldoDebet
+                    ]);
 
-                $keterangan = 'Debet berhasil ditambah Kredit';
-                // jika jenis akun kredit dan saldo debet berisi maka saldo akun ditambahi saldo debet dari tiap akun jurnal
-            } else if ($akun->jenis_akun == 'kredit' && !is_null($saldoDebet)) {
-                KeuAkun::where('kode_akun', $kode_akun)->update([
-                    'saldo_akun' => $akun->saldo_akun + $saldoDebet
-                ]);
+                    $keterangan = 'kredit berhasil ditambah debet';
+                    // jika jenis akun debet dan saldo debet berisi maka saldo akun dikurangi saldo debet dari tiap akun jurnal
+                } else if ($akun->jenis_akun == 'debet' && !is_null($saldoDebet)) {
+                    KeuAkun::where('kode_akun', $kode_akun)->update([
+                        'saldo_akun' => $akun->saldo_akun - $saldoDebet
+                    ]);
 
-                $keterangan = 'kredit berhasil ditambah debet';
-                // jika jenis akun debet dan saldo debet berisi maka saldo akun dikurangi saldo debet dari tiap akun jurnal
-            } else if ($akun->jenis_akun == 'debet' && !is_null($saldoDebet)) {
-                KeuAkun::where('kode_akun', $kode_akun)->update([
-                    'saldo_akun' => $akun->saldo_akun - $saldoDebet
-                ]);
-
-                $keterangan = 'Debet berhasil dikurangi debet';
+                    $keterangan = 'Debet berhasil dikurangi debet';
+                }
             }
-        }
 
-        // hapus record table detail jurnal berdasarkan no jurnal
-        KeuDetailJurnal::where('no_jurnal', $no_jurnal)->delete();
-        // hapus record table jurnal berdasarkan no jurnal
-        KeuJurnal::where('no_jurnal', $no_jurnal)->delete();
+            // hapus record table detail jurnal berdasarkan no jurnal
+            KeuDetailJurnal::where('no_jurnal', $no_jurnal)->delete();
+            // hapus record table jurnal berdasarkan no jurnal
+            KeuJurnal::where('no_jurnal', $no_jurnal)->delete();
+        }
 
         KeuPenggajian::where('id', $id)->delete();
 

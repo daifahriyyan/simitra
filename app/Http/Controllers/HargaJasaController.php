@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DataHargar;
 use App\Models\DataHppFeet;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HargaJasaController extends Controller
 {
@@ -18,6 +19,14 @@ class HargaJasaController extends Controller
             'records' => DataHargar::get(),
             'datahppfeet' => DataHppFeet::with('standarHPP')->get()
         ]);
+        if (Auth::user()->posisi == null) {
+        } else if (Auth::user()->posisi == 'Direktur') {
+        } else if (Auth::user()->posisi == 'Manajer') {
+        } else if (Auth::user()->posisi == 'Admin') {
+        } else if (Auth::user()->posisi == 'Operasional') {
+        } else if (Auth::user()->posisi == 'Fumigator') {
+        } else if (Auth::user()->posisi == 'Staff Lainnya') {
+        }
     }
 
     /**

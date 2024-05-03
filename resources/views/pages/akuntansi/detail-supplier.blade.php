@@ -57,7 +57,7 @@
                     <div class="mb-3">
                       <label for="id_detail_supplier" class="form-label">ID Detail Supplier:</label>
                       <input type="text" class="form-control" id="id_detail_supplier" name="id_detail_supplier"
-                        value="DS00{{ $detailSupplier->count() + 1 }}" required>
+                        value="DS{{ str_pad($id_DS, 6, 0, STR_PAD_LEFT) }}" required>
                     </div>
                     <div class="mb-3">
                       <label for="id_supplier" class="form-label">ID Supplier:</label>
@@ -75,11 +75,8 @@
                     </div>
                     <div class="mb-3">
                       <label for="tanggal_input" class="form-label">Tanggal Input:</label>
-                      <input type="date" class="form-control" id="tanggal_input" name="tanggal_input" required>
-                    </div>
-                    <div class="mb-3">
-                      <label for="pembelian" class="form-label">Pembelian:</label>
-                      <input type="number" class="form-control" id="pembelian" name="pembelian">
+                      <input type="date" class="form-control" id="tanggal_input" name="tanggal_input"
+                        value="{{ date('Y-m-d') }}" required>
                     </div>
                     <div class="mb-3">
                       <label for="pembayaran" class="form-label">Pembayaran:</label>
@@ -134,11 +131,6 @@
                         value="{{ $record->tanggal_input }}" required>
                     </div>
                     <div class="mb-3">
-                      <label for="pembelian" class="form-label">Pembelian:</label>
-                      <input type="number" class="form-control" id="pembelian" name="pembelian"
-                        value="{{ $record->pembelian }}">
-                    </div>
-                    <div class="mb-3">
                       <label for="pembayaran" class="form-label">Pembayaran:</label>
                       <input type="number" class="form-control" id="pembayaran" name="pembayaran"
                         value="{{ $record->pembayaran }}">
@@ -170,6 +162,22 @@
               </div>
             </div>
           </div>
+          <!-- Modal Verification -->
+          <div class="modal fade" id="verification{{ $record->id }}" tabindex="-1" aria-labelledby="verificationLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-body">
+                  Yakin Telah Membayar Hutang ini?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <a href="{{ route('Detail Supplier') }}?status=Lunas&id={{ $record->id }}"
+                    class="btn btn-info">Yakin</a>
+                </div>
+              </div>
+            </div>
+          </div>
           @endforeach
           <!-- Modal Konfirmasi Logout -->
           <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
@@ -185,7 +193,7 @@
                   Apakah Anda Yakin Ingin Keluar dari Sistem?
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                  <a type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</a>
                   <a href="login.html" class="btn btn-primary">Logout</a>
                 </div>
               </div>
@@ -257,7 +265,7 @@
                 </div>
 
                 <div class="table-responsive p-3">
-                  <table class="table align-items-center table-flush table-hover" id="dataTableHover">
+                  <table class="table align-items-center table-flush table-hover text-nowrap" id="dataTableHover">
                     <!-- AWAL EDIT SESUAIKAN TABEL DATABASE -->
                     <thead class="thead-light">
                       <tr>
@@ -269,12 +277,17 @@
                         <th>Pembelian</th>
                         <th>Pembayaran</th>
                         <th>Saldo Akhir Supplier</th>
+                        <th>Tanggal Jatuh Tempo</th>
                         <th>Status</th>
                         <th>Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
                       @foreach ($detailSupplier as $record)
+                      @php
+                      $jatuh_tempo = $record->tanggal_jatuh_tempo;
+                      $saldo_akhir = $record->saldo_akhir_supplier;
+                      @endphp
                       <tr>
                         <td>{{ $record->id_detail_supplier}}</td>
                         <td>{{ $record->supplier->id_supplier}}</td>
@@ -283,9 +296,25 @@
                         <td>{{ $record->tanggal_input}}</td>
                         <td>{{ number_format($record->pembelian, 2, ',', '.')}}</td>
                         <td>{{ number_format($record->pembayaran, 2, ',', '.')}}</td>
-                        <td>{{ number_format($record->saldo_akhir_supplier, 2, ',', '.')}}</td>
-                        <td><span class='badge badge-danger'>Jatuh Tempo</span></td>
+                        <td>{{ number_format($saldo_akhir, 2, ',', '.')}}</td>
+                        <td>{{ $jatuh_tempo}}</td>
                         <td>
+                          @if ($record->status == 'Lunas')
+                          <span class='badge badge-success'>{{ $record->status }}</span>
+                          @elseif($jatuh_tempo > date('Y-m-d') && isset($saldo_akhir))
+                          <span class='badge badge-warning'>Masa Hutang</span>
+                          @elseif($jatuh_tempo > date('Y-m-d') &&
+                          is_null($saldo_akhir))
+                          <span class='badge badge-success'>Lunas</span>
+                          @elseif($jatuh_tempo <= date('Y-m-d') && isset($saldo_akhir)) <span
+                            class='badge badge-danger'>Jatuh Tempo</span>
+                            @elseif($jatuh_tempo <= date('Y-m-d') && is_null( $saldo_akhir )) <span
+                              class='badge badge-success'>Lunas</span>
+                              @endif
+                        </td>
+                        <td>
+                          <button type="button" class='btn btn-info btn-sm' data-bs-toggle="modal"
+                            data-bs-target='#verification{{ $record->id }}'>👍</button>
                           <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
                             data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
                           <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"

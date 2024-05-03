@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\KeuAkun;
-use App\Models\KeuDetailJurnal;
 use App\Models\KeuJurnal;
 use Illuminate\Http\Request;
+use App\Models\DetailSupplier;
+use App\Models\KeuDetailJurnal;
+use App\Models\KeuPenggajian;
 
 class JurnalUmumController extends Controller
 {
@@ -135,8 +137,11 @@ class JurnalUmumController extends Controller
      */
     public function destroy(string $no_jurnal)
     {
+
         // ambil seluruh data detail jurnal
         $detail_jurnal = KeuDetailJurnal::where('no_jurnal', $no_jurnal)->get();
+
+        $no_bukti = KeuJurnal::where('no_jurnal', $no_jurnal)->get()->first()->no_bukti;
 
         // lakukan pengembalian saldo tiap tiap akun dari jurnal umum yang dihapus
         foreach ($detail_jurnal as $record) {
@@ -185,6 +190,15 @@ class JurnalUmumController extends Controller
         KeuDetailJurnal::where('no_jurnal', $no_jurnal)->delete();
         // hapus record table jurnal berdasarkan no jurnal
         KeuJurnal::where('no_jurnal', $no_jurnal)->delete();
+
+
+        // ambil identitas jurnal
+        $no_jurnal = explode('0', $no_jurnal);
+        if ($no_jurnal[0] == 'JUBYR') {
+            DetailSupplier::where('id_detail_supplier', $no_bukti)->delete();
+        } else if ($no_jurnal[0] == 'JUGAJI') {
+            KeuPenggajian::where('id_penggajian', $no_bukti)->delete();
+        }
 
         return redirect()->route('Jurnal Umum')->with('hapus', 'Data Jurnal Umum Berhasil Dihapus');
     }

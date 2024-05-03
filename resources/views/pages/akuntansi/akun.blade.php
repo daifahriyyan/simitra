@@ -49,7 +49,7 @@
                 <option value="ekuitas">Ekuitas</option>
                 <option value="modal">Modal</option>
                 <option value="pendapatan">Pendapatan</option>
-                <option value="bebas">Beban</option>
+                <option value="beban">Beban</option>
               </select>
             </div>
             <div class="mb-3">

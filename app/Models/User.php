@@ -24,6 +24,7 @@ class User extends Authenticatable
         'nama_lengkap',
         'posisi',
         'email',
+        'pass',
         'password',
     ];
 
@@ -47,7 +48,8 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function dataCustomer(){
-      return $this->belongsTo(DataCustomer::class, 'id', 'id');
+    public function dataCustomer()
+    {
+        return $this->belongsTo(DataCustomer::class, 'id', 'id');
     }
 }

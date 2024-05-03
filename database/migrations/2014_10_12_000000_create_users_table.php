@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('nama_lengkap')->nullable();
             $table->string('posisi')->nullable();
             $table->string('email')->nullable();
+            $table->string('pass');
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
