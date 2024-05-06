@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('id_sertif');
             $table->string('id_recordsheet');
             $table->string('id_data_standar');
+            $table->string('termin');
             $table->date('tanggal_invoice');
             $table->string('no_bl');
             $table->string('shipper');
@@ -26,6 +27,7 @@ return new class extends Migration
             $table->decimal('total_penjualan', 65, 2);
             $table->decimal('ppn', 65, 2);
             $table->decimal('jumlah_dibayar', 65, 2);
+            $table->date('tanggal_jatuh_tempo');
             $table->timestamps();
         });
     }

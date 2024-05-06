@@ -57,11 +57,12 @@
                     <div class="mb-3">
                       <label for="id_invoice" class="form-label">ID Invoice:</label>
                       <input type="text" class="form-control" id="id_invoice" name="id_invoice"
-                        value="0000{{ $invoice->count() + 1 }}/MIMM/I/2024" required>
+                        value="INV{{ str_pad($id_invoice + 1, 4, 0, STR_PAD_LEFT) }}" required>
                     </div>
                     <div class="mb-3">
                       <label for="tanggal_invoice" class="form-label">Tanggal Invoice:</label>
-                      <input type="date" class="form-control" id="tanggal_invoice" name="tanggal_invoice" required>
+                      <input type="date" class="form-control" id="tanggal_invoice" name="tanggal_invoice"
+                        value="{{ date('Y-m-d') }}" required>
                     </div>
                     <div class="mb-3">
                       <label for="id_order" class="form-label">ID Order:</label>
@@ -88,6 +89,10 @@
                     <div class="mb-3">
                       <label for="shipper" class="form-label">Shipper:</label>
                       <input type="text" class="form-control" id="shipper" name="shipper" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="termin" class="form-label">Termin:</label>
+                      <input type="text" class="form-control" id="termin" name="termin" required>
                     </div>
                     <div class="mb-3">
                       <label for="stuffing_date" class="form-label">Stuffing Date:</label>

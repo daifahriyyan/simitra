@@ -9,14 +9,12 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 3cm;
     }
 
     .container {
-      border: 1px solid #000;
       padding: 20px;
       margin: 0 auto;
-      max-width: 800px;
+      max-width: 1000px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
@@ -69,11 +67,10 @@
 
     .request-details th {
       text-align: left;
-      padding-bottom: 20px;
+      padding-bottom: 10px;
     }
 
     .signature {
-      margin-top: 20px;
       text-align: right;
     }
   </style>

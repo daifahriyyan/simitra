@@ -33,6 +33,7 @@ use App\Http\Controllers\MethylRecordsheetController;
 use App\Http\Controllers\SuratPemberitahuanController;
 use App\Http\Controllers\SuratPerintahKerjaController;
 use App\Http\Controllers\KartuStokPersediaanController;
+use App\Http\Controllers\PembelianController;
 use App\Http\Controllers\PenyusutanAsetTetapController;
 use App\Http\Controllers\PemberitahuanKegiatanController;
 
@@ -133,6 +134,12 @@ Route::resource('/dashboard/penerimaan-jasa/bukti-pembayaran', BuktiPembayaranCo
     'store' => 'Tambah Bukti Pembayaran',
     'update' => 'Ubah Bukti Pembayaran',
     'destroy' => 'Hapus Bukti Pembayaran',
+]);
+Route::resource('/dashboard/penerimaan-jasa/pembelian', PembelianController::class)->names([
+    'index' => 'Pembelian',
+    'store' => 'Tambah Pembelian',
+    'update' => 'Ubah Pembelian',
+    'destroy' => 'Hapus Pembelian',
 ]);
 Route::resource('/dashboard/penerimaan-jasa/detail-customer', DetailCustomerController::class)->names([
     'index' => 'Detail Customer',

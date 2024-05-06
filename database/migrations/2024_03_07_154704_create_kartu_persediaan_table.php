@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('id_kartu_persediaan');
             $table->string('id_persediaan');
+            $table->dateTime('tanggal_input');
             $table->integer('harga_masuk');
             $table->integer('jumlah_masuk');
             $table->integer('total_masuk');

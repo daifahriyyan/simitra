@@ -11,17 +11,12 @@ class DetailCustomer extends Model
 
     public $table = 'detail_customer';
 
-    public $fillable = [
-        'id_customer',
-        'termin',
-        'tanggal_input',
-        'saldo_awal',
-        'total_penjualan',
-        'penerimaan',
-        'saldo_akhir',
+    public $guarded = [
+        'id',
     ];
 
-    public function dataCustomer(){
+    public function dataCustomer()
+    {
         return $this->belongsTo(DataCustomer::class, 'id_customer', 'id_customer');
     }
 }

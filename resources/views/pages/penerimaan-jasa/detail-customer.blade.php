@@ -142,6 +142,21 @@
       </div>
     </div>
   </div>
+  <!-- Modal Verification -->
+  <div class="modal fade" id="verification{{ $record->id }}" tabindex="-1" aria-labelledby="verificationLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body">
+          Yakin Telah Membayar Hutang ini?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <a href="{{ route('Detail Customer') }}?status=Lunas&id={{ $record->id }}" class="btn btn-info">Yakin</a>
+        </div>
+      </div>
+    </div>
+  </div>
   @endforeach
 
   <!-- Row -->
@@ -206,6 +221,7 @@
                 <th>Total Penjualan</th>
                 <th>Total Penerimaan</th>
                 <th>Saldo Akhir</th>
+                <th>Satus</th>
                 <th>Aksi</th>
               </tr>
             </thead>
@@ -220,6 +236,21 @@
                 <td>{{ $record->penerimaan }}</td>
                 <td>{{ $record->saldo_akhir }}</td>
                 <td>
+                  @if($record->status == 'Lunas')
+                  <span class='badge badge-success'>Lunas</span>
+                  @elseif ($record->tanggal_jatuh_tempo > date('Y-m-d') && isset($record->saldo_akhir))
+                  <span class='badge badge-warning'>Masa Hutang</span>
+                  @elseif($record->tanggal_jatuh_tempo > date('Y-m-d') && is_null($record->saldo_akhir))
+                  <span class='badge badge-success'>Lunas</span>
+                  @elseif($record->tanggal_jatuh_tempo < date('Y-m-d') && isset($record->saldo_akhir))
+                    <span class='badge badge-danger'>Jatuh Tempo</span>
+                    @elseif($record->tanggal_jatuh_tempo < date('Y-m-d') && is_null($record->saldo_akhir))
+                      <span class='badge badge-danger'>Lunas</span>
+                      @endif
+                </td>
+                <td>
+                  <button type="button" class='btn btn-info btn-sm' data-bs-toggle="modal"
+                    data-bs-target='#verification{{ $record->id }}'>👍</button>
                   <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
                     data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
                   <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"

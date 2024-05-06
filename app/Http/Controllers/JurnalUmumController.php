@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Invoice;
 use App\Models\KeuAkun;
 use App\Models\KeuJurnal;
 use Illuminate\Http\Request;
+use App\Models\KeuPenggajian;
 use App\Models\DetailSupplier;
 use App\Models\KeuDetailJurnal;
-use App\Models\KeuPenggajian;
 
 class JurnalUmumController extends Controller
 {
@@ -20,7 +21,7 @@ class JurnalUmumController extends Controller
             // ambil seluruh data Detail Jurnal
             'jurnalUmum' => KeuDetailJurnal::get(),
             // ambil id terakhir dari Jurnal
-            'jurnal' => KeuJurnal::latest()->get()->first()->id ?? 1,
+            'jurnal' => KeuJurnal::latest()->get()->first()->id ?? 0,
             // ambil seluruh data akun
             'akun' => KeuAkun::latest()->get(),
             // ambil kode akun yang jenisnya debet
@@ -198,6 +199,8 @@ class JurnalUmumController extends Controller
             DetailSupplier::where('id_detail_supplier', $no_bukti)->delete();
         } else if ($no_jurnal[0] == 'JUGAJI') {
             KeuPenggajian::where('id_penggajian', $no_bukti)->delete();
+        } else if ($no_jurnal[0] == 'JUINV') {
+            Invoice::where('id_invoice', $no_bukti)->delete();
         }
 
         return redirect()->route('Jurnal Umum')->with('hapus', 'Data Jurnal Umum Berhasil Dihapus');

@@ -57,7 +57,7 @@
                     <div class="mb-3">
                       <label for="id_kartu_persediaan" class="form-label">ID Kartu Persediaan:</label>
                       <input type="text" class="form-control" id="id_kartu_persediaan" name="id_kartu_persediaan"
-                        value="KB00{{ $kartuPersediaan->count() + 1 }}" required>
+                        value="KP{{ str_pad($id_KP + 1, 4, 0, STR_PAD_LEFT) }}" required>
                     </div>
                     <div class="mb-3">
                       <label for="id_persediaan" class="form-label">ID Persediaan:</label>
@@ -67,14 +67,6 @@
                         <option value="{{ $item->id }}">{{ $item->id_persediaan }}</option>
                         @endforeach
                       </select>
-                    </div>
-                    <div class="mb-3">
-                      <label for="harga_masuk" class="form-label">Harga Masuk:</label>
-                      <input type="number" class="form-control" id="harga_masuk" name="harga_masuk">
-                    </div>
-                    <div class="mb-3">
-                      <label for="jumlah_masuk" class="form-label">Jumlah Masuk:</label>
-                      <input type="number" class="form-control" id="jumlah_masuk" name="jumlah_masuk">
                     </div>
                     <div class="mb-3">
                       <label for="harga_keluar" class="form-label">Harga Keluar:</label>
@@ -212,7 +204,7 @@
                     <div>
                       <button type="button" class="btn btn-sm btn-info" style='width: 70px; height: 30px;'
                         data-bs-toggle="modal" data-bs-target="#addModal">
-                        Tambah
+                        Pakai
                       </button>
                     </div>
                     <!-- Tombol Filter Tanggal dengan Icon -->

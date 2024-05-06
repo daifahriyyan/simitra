@@ -55,7 +55,7 @@
                     <div class="mb-3">
                       <label for="id_rekap_penjualan" class="form-label">ID Rekap Penjualan:</label>
                       <input type="text" class="form-control" id="id_rekap_penjualan" name="id_rekap_penjualan"
-                        value="RP00{{ $rekapPenjualan->count() + 1 }}" readonly required>
+                        value="RPJ00{{ str_pad($id_rekapPenjualan + 1, 4, 0, STR_PAD_LEFT) }}" readonly required>
                     </div>
                     <div class="mb-3">
                       <label for="id_invoice" class="form-label">ID Invoice:</label>
@@ -219,7 +219,9 @@
                       </tr>
                     </thead>
                     <tbody>
+                      <?php $jumlahTotalPenjualan = 0 ?>
                       @foreach ($rekapPenjualan as $record)
+                      <?php $jumlahTotalPenjualan += $record->total_penjualan ?>
                       <tr>
                         <td>{{ $record->id_rekap_penjualan }}</td>
                         <td>{{ $record->invoice->id_invoice }}</td>
@@ -235,6 +237,12 @@
                         </td>
                       </tr>
                       @endforeach
+                      @if ($jumlahTotalPenjualan != 0)
+                      <tr>
+                        <th colspan="5">Jumlah Total Penjualan</th>
+                        <th>Rp. {{ number_format($jumlahTotalPenjualan) }}</th>
+                      </tr>
+                      @endif
                     </tbody>
                     <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
                   </table>

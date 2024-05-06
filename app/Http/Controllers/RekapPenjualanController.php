@@ -16,6 +16,7 @@ class RekapPenjualanController extends Controller
     {
         return view('pages.penerimaan-jasa.rekap-penjualan', [
             'rekapPenjualan' => RekapPenjualan::get(),
+            'id_rekapPenjualan' => RekapPenjualan::latest()->get()->first()->id ?? 1,
             'invoice' => Invoice::get(),
             'dataOrder' => DataOrder::get(),
         ]);

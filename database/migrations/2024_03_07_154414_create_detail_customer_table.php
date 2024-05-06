@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('total_penjualan');
             $table->integer('penerimaan');
             $table->integer('saldo_akhir');
+            $table->string('status');
             $table->timestamps();
         });
     }

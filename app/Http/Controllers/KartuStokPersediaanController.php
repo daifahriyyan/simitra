@@ -15,6 +15,7 @@ class KartuStokPersediaanController extends Controller
     {
         return view('pages.operasional.kartu-stok-persediaan', [
             'kartuPersediaan' => KartuPersediaan::get(),
+            'id_KP' => KartuPersediaan::latest()->get()->first()->id ?? 0,
             'dataPersediaan' => DataPersediaan::get(),
         ]);
     }
@@ -35,12 +36,19 @@ class KartuStokPersediaanController extends Controller
         $total_masuk = $request['harga_masuk'] * $request['jumlah_masuk'];
         $total_keluar = $request['harga_keluar'] * $request['jumlah_keluar'];
         $total_saldo = $request['harga_saldo'] * $request['jumlah_saldo'];
+
+        $saldoPersediaan = DataPersediaan::where('id', $request['id_persediaan'])->get()->first()->saldo;
+        DataPersediaan::where('id', $request['id_persediaan'])->update([
+            'saldo' => $saldoPersediaan - $request['harga_keluar']
+        ]);
+
         KartuPersediaan::create([
             'id_kartu_persediaan' => $request['id_kartu_persediaan'],
             'id_persediaan' => $request['id_persediaan'],
-            'harga_masuk' => $request['harga_masuk'],
-            'jumlah_masuk' => $request['jumlah_masuk'],
-            'total_masuk' => $total_masuk,
+            'tanggal_input' => date('Y-m-d H:i:s'),
+            'harga_masuk' => 0,
+            'jumlah_masuk' => 0,
+            'total_masuk' => 0,
             'harga_keluar' => $request['harga_keluar'],
             'jumlah_keluar' => $request['jumlah_keluar'],
             'total_keluar' => $total_keluar,

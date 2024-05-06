@@ -13,10 +13,17 @@ class DetailCustomerController extends Controller
    */
   public function index()
   {
+    if (request()->get('status') == 'Lunas') {
+      DetailCustomer::where('id', request()->get('id'))->update([
+        'status' => request()->get('status')
+      ]);
+
+      return redirect()->route('Detail Customer');
+    }
     return view('pages.penerimaan-jasa.detail-customer', [
       'title' => 'Detail Customer',
       'records' => DetailCustomer::with('dataCustomer')->get(),
-      'customers'=> DataCustomer::all()
+      'customers' => DataCustomer::all()
     ]);
   }
 
@@ -96,7 +103,7 @@ class DetailCustomerController extends Controller
   public function destroy($id)
   {
     DetailCustomer::where('id', $id)->delete();
-    
+
     return redirect(route('Detail Customer'))->with('delete', 'Data Berhasil Dihapus');
   }
 }

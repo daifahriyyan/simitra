@@ -28,7 +28,7 @@ class DataCustomerController extends Controller
         'pdfBackend' => 'CPDF',
         'isHtml5ParserEnabled' => true
       ]);
-      $pdf = Pdf::loadView('generate-pdf.request-order')->setPaper('a3');
+      $pdf = Pdf::loadView('generate-pdf.request-order')->setPaper('a4');
       return $pdf->stream('Data Customer.pdf');
     }
 
