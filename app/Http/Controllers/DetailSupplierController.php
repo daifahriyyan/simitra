@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Throwable;
 use App\Models\KeuAkun;
 use App\Models\KeuJurnal;
 use App\Models\KeuSupplier;
@@ -242,6 +243,19 @@ class DetailSupplierController extends Controller
             // ambil seluruh data detail jurnal
             $detail_jurnal = KeuDetailJurnal::where('no_jurnal', $no_jurnal)->get();
 
+            try {
+                // hapus record table detail jurnal berdasarkan no jurnal
+                KeuDetailJurnal::where('no_jurnal', $no_jurnal)->delete();
+                // hapus record table jurnal berdasarkan no jurnal
+                KeuJurnal::where('no_jurnal', $no_jurnal)->delete();
+
+                DetailSupplier::where('id', $id)->delete();
+                // Validate the value...
+            } catch (Throwable $e) {
+                return back()->with('error', $e->getMessage());
+            }
+
+
             // lakukan pengembalian saldo tiap tiap akun dari jurnal umum yang dihapus
             foreach ($detail_jurnal as $record) {
                 // dapatkan kode akun dari tiap akun yang dihapus
@@ -284,14 +298,8 @@ class DetailSupplierController extends Controller
                     $keterangan = 'Debet berhasil dikurangi debet';
                 }
             }
-
-            // hapus record table detail jurnal berdasarkan no jurnal
-            KeuDetailJurnal::where('no_jurnal', $no_jurnal)->delete();
-            // hapus record table jurnal berdasarkan no jurnal
-            KeuJurnal::where('no_jurnal', $no_jurnal)->delete();
         }
 
-        DetailSupplier::where('id', $id)->delete();
 
         return redirect()->route('Detail Supplier')->with('hapus', 'Data Berhasil Dihapus');
     }

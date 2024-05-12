@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('keu_detail_supplier', function (Blueprint $table) {
             $table->id();
             $table->string('id_detail_supplier');
-            $table->string('id_supplier');
+            $table->unsignedBigInteger('id_supplier');
             $table->string('termin_pembayaran');
             $table->date('tanggal_input')->nullable();
             $table->date('tanggal_jatuh_tempo')->nullable();
@@ -22,6 +22,10 @@ return new class extends Migration
             $table->decimal('pembayaran', 65, 2);
             $table->string('saldo_akhir_supplier');
             $table->timestamps();
+        });
+
+        Schema::table('keu_detail_supplier', function (Blueprint $table) {
+            $table->foreign('id_supplier')->references('id')->on('keu_supplier')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 

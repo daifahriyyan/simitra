@@ -34,6 +34,21 @@
 
         <!-- Container Fluid-->
         <div class="container-fluid" id="container-wrapper">
+          @if (session()->has('error'))
+          <div class="row">
+            <div class="col d-flex justify-content-center">
+              <div class="alert alert-danger alert-dismissible fade show" style="min-height: 50px; width:500px;"
+                role="alert">
+                <div>
+                  {{ session('error') }}
+                </div>
+                <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          @endif
           <!-- Your container content -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Kartu Persediaan</h1> <!-- EDIT NAMA -->
@@ -69,20 +84,13 @@
                       </select>
                     </div>
                     <div class="mb-3">
-                      <label for="harga_keluar" class="form-label">Harga Keluar:</label>
-                      <input type="number" class="form-control" id="harga_keluar" name="harga_keluar">
+                      <label for="tanggal_input" class="form-label">Tanggal Input:</label>
+                      <input type="datetime-local" class="form-control" id="tanggal_input" name="tanggal_input"
+                        value="{{ now() }}" required>
                     </div>
                     <div class="mb-3">
                       <label for="jumlah_keluar" class="form-label">Jumlah Keluar:</label>
                       <input type="number" class="form-control" id="jumlah_keluar" name="jumlah_keluar">
-                    </div>
-                    <div class="mb-3">
-                      <label for="harga_saldo" class="form-label">Harga Saldo:</label>
-                      <input type="number" class="form-control" id="harga_saldo" name="harga_saldo">
-                    </div>
-                    <div class="mb-3">
-                      <label for="jumlah_saldo" class="form-label">Jumlah Saldo:</label>
-                      <input type="number" class="form-control" id="jumlah_saldo" name="jumlah_saldo">
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -123,44 +131,14 @@
                       </select>
                     </div>
                     <div class="mb-3">
-                      <label for="nama_persediaan" class="form-label">Nama Persediaan:</label>
-                      <input type="text" class="form-control" id="nama_persediaan" name="nama_persediaan"
-                        value="{{ $record->dataPersediaan->nama_persediaan }}" required>
-                    </div>
-                    <div class="mb-3">
                       <label for="tanggal_input" class="form-label">Tanggal Input:</label>
                       <input type="datetime-local" class="form-control" id="tanggal_input" name="tanggal_input"
                         value="{{ $record->tanggal_input }}" required>
                     </div>
                     <div class="mb-3">
-                      <label for="harga_masuk" class="form-label">Harga Masuk:</label>
-                      <input type="number" class="form-control" id="harga_masuk" name="harga_masuk"
-                        value="{{ $record->harga_masuk }}">
-                    </div>
-                    <div class="mb-3">
-                      <label for="jumlah_masuk" class="form-label">Jumlah Masuk:</label>
-                      <input type="number" class="form-control" id="jumlah_masuk" name="jumlah_masuk"
-                        value="{{ $record->jumlah_masuk }}">
-                    </div>
-                    <div class="mb-3">
-                      <label for="harga_keluar" class="form-label">Harga Keluar:</label>
-                      <input type="number" class="form-control" id="harga_keluar" name="harga_keluar"
-                        value="{{ $record->harga_keluar }}">
-                    </div>
-                    <div class="mb-3">
                       <label for="jumlah_keluar" class="form-label">Jumlah Keluar:</label>
                       <input type="number" class="form-control" id="jumlah_keluar" name="jumlah_keluar"
                         value="{{ $record->jumlah_keluar }}">
-                    </div>
-                    <div class="mb-3">
-                      <label for="harga_saldo" class="form-label">Harga Saldo:</label>
-                      <input type="number" class="form-control" id="harga_saldo" name="harga_saldo"
-                        value="{{ $record->harga_saldo }}">
-                    </div>
-                    <div class="mb-3">
-                      <label for="jumlah_saldo" class="form-label">Jumlah Saldo:</label>
-                      <input type="number" class="form-control" id="jumlah_saldo" name="jumlah_saldo"
-                        value="{{ $record->jumlah_saldo }}">
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -249,6 +227,20 @@
                   </script>
                 </div>
 
+
+                @if (session()->has('error'))
+                <div class="row">
+                  <div class="col d-flex justify-content-center">
+                    <div class="alert alert-danger alert-dismissible fade show" style="min-height: 50px; width:500px;"
+                      role="alert">
+                      <div>
+                        {{ session('error') }}
+                      </div>
+                      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                  </div>
+                </div>
+                @endif
                 <div class="table-responsive p-3">
                   <table class="table align-items-center table-flush table-hover" id="dataTableHover">
                     <!-- AWAL EDIT SESUAIKAN TABEL DATABASE -->

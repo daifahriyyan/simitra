@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Throwable;
 use App\Models\DataOrder;
-use App\Models\Pemberitahuan;
 use Illuminate\Http\Request;
+use App\Models\Pemberitahuan;
 
 class PemberitahuanKegiatanController extends Controller
 {
@@ -80,7 +81,13 @@ class PemberitahuanKegiatanController extends Controller
      */
     public function destroy(string $id)
     {
-        pemberitahuan::where('id', $id)->delete();
+        try {
+            pemberitahuan::where('id', $id)->delete();
+
+            // Validate the value...
+        } catch (Throwable $e) {
+            return back()->with('error', $e->getMessage());
+        }
 
         return redirect(route('Pemberitahuan Kegiatan'))->with('success', 'Pemberitahuan Kegiatan Berhasil Dihapus');
     }

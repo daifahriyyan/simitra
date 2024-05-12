@@ -33,6 +33,21 @@
         <!-- Topbar -->
         <!-- Container Fluid-->
         <div class="container-fluid" id="container-wrapper">
+          @if (session()->has('error'))
+          <div class="row">
+            <div class="col d-flex justify-content-center">
+              <div class="alert alert-danger alert-dismissible fade show" style="min-height: 50px; width:500px;"
+                role="alert">
+                <div>
+                  {{ session('error') }}
+                </div>
+                <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          @endif
           <!-- Your container content -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Verifikasi Order</h1> <!-- EDIT NAMA -->
@@ -356,12 +371,12 @@
                       @foreach ($verifikasi as $record)
                       <tr>
                         <td>{{ $record->id_verifikasi }}</td>
-                        <td>{{ $record->dataOrder->id_order }}</td>
-                        <td>{{ $record->dataOrder->id_order_container }}</td>
-                        <td>{{ $record->dataOrder->tanggal_order }}</td>
-                        <td>{{ $record->dataOrder->dataCustomer->id_customer }}</td>
-                        <td>{{ $record->dataOrder->dataCustomer->nama_customer }}</td>
-                        <td>{{ $record->dataOrder->dataCustomer->alamat_customer }}</td>
+                        <td>{{ $record->detailOrder->dataOrder->id_order }}</td>
+                        <td>{{ $record->detailOrder->id_detailorder }}</td>
+                        <td>{{ $record->detailOrder->dataOrder->tanggal_order }}</td>
+                        <td>{{ $record->detailOrder->dataOrder->dataCustomer->id_customer }}</td>
+                        <td>{{ $record->detailOrder->dataOrder->dataCustomer->nama_customer }}</td>
+                        <td>{{ $record->detailOrder->dataOrder->dataCustomer->alamat_customer }}</td>
                         <td>{{ $record->detailOrder->id }}</td>
                         <td>{{ $record->detailOrder->stuffing_date }}</td>
                         <td>{{ $record->detailOrder->closing_time }}</td>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Throwable;
 use App\Models\DataOrder;
 use Illuminate\Http\Request;
 use App\Models\MetilRecordsheet;
@@ -108,12 +109,18 @@ class MethylRecordsheetController extends Controller
      */
     public function destroy(string $id)
     {
-        $ceklistFumigasi = MetilRecordsheet::where('id', $id)->first();
+        try {
+            $ceklistFumigasi = MetilRecordsheet::where('id', $id)->first();
 
-        // Delete file from storage if it exists
-        Storage::disk('public')->delete('metil_recordsheet/' . $ceklistFumigasi->dokumen_metil_recordsheet);
+            // Delete file from storage if it exists
+            Storage::disk('public')->delete('metil_recordsheet/' . $ceklistFumigasi->dokumen_metil_recordsheet);
 
-        MetilRecordsheet::where('id', $id)->delete();
+            MetilRecordsheet::where('id', $id)->delete();
+
+            // Validate the value...
+        } catch (Throwable $e) {
+            return back()->with('error', $e->getMessage());
+        }
 
         return redirect(route('Methyl Recordsheet'))->with('delete', 'Data Methyl Recordsheet Berhasil Dihapus');
     }

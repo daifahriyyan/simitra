@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Throwable;
 use App\Models\DataHppFeet;
 use Illuminate\Http\Request;
 
@@ -95,7 +96,13 @@ class StandarHPPController extends Controller
      */
     public function destroy(string $id)
     {
-        DataHppFeet::where('id', $id)->delete();
+        try {
+            DataHppFeet::where('id', $id)->delete();
+
+            // Validate the value...
+        } catch (Throwable $e) {
+            return back()->with('error', $e->getMessage());
+        }
 
         return redirect(route('Standar HPP'))->with('delete', 'Data Berhasil Dihapus');
     }

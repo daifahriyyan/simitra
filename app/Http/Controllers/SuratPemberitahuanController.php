@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Throwable;
 use App\Models\DataOrder;
+use App\Models\DetailOrder;
 use Illuminate\Http\Request;
 use App\Models\SuratPemberitahuan;
 
@@ -15,7 +17,7 @@ class SuratPemberitahuanController extends Controller
     {
         return view('pages.operasional.surat-pemberitahuan', [
             'title' => 'Surat Pemberitahuan',
-            'dataOrder' => DataOrder::get(),
+            'detailOrder' => DetailOrder::get(),
             'sp' => SuratPemberitahuan::get(),
         ]);
     }
@@ -80,13 +82,20 @@ class SuratPemberitahuanController extends Controller
         return redirect(route('Surat Pemberitahuan'))->with('success', 'Anda Berhasil Menambahkan Data Surat Pemberitahuan');
     }
 
+
     /**
      * Remove the specified resource from storage.
      */
     public function destroy($id)
     {
-        SuratPemberitahuan::where('id', $id)->delete();
-        
+        try {
+            SuratPemberitahuan::where('id', $id)->delete();
+
+            // Validate the value...
+        } catch (Throwable $e) {
+            return back()->with('error', $e->getMessage());
+        }
+
         return redirect(route('Surat Pemberitahuan'))->with('delete', 'Data Surat Pemberitahuan Berhasil Dihapus');
     }
 }

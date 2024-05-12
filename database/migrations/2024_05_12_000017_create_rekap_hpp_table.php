@@ -15,10 +15,15 @@ return new class extends Migration
             $table->id();
             $table->string('id_rekap');
             $table->date('tanggal_input');
-            $table->string('id_data_harga');
-            $table->string('id_rekap_penjualan');
+            $table->unsignedBigInteger('id_data_harga');
+            $table->unsignedBigInteger('id_rekap_penjualan');
             $table->decimal('total_hpp', 65, 2);
             $table->timestamps();
+        });
+
+        Schema::table('rekap_hpp', function (Blueprint $table) {
+            $table->foreign('id_data_harga')->references('id')->on('data_harga')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('id_rekap_penjualan')->references('id')->on('rekap_penjualan')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('detail_customer', function (Blueprint $table) {
             $table->id();
-            $table->string('id_customer');
+            $table->unsignedBigInteger('id_customer');
             $table->string('termin');
             $table->date('tanggal_input');
             $table->integer('saldo_awal');
@@ -22,6 +22,10 @@ return new class extends Migration
             $table->integer('saldo_akhir');
             $table->string('status');
             $table->timestamps();
+        });
+
+        Schema::table('detail_customer', function (Blueprint $table) {
+            $table->foreign('id_customer')->references('id')->on('data_customer')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 

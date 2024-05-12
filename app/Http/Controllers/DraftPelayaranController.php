@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Throwable;
 use App\Models\DataOrder;
 use Illuminate\Http\Request;
 use App\Models\DraftPelayaran;
@@ -101,11 +102,14 @@ class DraftPelayaranController extends Controller
     public function destroy(string $id)
     {
         $draftPelayaran = DraftPelayaran::where('id', $id)->first();
-
-        // Delete file from storage if it exists
-        Storage::disk('public')->delete('draft_pelayaran/' . $draftPelayaran->draft_pelayaran);
-
-        DraftPelayaran::where('id', $id)->delete();
+        try {
+            // Delete file from storage if it exists
+            DraftPelayaran::where('id', $id)->delete();
+            Storage::disk('public')->delete('draft_pelayaran/' . $draftPelayaran->draft_pelayaran);
+            // Validate the value...
+        } catch (Throwable $e) {
+            return back()->with('error', $e->getMessage());
+        }
 
         return redirect(route('Draft Pelayaran'))->with('delete', 'Data Draft Pelayaran Berhasil Dihapus');
     }

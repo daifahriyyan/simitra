@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DataOrder;
+use Throwable;
 use App\Models\Invoice;
+use App\Models\DataOrder;
 use Illuminate\Http\Request;
 use App\Models\RekapPenjualan;
 
@@ -85,7 +86,13 @@ class RekapPenjualanController extends Controller
      */
     public function destroy(string $id)
     {
-        RekapPenjualan::where('id', $id)->delete();
+        try {
+            RekapPenjualan::where('id', $id)->delete();
+
+            // Validate the value...
+        } catch (Throwable $e) {
+            return back()->with('error', $e->getMessage());
+        }
 
         return redirect(route('Rekap Penjualan'))->with('delete', 'Rekap Penjualan Berhasil Dihapus');
     }

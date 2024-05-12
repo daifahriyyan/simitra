@@ -3,6 +3,20 @@
 @section('container-fluid')
 <!-- Container Fluid-->
 <div class="container-fluid" id="container-wrapper">
+  @if (session()->has('error'))
+  <div class="row">
+    <div class="col d-flex justify-content-center">
+      <div class="alert alert-danger alert-dismissible fade show" style="min-height: 50px; width:500px;" role="alert">
+        <div>
+          {{ session('error') }}
+        </div>
+        <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  @endif
   <!-- Your container content -->
   <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Sertifikat</h1> <!-- EDIT NAMA -->
@@ -97,7 +111,7 @@
               <select class="form-control form-select-lg" name="id_recordsheet" id="id_recordsheet">
                 <option selected>Pilih ID Recordsheet</option>
                 @foreach ($metilRecordsheet as $item)
-                <option value="{{ $item->id }}">{{ $item->id_order }}</option>
+                <option value="{{ $item->id }}">{{ $item->id_recordsheet }}</option>
                 @endforeach
               </select>
             </div>
@@ -217,7 +231,7 @@
               <select class="form-control form-select-lg" name="id_recordsheet" id="id_recordsheet">
                 <option value="{{ $record->id_recordsheet }}">{{ $record->dataRecordsheet->id_recordsheet }}</option>
                 @foreach ($metilRecordsheet as $item)
-                <option value="{{ $item->id }}">{{ $item->id_order }}</option>
+                <option value="{{ $item->id }}">{{ $item->id_recordsheet }}</option>
                 @endforeach
               </select>
             </div>

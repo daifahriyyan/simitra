@@ -24,6 +24,7 @@ class HomeController extends Controller
     {
         return view('customer-side.form', [
             'jumlah_order' => request()->jumlah_order,
+            'id_order' => isset(DataOrder::latest()->get()->first()->id) + 1,
         ]);
     }
 

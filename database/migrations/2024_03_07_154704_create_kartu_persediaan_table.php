@@ -14,18 +14,22 @@ return new class extends Migration
         Schema::create('kartu_persediaan', function (Blueprint $table) {
             $table->id();
             $table->string('id_kartu_persediaan');
-            $table->string('id_persediaan');
+            $table->unsignedBigInteger('id_persediaan');
             $table->dateTime('tanggal_input');
-            $table->integer('harga_masuk');
-            $table->integer('jumlah_masuk');
-            $table->integer('total_masuk');
-            $table->integer('harga_keluar');
-            $table->integer('jumlah_keluar');
-            $table->integer('total_keluar');
-            $table->integer('harga_saldo');
-            $table->integer('jumlah_saldo');
-            $table->integer('total_saldo');
+            $table->bigInteger('harga_masuk');
+            $table->bigInteger('jumlah_masuk');
+            $table->bigInteger('total_masuk');
+            $table->bigInteger('harga_keluar');
+            $table->bigInteger('jumlah_keluar');
+            $table->bigInteger('total_keluar');
+            $table->bigInteger('harga_saldo');
+            $table->bigInteger('jumlah_saldo');
+            $table->bigInteger('total_saldo');
             $table->timestamps();
+        });
+
+        Schema::table('kartu_persediaan', function (Blueprint $table) {
+            $table->foreign('id_persediaan')->references('id')->on('data_persediaan')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 

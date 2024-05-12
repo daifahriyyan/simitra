@@ -34,6 +34,21 @@
 
         <!-- Container Fluid-->
         <div class="container-fluid" id="container-wrapper">
+          @if (session()->has('error'))
+          <div class="row">
+            <div class="col d-flex justify-content-center">
+              <div class="alert alert-danger alert-dismissible fade show" style="min-height: 50px; width:500px;"
+                role="alert">
+                <div>
+                  {{ session('error') }}
+                </div>
+                <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          @endif
           <!-- Your container content -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Pemberitahuan Kegiatan</h1> <!-- EDIT NAMA -->
@@ -244,7 +259,7 @@
                       <tr>
                         <th>ID Kegiatan</th>
                         <th>ID Order</th>
-                        <th>ID Order Container</th>
+                        <th>ID Detail Order</th>
                         <th>Container</th>
                         <th>Volume</th>
                         <th>Jam Mulai</th>
@@ -258,7 +273,7 @@
                       <tr>
                         <td>{{ $record->id_kegiatan }}</td>
                         <td>{{ $record->dataOrder->id_order }}</td>
-                        <td>{{ $record->dataOrder->id_order_container }}</td>
+                        <td>{{ $record->dataOrder->id_detailorder }}</td>
                         <td>{{ $record->dataOrder->container }}</td>
                         <td>{{ $record->dataOrder->volume }}</td>
                         <td>{{ $record->jam_mulai }}</td>

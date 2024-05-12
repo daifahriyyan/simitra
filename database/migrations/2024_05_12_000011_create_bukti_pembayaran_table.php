@@ -13,11 +13,16 @@ return new class extends Migration
     {
         Schema::create('bukti_pembayaran', function (Blueprint $table) {
             $table->id();
-            $table->string('id_order');
-            $table->string('id_invoice');
+            $table->unsignedBigInteger('id_order');
+            $table->unsignedBigInteger('id_invoice');
             $table->string('bukti_pembayaran');
             $table->date('tanggal_pembayaran');
             $table->timestamps();
+        });
+
+        Schema::table('bukti_pembayaran', function (Blueprint $table) {
+            $table->foreign('id_order')->references('id')->on('data_order')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('id_invoice')->references('id')->on('invoice')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 

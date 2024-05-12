@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('sertifikat', function (Blueprint $table) {
             $table->id();
             $table->string('id_reg');
-            $table->string('id_order');
+            $table->unsignedBigInteger('id_order');
             $table->string('id_order_container')->nullable();
-            $table->string('id_recordsheet');
-            $table->string('id_importer');
+            $table->unsignedBigInteger('id_recordsheet');
+            $table->unsignedBigInteger('id_importer');
             $table->string('id_sertif');
             $table->string('target');
             $table->string('commodity');
@@ -31,6 +31,12 @@ return new class extends Migration
             $table->date('tanggal_sertif');
             $table->string('no_reg');
             $table->timestamps();
+        });
+
+        Schema::table('sertifikat', function (Blueprint $table) {
+            $table->foreign('id_order')->references('id')->on('data_order')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('id_importer')->references('id')->on('data_importer')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('id_recordsheet')->references('id')->on('metil_recordsheet')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 

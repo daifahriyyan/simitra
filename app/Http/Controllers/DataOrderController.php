@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Throwable;
 use App\Models\DataOrder;
-use App\Models\DataCustomer;
 use App\Models\DataHargar;
 use App\Models\DetailOrder;
+use App\Models\DataCustomer;
 use Illuminate\Http\Request;
 
 class DataOrderController extends Controller
@@ -103,17 +104,20 @@ class DataOrderController extends Controller
      */
     public function destroy(DataOrder $dataOrder, $id)
     {
-
         $idOrder = DetailOrder::where('id', $id)->get()->first()->id_order;
-        DetailOrder::where('id', $id)->delete();
-        DataOrder::where('id', $idOrder)->delete();
+        try {
+            DetailOrder::where('id', $id)->delete();
+            DataOrder::where('id', $idOrder)->delete();
+            // Validate the value...
+        } catch (Throwable $e) {
+            return back()->with('error', $e->getMessage());
+        }
 
         return redirect(route('Data Order'));
     }
 
     public function ajaxOrder()
     {
-
         $data = DataCustomer::where('id', request()->id)->get();
 
         return json_encode($data);

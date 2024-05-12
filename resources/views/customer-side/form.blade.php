@@ -21,8 +21,7 @@
       <h4>Data Order</h4>
       <p class="input-order-label">
         <label for="id_order">ID Order</label>
-        <input type="text" id="id_order" name="id_order"
-          value="ORD000{{ App\Models\DataOrder::latest()->get()->first()->id + 1 }}" form="order" readonly>
+        <input type="text" id="id_order" name="id_order" value="ORD000{{ $id_order }}" form="order" readonly>
       </p>
       <p class="input-order-label">
         <label for="tanggal_order">Tanggal</label>
@@ -75,7 +74,7 @@
     </form>
   </div>
   <div class="row d-flex justify-content-center">
-    <input type="text" name="id_data_harga" value="{{ request()->id_data_harga }}" form="order">id data harga
+    <input type="hidden" name="id_data_harga" value="{{ request()->id_data_harga }}" form="order">
     <input type="hidden" name="jumlah_order" value="{{ request()->jumlah_order }}" form="order">
     <form action="{{ route('Order') }}" method="post" id="order" enctype="multipart/form-data">@csrf </form>
     @for ($i = 1; $i <= $jumlah_order; $i++) <div class="col-12">
@@ -84,13 +83,12 @@
           <h4>Data Detail Order {{ $i }} </h4>
           <p class="input-order-label">
             <label for="id_detailorder">ID Detail Order</label>
-            <input type="text" id="id_detailorder" name="id_detailorder{{ $i }}"
-              value="ORD000{{ App\Models\DataOrder::latest()->get()->first()->id + 1 }}-{{ $i }}" form="order" readonly>
+            <input type="text" id="id_detailorder" name="id_detailorder{{ $i }}" value="ORD000{{ $id_order }}-{{ $i }}"
+              form="order" readonly>
           </p>
           <p class="input-order2-label">
             <label for="stuffing_date{{ $i }}">Stuffing Date</label>
-            <input type="date" id="stuffing_date{{ $i }}" name="stuffing_date{{ $i }}" placeholder="Stuffing Date"
-              form="order" required>
+            <input type="date" id="stuffing_date{{ $i }}" name="stuffing_date{{ $i }}" form="order" required>
           </p>
           <p class="input-order2-label">
             <label for="container{{ $i }}">Container</label>
@@ -113,8 +111,7 @@
           </p>
           <p class="input-order2-label">
             <label for="closing_time{{ $i }}">Closing Time</label>
-            <input type="datetime-local" id="closing_time{{ $i }}" name="closing_time{{ $i }}"
-              placeholder="Closing Time" form="order" required>
+            <input type="datetime-local" id="closing_time{{ $i }}" name="closing_time{{ $i }}" form="order" required>
           </p>
           <p class="input-order2-label">
             <label for="destination{{ $i }}">Destination</label>

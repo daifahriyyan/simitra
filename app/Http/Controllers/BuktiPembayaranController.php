@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Throwable;
 use App\Models\Invoice;
 use App\Models\KeuAkun;
 use App\Models\DataOrder;
@@ -197,11 +198,16 @@ class BuktiPembayaranController extends Controller
      */
     public function destroy(string $id)
     {
-        $data = BuktiPembayaran::where('id', $id)->get()->first();
+        try {
+            $data = BuktiPembayaran::where('id', $id)->get()->first();
 
-        Storage::disk('public')->delete('Bukti_pembayaran/' . $data->bukti_pembayaran);
+            Storage::disk('public')->delete('Bukti_pembayaran/' . $data->bukti_pembayaran);
 
-        BuktiPembayaran::where('id', $id)->delete();
+            BuktiPembayaran::where('id', $id)->delete();
+            // Validate the value...
+        } catch (Throwable $e) {
+            return back()->with('error', $e->getMessage());
+        }
 
         return redirect(route('Bukti Pembayaran'))->with('delete', 'Data Berhasil Dihapus');
     }

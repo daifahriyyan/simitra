@@ -33,6 +33,21 @@
         <!-- Topbar -->
         <!-- Container Fluid-->
         <div class="container-fluid" id="container-wrapper">
+          @if (session()->has('error'))
+          <div class="row">
+            <div class="col d-flex justify-content-center">
+              <div class="alert alert-danger alert-dismissible fade show" style="min-height: 50px; width:500px;"
+                role="alert">
+                <div>
+                  {{ session('error') }}
+                </div>
+                <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          @endif
           <!-- Your container content -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Surat Perintah Kerja</h1> <!-- EDIT NAMA -->
@@ -340,8 +355,7 @@
                         <th>Tanggal</th>
                         <th>Place Fumigation</th>
                         <th>Jumlah Kontainer</th>
-                        <th>ID Order</th>
-                        <th>ID Order Container</th>
+                        <th>ID Detail Order</th>
                         <th>Container</th>
                         <th>Volume</th>
                         <th>Fumigan</th>
@@ -361,7 +375,6 @@
                         <td>{{ $record->place_fumigation }}</td>
                         <td>{{ $record->jumlah_container }}</td>
                         <td>{{ $record->detailOrder->id_detailorder }}</td>
-                        <td>{{ $record->detailOrder->dataOrder->id_order_container }}</td>
                         <td>{{ $record->detailOrder->container }}</td>
                         <td>{{ $record->detailOrder->dataOrder->volume }}</td>
                         <td>{{ $record->fumigan }}</td>

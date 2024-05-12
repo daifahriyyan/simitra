@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('invoice', function (Blueprint $table) {
             $table->id();
-            $table->string('id_order');
+            $table->unsignedBigInteger('id_order');
             $table->string('id_invoice');
-            $table->string('id_sertif');
-            $table->string('id_recordsheet');
-            $table->string('id_data_standar');
+            $table->unsignedBigInteger('id_sertif');
+            $table->unsignedBigInteger('id_recordsheet');
+            $table->unsignedBigInteger('id_data_standar');
             $table->string('termin');
             $table->date('tanggal_invoice');
             $table->string('no_bl');
@@ -29,6 +29,14 @@ return new class extends Migration
             $table->decimal('jumlah_dibayar', 65, 2);
             $table->date('tanggal_jatuh_tempo');
             $table->timestamps();
+        });
+
+        Schema::table('invoice', function (Blueprint $table) {
+            $table->foreign('id_sertif')->references('id')->on('sertifikat')->onDelete('restrict')->onUpdate('cascade');
+            // $table->foreign('id_order')->references('id')->on('data_order')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('id_order')->references('id')->on('detail_order')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('id_recordsheet')->references('id')->on('metil_recordsheet')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('id_data_standar')->references('id')->on('data_harga')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 

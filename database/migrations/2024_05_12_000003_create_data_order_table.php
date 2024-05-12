@@ -14,13 +14,19 @@ return new class extends Migration
         Schema::create('data_order', function (Blueprint $table) {
             $table->id();
             $table->string('id_order');
+            $table->unsignedBigInteger('id_data_harga');
             $table->date('tanggal_order');
-            $table->string('id_customer');
+            $table->unsignedBigInteger('id_customer');
             $table->string('treatment');
             $table->string('volume');
             $table->string('place_fumigation');
             $table->integer('jumlah_order');
             $table->timestamps();
+        });
+
+        Schema::table('data_order', function (Blueprint $table) {
+            $table->foreign('id_data_harga')->references('id')->on('data_harga')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('id_customer')->references('id')->on('data_customer')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 

@@ -14,13 +14,18 @@ return new class extends Migration
         Schema::create('surat_pemberitahuan', function (Blueprint $table) {
             $table->id();
             $table->string('id_sp');
-            $table->string('id_order');
+            $table->unsignedBigInteger('id_order');
             $table->string('place_fumigation');
             $table->string('fumigan');
             $table->date('tanggal');
             $table->date('tanggal_selesai');
             $table->string('dimohon_kesediaan');
             $table->timestamps();
+        });
+
+        Schema::table('surat_pemberitahuan', function (Blueprint $table) {
+            // $table->foreign('id_order')->references('id')->on('data_order')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('id_order')->references('id')->on('detail_order')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 

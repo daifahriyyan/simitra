@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('detail_order', function (Blueprint $table) {
             $table->id();
-            $table->string('id_order');
-            $table->string('id_detail_order');
+            $table->unsignedBigInteger('id_order');
+            $table->string('id_detailorder');
             $table->string('id_data_standar')->nullable();
             $table->date('stuffing_date');
             $table->string('id_data_harga')->nullable();
@@ -32,6 +32,11 @@ return new class extends Migration
             // $table->string('pic');
             // $table->string('phone_pic');
             $table->timestamps();
+        });
+
+        Schema::table('detail_order', function (Blueprint $table) {
+            // $table->foreign('id_order')->references('id')->on('invoice')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('id_order')->references('id')->on('data_order')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 

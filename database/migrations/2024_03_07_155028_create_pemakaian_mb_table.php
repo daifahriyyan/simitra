@@ -15,12 +15,16 @@ return new class extends Migration
             $table->id();
             $table->string('id_pemakaian');
             $table->string('tanggal_mulai');
-            $table->string('id_persediaan');
+            $table->unsignedBigInteger('id_persediaan');
             $table->string('tanggal_selesai');
             $table->string('pemakaian_persediaan');
             $table->string('berat_akhir');
             $table->string('keterangan');
             $table->timestamps();
+        });
+
+        Schema::table('pemakaian_mb', function (Blueprint $table) {
+            $table->foreign('id_persediaan')->references('id')->on('data_persediaan')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 

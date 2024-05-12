@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DataImporter;
+use Throwable;
 use App\Models\DataOrder;
-use App\Models\MetilRecordsheet;
 use App\Models\Sertifikat;
+use App\Models\DataImporter;
 use Illuminate\Http\Request;
+use App\Models\MetilRecordsheet;
 
 class SertifikatController extends Controller
 {
@@ -105,7 +106,13 @@ class SertifikatController extends Controller
    */
   public function destroy(string $id)
   {
-    Sertifikat::where('id', $id)->delete();
+    try {
+      Sertifikat::where('id', $id)->delete();
+
+      // Validate the value...
+    } catch (Throwable $e) {
+      return back()->with('error', $e->getMessage());
+    }
 
     return redirect(route('Sertifikat'))->with('delete', 'Data Sertifikat Berhasil Dihapus');
   }

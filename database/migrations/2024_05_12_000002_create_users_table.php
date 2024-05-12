@@ -18,10 +18,14 @@ return new class extends Migration
             $table->string('nama_lengkap')->nullable();
             $table->string('posisi')->nullable();
             $table->string('email')->nullable();
-            $table->string('pass');
+            $table->string('pass')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+        });
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreign('id')->references('id')->on('data_customer')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 

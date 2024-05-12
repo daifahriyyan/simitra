@@ -11,6 +11,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\AsetTetapController;
 use App\Http\Controllers\DataOrderController;
 use App\Http\Controllers\HargaJasaController;
+use App\Http\Controllers\PembelianController;
 use App\Http\Controllers\DaftarAkunController;
 use App\Http\Controllers\JurnalUmumController;
 use App\Http\Controllers\PenggajianController;
@@ -33,7 +34,7 @@ use App\Http\Controllers\MethylRecordsheetController;
 use App\Http\Controllers\SuratPemberitahuanController;
 use App\Http\Controllers\SuratPerintahKerjaController;
 use App\Http\Controllers\KartuStokPersediaanController;
-use App\Http\Controllers\PembelianController;
+use App\Http\Controllers\LapKeuController;
 use App\Http\Controllers\PenyusutanAsetTetapController;
 use App\Http\Controllers\PemberitahuanKegiatanController;
 
@@ -268,15 +269,10 @@ Route::resource('/dashboard/akuntansi/detail-supplier', DetailSupplierController
 ]);
 
 // Laporan Keuangan
-Route::resource('/dashboard/laporan-keuangan/buku-besar', DaftarAkunController::class)->names([
-    'index' => 'Buku Besar',
-    'store' => 'Tambah Buku Besar',
-    'update' => 'Ubah Buku Besar',
-    'destroy' => 'Hapus Buku Besar',
-]);
+Route::get('/dashboard/laporan-keuangan/buku-besar', [LapKeuController::class, 'bukuBesar'])->name('Buku Besar');
+Route::get('/dashboard/laporan-keuangan/neraca-saldo', [LapKeuController::class, 'neracaSaldo'])->name('Neraca Saldo');
 Route::view('/dashboard/laporan-keuangan/hpp', 'pages.laporan-keuangan.hpp')->name('Harga Pokok Penjualan');
 Route::view('/dashboard/laporan-keuangan/laba-rugi', 'pages.laporan-keuangan.laba-rugi')->name('Laporan Laba Rugi');
-Route::view('/dashboard/laporan-keuangan/neraca-saldo', 'pages.laporan-keuangan.neraca-saldo')->name('Neraca Saldo');
 Route::view('/dashboard/laporan-keuangan/posisi-keuangan', 'pages.laporan-keuangan.posisi-keuangan')->name('Posisi Keuangan');
 
 

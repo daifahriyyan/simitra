@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Throwable;
+use App\Models\KeuAkun;
 use App\Models\KeuJurnal;
 use App\Models\DataPegawai;
-use App\Models\KeuAkun;
 use Illuminate\Http\Request;
 use App\Models\KeuPenggajian;
 use App\Models\KeuDetailJurnal;
@@ -184,9 +185,22 @@ class PenggajianController extends Controller
         $id_penggajian = KeuPenggajian::where('id', $id)->get()->first()->id_penggajian;
         // Ambil no jurnal dari table jurnal umum dimana no bukti sesuai dengan id penggajian
         $no_jurnal = KeuJurnal::where('no_bukti', $id_penggajian)->get()->first()->no_jurnal ?? null;
+
         if (isset($no_jurnal)) {
             // ambil seluruh data detail jurnal
             $detail_jurnal = KeuDetailJurnal::where('no_jurnal', $no_jurnal)->get();
+
+            try {
+                // hapus record table detail jurnal berdasarkan no jurnal
+                KeuDetailJurnal::where('no_jurnal', $no_jurnal)->delete();
+                // hapus record table jurnal berdasarkan no jurnal
+                KeuJurnal::where('no_jurnal', $no_jurnal)->delete();
+
+                KeuPenggajian::where('id', $id)->delete();
+                // Validate the value...
+            } catch (Throwable $e) {
+                return back()->with('error', $e->getMessage());
+            }
 
             // lakukan pengembalian saldo tiap tiap akun dari jurnal umum yang dihapus
             foreach ($detail_jurnal as $record) {
@@ -230,14 +244,8 @@ class PenggajianController extends Controller
                     $keterangan = 'Debet berhasil dikurangi debet';
                 }
             }
-
-            // hapus record table detail jurnal berdasarkan no jurnal
-            KeuDetailJurnal::where('no_jurnal', $no_jurnal)->delete();
-            // hapus record table jurnal berdasarkan no jurnal
-            KeuJurnal::where('no_jurnal', $no_jurnal)->delete();
         }
 
-        KeuPenggajian::where('id', $id)->delete();
 
         return redirect()->route('Penggajian')->with('hapus', 'Data Berhasil Dihapus');
     }

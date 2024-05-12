@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('metil_recordsheet', function (Blueprint $table) {
             $table->id();
-            $table->string('id_order');
+            $table->unsignedBigInteger('id_order');
             $table->string('id_recordsheet');
             $table->date('tanggal_selesai');
             $table->integer('daff_prescribed_doses_rate');
@@ -22,6 +22,10 @@ return new class extends Migration
             $table->integer('applied_dose_rate');
             $table->string('dokumen_metil_recordsheet');
             $table->timestamps();
+        });
+
+        Schema::table('metil_recordsheet', function (Blueprint $table) {
+            $table->foreign('id_order')->references('id')->on('data_order')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 

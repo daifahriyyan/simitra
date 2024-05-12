@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DataPersediaan;
+use Throwable;
 use App\Models\PemakaianMb;
 use Illuminate\Http\Request;
+use App\Models\DataPersediaan;
 
 class PemakaianMethylController extends Controller
 {
@@ -68,12 +69,15 @@ class PemakaianMethylController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $saldo = DataPersediaan::where('id', $request->id_persediaan)->first()->saldo;
+        $berat_akhir = $saldo - $request->pemakaian_persediaan;
         PemakaianMb::where('id', $id)->update([
             'id_pemakaian' => $request->id_pemakaian,
             'tanggal_mulai' => $request->tanggal_mulai,
             'id_persediaan' => $request->id_persediaan,
             'tanggal_selesai' => $request->tanggal_selesai,
             'pemakaian_persediaan' => $request->pemakaian_persediaan,
+            'berat_akhir' => $berat_akhir,
             'keterangan' => $request->keterangan,
         ]);
 
@@ -85,7 +89,13 @@ class PemakaianMethylController extends Controller
      */
     public function destroy(string $id)
     {
-        PemakaianMb::where('id', $id)->delete();
+        try {
+            PemakaianMb::where('id', $id)->delete();
+
+            // Validate the value...
+        } catch (Throwable $e) {
+            return back()->with('error', $e->getMessage());
+        }
 
         return redirect(route('Pemakaian Methyl'))->with('delete', 'Data Pemakaian Methyl Berhasil Dihapus');
     }

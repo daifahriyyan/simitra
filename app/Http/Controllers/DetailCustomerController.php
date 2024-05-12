@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Throwable;
 use App\Models\DataCustomer;
-use App\Models\DetailCustomer;
 use Illuminate\Http\Request;
+use App\Models\DetailCustomer;
 
 class DetailCustomerController extends Controller
 {
@@ -102,7 +103,12 @@ class DetailCustomerController extends Controller
    */
   public function destroy($id)
   {
-    DetailCustomer::where('id', $id)->delete();
+    try {
+      DetailCustomer::where('id', $id)->delete();
+      // Validate the value...
+    } catch (Throwable $e) {
+      return back()->with('error', $e->getMessage());
+    }
 
     return redirect(route('Detail Customer'))->with('delete', 'Data Berhasil Dihapus');
   }

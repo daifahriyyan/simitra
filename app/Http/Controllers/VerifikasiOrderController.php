@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Throwable;
 use App\Models\DataOrder;
-use App\Models\VerifikasiOrder;
 use Illuminate\Http\Request;
+use App\Models\VerifikasiOrder;
 
 class VerifikasiOrderController extends Controller
 {
@@ -90,7 +91,13 @@ class VerifikasiOrderController extends Controller
      */
     public function destroy($id)
     {
-        VerifikasiOrder::where('id', $id)->delete();
+        try {
+            VerifikasiOrder::where('id', $id)->delete();
+
+            // Validate the value...
+        } catch (Throwable $e) {
+            return back()->with('error', $e->getMessage());
+        }
 
         return redirect(route('Verifikasi Order'))->with('delete', 'Data Verifikasi Berhasil Dihapus');
     }

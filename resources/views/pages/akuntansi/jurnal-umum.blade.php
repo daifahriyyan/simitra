@@ -34,6 +34,21 @@
 
         <!-- Container Fluid-->
         <div class="container-fluid" id="container-wrapper">
+          @if (session()->has('error'))
+          <div class="row">
+            <div class="col d-flex justify-content-center">
+              <div class="alert alert-danger alert-dismissible fade show" style="min-height: 50px; width:500px;"
+                role="alert">
+                <div>
+                  {{ session('error') }}
+                </div>
+                <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          @endif
           <!-- Your container content -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Jurnal Umum</h1> <!-- EDIT NAMA -->
@@ -327,7 +342,7 @@
                       <select class="custom-select" id="no_akun_debet" name="no_akun_debet[]">
                         <option selected>Pilih Kode dan Nama Akun</option>
                         @foreach ($akun as $item)
-                        <option value="{{ $item->kode_akun }}">{{ $item->kode_akun }} | {{ $item->nama_akun
+                        <option value="{{ $item->id }}">{{ $item->kode_akun }} | {{ $item->nama_akun
                           }}
                         </option>
                         @endforeach
@@ -350,7 +365,7 @@
                       <select class="custom-select" id="no_akun_kredit" name="no_akun_kredit[]">
                         <option selected>Pilih Kode dan Nama Akun</option>
                         @foreach ($akun as $item)
-                        <option value="{{ $item->kode_akun }}">{{ $item->kode_akun }} | {{ $item->nama_akun
+                        <option value="{{ $item->id }}">{{ $item->kode_akun }} | {{ $item->nama_akun
                           }}
                         </option>
                         @endforeach

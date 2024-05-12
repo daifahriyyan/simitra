@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Throwable;
 use App\Models\DataOrder;
 use Illuminate\Http\Request;
 use App\Models\CeklistFumigasi;
@@ -104,12 +105,16 @@ class CeklistFumigasiController extends Controller
      */
     public function destroy($id)
     {
+
         $ceklistFumigasi = CeklistFumigasi::where('id', $id)->first();
-
-        // Delete file from storage if it exists
-        Storage::disk('public')->delete('ceklist_fumigasi/' . $ceklistFumigasi->ceklist_fumigasi);
-
-        CeklistFumigasi::where('id', $id)->delete();
+        try {
+            CeklistFumigasi::where('id', $id)->delete();
+            // Delete file from storage if it exists
+            Storage::disk('public')->delete('ceklist_fumigasi/' . $ceklistFumigasi->ceklist_fumigasi);
+            // Validate the value...
+        } catch (Throwable $e) {
+            return back()->with('error', $e->getMessage());
+        }
 
         return redirect(route('Ceklist Fumigasi'))->with('delete', 'Data Ceklist Fumigasi Berhasil Dihapus');
     }

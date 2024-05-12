@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DataHargar;
+use Throwable;
 use App\Models\RekapHpp;
-use App\Models\RekapPenjualan;
+use App\Models\DataHargar;
 use Illuminate\Http\Request;
+use App\Models\RekapPenjualan;
 
 class RekapHPPStandarController extends Controller
 {
@@ -90,7 +91,13 @@ class RekapHPPStandarController extends Controller
      */
     public function destroy(string $id)
     {
-        RekapHPP::where('id', $id)->delete();
+        try {
+            RekapHPP::where('id', $id)->delete();
+
+            // Validate the value...
+        } catch (Throwable $e) {
+            return back()->with('error', $e->getMessage());
+        }
 
         return redirect()->route('Rekap HPP Standar')->with('hapus', 'Data Berhasil Dihapus');
     }

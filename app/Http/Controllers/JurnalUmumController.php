@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Throwable;
 use App\Models\Invoice;
 use App\Models\KeuAkun;
 use App\Models\KeuJurnal;
@@ -21,7 +22,7 @@ class JurnalUmumController extends Controller
             // ambil seluruh data Detail Jurnal
             'jurnalUmum' => KeuDetailJurnal::get(),
             // ambil id terakhir dari Jurnal
-            'jurnal' => KeuJurnal::latest()->get()->first()->id ?? 0,
+            'jurnal' => isset(KeuJurnal::latest()->get()->first()->id) + 1 ?? 1,
             // ambil seluruh data akun
             'akun' => KeuAkun::latest()->get(),
             // ambil kode akun yang jenisnya debet
@@ -71,12 +72,12 @@ class JurnalUmumController extends Controller
                 'saldo_akun' => $saldo_akun,
             ]);
         }
-
+        $id_jurnal = KeuJurnal::where('no_jurnal', $request->no_jurnal)->get()->first()->id;
 
         // lakukan penambahan tiap tiap jurnal kredit yang dimasukkan
         for ($i = 0; $i < $jumlah_kredit; $i++) {
             KeuDetailJurnal::create([
-                'no_jurnal' => $request->no_jurnal,
+                'no_jurnal' => $id_jurnal,
                 'kode_akun' => $request->no_akun_kredit[$i],
                 'kredit' => $request->jumlah_kredit[$i]
             ]);
@@ -144,6 +145,27 @@ class JurnalUmumController extends Controller
 
         $no_bukti = KeuJurnal::where('no_jurnal', $no_jurnal)->get()->first()->no_bukti;
 
+        try {
+            // ambil identitas jurnal
+            $no_jurnal = explode('0', $no_jurnal);
+            if ($no_jurnal[0] == 'JUBYR') {
+                DetailSupplier::where('id_detail_supplier', $no_bukti)->delete();
+            } else if ($no_jurnal[0] == 'JUGAJI') {
+                KeuPenggajian::where('id_penggajian', $no_bukti)->delete();
+            } else if ($no_jurnal[0] == 'JUINV') {
+                Invoice::where('id_invoice', $no_bukti)->delete();
+            }
+
+            // hapus record table detail jurnal berdasarkan no jurnal
+            KeuDetailJurnal::where('no_jurnal', $no_jurnal)->delete();
+            // hapus record table jurnal berdasarkan no jurnal
+            KeuJurnal::where('no_jurnal', $no_jurnal)->delete();
+
+            // Validate the value...
+        } catch (Throwable $e) {
+            return back()->with('error', $e->getMessage());
+        }
+
         // lakukan pengembalian saldo tiap tiap akun dari jurnal umum yang dihapus
         foreach ($detail_jurnal as $record) {
             // dapatkan kode akun dari tiap akun yang dihapus
@@ -185,22 +207,6 @@ class JurnalUmumController extends Controller
 
                 $keterangan = 'Debet berhasil dikurangi debet';
             }
-        }
-
-        // hapus record table detail jurnal berdasarkan no jurnal
-        KeuDetailJurnal::where('no_jurnal', $no_jurnal)->delete();
-        // hapus record table jurnal berdasarkan no jurnal
-        KeuJurnal::where('no_jurnal', $no_jurnal)->delete();
-
-
-        // ambil identitas jurnal
-        $no_jurnal = explode('0', $no_jurnal);
-        if ($no_jurnal[0] == 'JUBYR') {
-            DetailSupplier::where('id_detail_supplier', $no_bukti)->delete();
-        } else if ($no_jurnal[0] == 'JUGAJI') {
-            KeuPenggajian::where('id_penggajian', $no_bukti)->delete();
-        } else if ($no_jurnal[0] == 'JUINV') {
-            Invoice::where('id_invoice', $no_bukti)->delete();
         }
 
         return redirect()->route('Jurnal Umum')->with('hapus', 'Data Jurnal Umum Berhasil Dihapus');

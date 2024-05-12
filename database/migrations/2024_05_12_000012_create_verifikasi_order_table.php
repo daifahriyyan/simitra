@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('verifikasi_order', function (Blueprint $table) {
             $table->id();
             $table->string('id_verifikasi');
-            $table->string('id_order');
+            $table->unsignedBigInteger('id_order');
             $table->string('waktu');
             $table->string('tujuan');
             $table->string('destination');
@@ -23,6 +23,11 @@ return new class extends Migration
             $table->string('place_fumigation');
             $table->string('kesimpulan');
             $table->timestamps();
+        });
+
+        Schema::table('verifikasi_order', function (Blueprint $table) {
+            // $table->foreign('id_order')->references('id')->on('data_order')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('id_order')->references('id')->on('detail_order')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 

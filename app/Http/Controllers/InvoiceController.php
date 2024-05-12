@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Throwable;
 use App\Models\Invoice;
 use App\Models\KeuAkun;
 use App\Models\DataOrder;
@@ -25,7 +26,7 @@ class InvoiceController extends Controller
         date_default_timezone_set("Asia/Jakarta");
         return view('pages.penerimaan-jasa.invoice', [
             'invoice' => Invoice::get(),
-            'id_invoice' => Invoice::latest()->get()->first()->id,
+            'id_invoice' => isset(Invoice::latest()->get()->first()->id) + 1 ?? 1,
             'dataSertif' => Sertifikat::get(),
             'dataOrder' => DataOrder::get(),
             'recordsheet' => MetilRecordsheet::get(),
@@ -191,6 +192,7 @@ class InvoiceController extends Controller
             'tanggal_input' => $request->tanggal_invoice,
             'termin' => $request->termin,
             'total_penjualan' => $totalPenjualan,
+            'saldo_awal' => 0,
             'penerimaan' => 0,
             'saldo_akhir' => $totalPenjualan,
             'tanggal_jatuh_tempo' => $tglJatuhTempo
@@ -322,9 +324,22 @@ class InvoiceController extends Controller
         $id_invoice = Invoice::where('id', $id)->get()->first()->id_invoice;
         // Ambil no jurnal dari table jurnal umum dimana no bukti sesuai dengan id penggajian
         $no_jurnal = KeuJurnal::where('no_bukti', $id_invoice)->get()->first()->no_jurnal ?? null;
+
         if (isset($no_jurnal)) {
             // ambil seluruh data detail jurnal
             $detail_jurnal = KeuDetailJurnal::where('no_jurnal', $no_jurnal)->get();
+
+            try {
+                // hapus record table detail jurnal berdasarkan no jurnal
+                KeuDetailJurnal::where('no_jurnal', $no_jurnal)->delete();
+                // hapus record table jurnal berdasarkan no jurnal
+                KeuJurnal::where('no_jurnal', $no_jurnal)->delete();
+
+                Invoice::where('id', $id)->delete();
+                // Validate the value...
+            } catch (Throwable $e) {
+                return back()->with('error', $e->getMessage());
+            }
 
             // lakukan pengembalian saldo tiap tiap akun dari jurnal umum yang dihapus
             foreach ($detail_jurnal as $record) {
@@ -368,14 +383,7 @@ class InvoiceController extends Controller
                     $keterangan = 'Debet berhasil dikurangi debet';
                 }
             }
-
-            // hapus record table detail jurnal berdasarkan no jurnal
-            KeuDetailJurnal::where('no_jurnal', $no_jurnal)->delete();
-            // hapus record table jurnal berdasarkan no jurnal
-            KeuJurnal::where('no_jurnal', $no_jurnal)->delete();
         }
-
-        Invoice::where('id', $id)->delete();
 
         return redirect(route('Invoice'))->with('delete', 'Data Invoice Berhasil dihapus');
     }

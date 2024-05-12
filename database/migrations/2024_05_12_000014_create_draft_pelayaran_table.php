@@ -11,13 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ceklist_fumigasi', function (Blueprint $table) {
+        Schema::create('draft_pelayaran', function (Blueprint $table) {
             $table->id();
-            $table->string('id_ceklist');
-            $table->string('id_order');
+            $table->string('id_draft');
+            $table->unsignedBigInteger('id_order');
             $table->date('tanggal_order');
-            $table->string('ceklist_fumigasi');
+            $table->string('draft_pelayaran');
             $table->timestamps();
+        });
+
+        Schema::table('draft_pelayaran', function (Blueprint $table) {
+            $table->foreign('id_order')->references('id')->on('data_order')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 
@@ -26,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ceklist_fumigasi');
+        Schema::dropIfExists('draft_pelayaran');
     }
 };

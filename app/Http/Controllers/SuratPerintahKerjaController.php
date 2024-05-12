@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Throwable;
 use App\Models\DataOrder;
 use App\Models\DataPegawai;
 use App\Models\DetailOrder;
@@ -97,7 +98,13 @@ class SuratPerintahKerjaController extends Controller
      */
     public function destroy($id)
     {
-        SuratPerintahKerja::where('id', $id)->delete();
+        try {
+            SuratPerintahKerja::where('id', $id)->delete();
+
+            // Validate the value...
+        } catch (Throwable $e) {
+            return back()->with('error', $e->getMessage());
+        }
 
         return redirect(route('Surat Perintah Kerja'))->with('delete', 'Data Surat Perintah Kerja Berhasil Dihapus');
     }

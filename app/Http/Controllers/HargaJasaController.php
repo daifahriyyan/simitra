@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Throwable;
 use App\Models\DataHargar;
 use App\Models\DataHppFeet;
 use Illuminate\Http\Request;
@@ -57,6 +58,7 @@ class HargaJasaController extends Controller
         $bop_feet = $datahppfeet->bop_feet * $request['volume'];
         $hpp = $bbb_feet + $btk_feet + $bop_feet;
         $markup = intval(request()->markup);
+        $markup = $markup / 100;
         DataHargar::create([
             'id_datastandar' => request()->id_datastandar,
             'id_standar' => request()->id_standar,
@@ -114,7 +116,7 @@ class HargaJasaController extends Controller
             'bop_standar' => $bop_feet,
             'hpp' => $hpp,
             'markup' => $markup,
-            'harga_jual' => $hpp * $markup,
+            'harga_jual' => $hpp * ($markup / 100),
         ]);
 
         return redirect(route('Harga Jasa'))->with('add', 'Data Berhasil Ditambahkan');
@@ -125,7 +127,12 @@ class HargaJasaController extends Controller
      */
     public function destroy(string $id)
     {
-        DataHargar::where('id', $id)->delete();
+        try {
+            DataHargar::where('id', $id)->delete();
+            // Validate the value...
+        } catch (Throwable $e) {
+            return back()->with('error', $e->getMessage());
+        }
 
         return redirect(route('Harga Jasa'))->with('delete', 'Data Berhasil Dihapus');
     }

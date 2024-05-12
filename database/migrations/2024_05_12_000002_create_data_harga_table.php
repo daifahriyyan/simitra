@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('data_harga', function (Blueprint $table) {
             $table->id();
-            $table->string('id_standar');
+            $table->unsignedBigInteger('id_standar');
             $table->string('id_datastandar');
             $table->string('volume');
             $table->string('treatment');
@@ -24,6 +24,10 @@ return new class extends Migration
             $table->decimal('markup', 65, 2);
             $table->decimal('harga_jual', 65, 2);
             $table->timestamps();
+        });
+
+        Schema::table('data_harga', function (Blueprint $table) {
+            $table->foreign('id_standar')->references('id')->on('data_hpp_feet')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 

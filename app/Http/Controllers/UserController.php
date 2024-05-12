@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Throwable;
 use App\Models\User;
 use App\Models\DataCustomer;
 use Illuminate\Http\Request;
@@ -137,7 +138,12 @@ class UserController extends Controller
     }
     public function deleteUser(string $id)
     {
-        User::where('id', $id)->delete();
+        try {
+            User::where('id', $id)->delete();
+            // Validate the value...
+        } catch (Throwable $e) {
+            return back()->with('error', $e->getMessage());
+        }
 
         return redirect()->route('Daftar User');
     }
