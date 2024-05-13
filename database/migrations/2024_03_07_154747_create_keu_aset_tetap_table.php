@@ -13,16 +13,14 @@ return new class extends Migration
     {
         Schema::create('keu_aset_tetap', function (Blueprint $table) {
             $table->id();
-            $table->string('kode_penyusutan_at');
             $table->string('kode_at');
             $table->string('jenis_at');
             $table->string('nama_at');
-            $table->decimal('total_perolehan', 65, 2);
-            $table->date('tanggal_penyusutan');
-            $table->integer('tahun_ke');
-            $table->decimal('beban_penyusutan', 65, 2);
-            $table->decimal('akumulasi_penyusutan', 65, 2);
-            $table->decimal('nilai_buku', 65, 2);
+            $table->integer('jumlah_at');
+            $table->string('keberadaan');
+            $table->integer('tahun_perolehan');
+            $table->integer('umur_ekonomis');
+            $table->decimal('harga_perolehan', 65, 2);
             $table->timestamps();
         });
     }

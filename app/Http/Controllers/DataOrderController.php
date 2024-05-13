@@ -8,6 +8,7 @@ use App\Models\DataHargar;
 use App\Models\DetailOrder;
 use App\Models\DataCustomer;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DataOrderController extends Controller
 {
@@ -16,12 +17,40 @@ class DataOrderController extends Controller
      */
     public function index()
     {
+        $detailOrder = DetailOrder::get();
+        if (request()->get('export') == 'pdf') {
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.tabel-order', ['detailOrder' => $detailOrder])->setPaper('a4');
+            return $pdf->stream('Daftar Order.pdf');
+        } else if (request()->get('export') == 'pdf-detail') {
+            $detail = DetailOrder::where('id_detailorder', request()->id_detailorder)->get()->first();
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.request-order', ['detail' => $detail])->setPaper('a4');
+            return $pdf->stream('Request Order.pdf');
+        }
+
         return view('pages.penerimaan-jasa.order', [
             'title' => 'Data Order',
             'dataCustomers' => DataCustomer::all(),
             'hargaJasa' => DataHargar::all(),
             'dataOrder' => DataOrder::with('dataCustomer')->get(),
-            'detailOrder' => DetailOrder::get()
+            'detailOrder' => $detailOrder
         ]);
     }
 

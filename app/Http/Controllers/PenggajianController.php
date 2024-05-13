@@ -9,6 +9,7 @@ use App\Models\DataPegawai;
 use Illuminate\Http\Request;
 use App\Models\KeuPenggajian;
 use App\Models\KeuDetailJurnal;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PenggajianController extends Controller
 {
@@ -17,6 +18,19 @@ class PenggajianController extends Controller
      */
     public function index()
     {
+        if (request()->get('export') == 'pdf') {
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.tabel-penggajian', ['penggajian' => KeuPenggajian::get()])->setPaper('a4');
+            return $pdf->stream('Daftar Penggajian.pdf');
+        }
         return view('pages.akuntansi.penggajian', [
             'penggajian' => KeuPenggajian::get(),
             'pegawai' => DataPegawai::get()
@@ -95,16 +109,17 @@ class PenggajianController extends Controller
             'no_bukti' => $request->id_penggajian,
         ]);
 
+        $id_jurnal = KeuJurnal::get()->first()->id;
 
         // Masukkan Data Penggajian Ke Detail Jurnal Umum bagian debet
         KeuDetailJurnal::create([
-            'no_jurnal' => $no_jurnal,
+            'no_jurnal' => $id_jurnal,
             'kode_akun' => '5220',
             'debet' => $gaji_bersih
         ]);
         // Masukkan Data Penggajian Ke Detail Jurnal Umum bagian kredit
         KeuDetailJurnal::create([
-            'no_jurnal' => $no_jurnal,
+            'no_jurnal' => $id_jurnal,
             'kode_akun' => '2130',
             'kredit' => $gaji_bersih
         ]);

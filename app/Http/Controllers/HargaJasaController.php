@@ -6,6 +6,7 @@ use Throwable;
 use App\Models\DataHargar;
 use App\Models\DataHppFeet;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 
 class HargaJasaController extends Controller
@@ -15,6 +16,20 @@ class HargaJasaController extends Controller
      */
     public function index()
     {
+        $dataHarga = DataHargar::get();
+        if (request()->get('export') == 'pdf') {
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.tabel_harga_jasa', ['dataHarga' => $dataHarga])->setPaper('a4');
+            return $pdf->stream('Daftar Harga Jasa.pdf');
+        }
         return view('pages.master.harga-jasa', [
             'title' => 'Harga Jasa',
             'records' => DataHargar::get(),

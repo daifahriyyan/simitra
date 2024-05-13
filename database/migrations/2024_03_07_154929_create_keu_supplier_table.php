@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('keu_supplier', function (Blueprint $table) {
             $table->id();
+            $table->string('id_supplier');
+            $table->string('nama_supplier');
+            $table->string('alamat_supplier');
+            $table->string('telepon_supplier');
+            $table->string('email_supplier');
             $table->timestamps();
         });
     }

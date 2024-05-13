@@ -17,6 +17,6 @@ class DetailCustomer extends Model
 
     public function dataCustomer()
     {
-        return $this->belongsTo(DataCustomer::class, 'id_customer', 'id_customer');
+        return $this->belongsTo(DataCustomer::class, 'id_customer', 'id');
     }
 }

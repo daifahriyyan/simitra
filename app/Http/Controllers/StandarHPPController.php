@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Throwable;
 use App\Models\DataHppFeet;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class StandarHPPController extends Controller
 {
@@ -13,9 +14,23 @@ class StandarHPPController extends Controller
      */
     public function index()
     {
+        $records = DataHppFeet::get();
+        if (request()->get('export') == 'pdf') {
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.tabel_standar_hpp', ['records' => $records])->setPaper('a4');
+            return $pdf->stream('Daftar Standar Hpp.pdf');
+        }
         return view('pages.master.standar-hpp', [
             'title' => 'Standar HPP',
-            'records' => DataHppFeet::get()
+            'records' => $records
         ]);
     }
 

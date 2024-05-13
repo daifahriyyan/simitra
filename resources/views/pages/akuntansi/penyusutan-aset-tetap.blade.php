@@ -193,10 +193,10 @@
                     </div>
                     <!-- Tombol Cetak Tabel dengan Icon -->
                     <div>
-                      <button type="button" class="btn btn-sm btn-warning" style='width: 60px; height: 30px;'
-                        onclick="cetakTabel()">
+                      <a href="{{ route('Penyusutan Aset Tetap') }}?export=pdf" class="btn btn-sm btn-warning"
+                        style='width: 60px; height: 30px;'>
                         Cetak
-                      </button>
+                      </a>
                     </div>
                   </div>
 
@@ -258,6 +258,9 @@
                             data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
                           <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
                             data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
+                          <a href="{{ route('Penyusutan Aset Tetap') }}?export=pdf-detail&id={{ $record->id }}"
+                            class='btn btn-primary btn-sm' style='width: 30px; height: 30px;' target='_blank'
+                            role='button'><i class='fas fa-print'></i></a>
                         </td>
                       </tr>
                       @endforeach

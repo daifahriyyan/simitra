@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\DataPersediaan;
 use App\Models\KartuPersediaan;
 use App\Models\KeuDetailJurnal;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\Controller;
 
 class KartuStokPersediaanController extends Controller
@@ -18,9 +19,23 @@ class KartuStokPersediaanController extends Controller
      */
     public function index()
     {
+        $kartuPersediaan = KartuPersediaan::get();
+        if (request()->get('export') == 'pdf') {
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.tabel_kartu_persediaan', ['kartuPersediaan' => $kartuPersediaan])->setPaper('a4');
+            return $pdf->stream('Daftar Kartu Stok Persediaan.pdf');
+        }
         date_default_timezone_set("Asia/Jakarta");
         return view('pages.operasional.kartu-stok-persediaan', [
-            'kartuPersediaan' => KartuPersediaan::get(),
+            'kartuPersediaan' => $kartuPersediaan,
             'id_KP' => KartuPersediaan::latest()->get()->first()->id ?? 0,
             'dataPersediaan' => DataPersediaan::get(),
         ]);

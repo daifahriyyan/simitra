@@ -168,9 +168,9 @@
               </button>
             </div>
             <!-- Tombol Cetak Tabel dengan Icon -->
-            <button type="button" class="btn btn-sm btn-warning" onclick="cetakTabel()">
+            <a href="{{ route('Daftar Akun') }}?export=pdf" class="btn btn-sm btn-warning">
               Cetak
-            </button>
+            </a>
           </div>
 
           <!-- Skrip JavaScript untuk Filter Tanggal dan Cetak Tabel -->

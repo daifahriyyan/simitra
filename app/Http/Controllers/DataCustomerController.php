@@ -28,8 +28,8 @@ class DataCustomerController extends Controller
         'pdfBackend' => 'CPDF',
         'isHtml5ParserEnabled' => true
       ]);
-      $pdf = Pdf::loadView('generate-pdf.request-order')->setPaper('a4');
-      return $pdf->stream('Data Customer.pdf');
+      $pdf = Pdf::loadView('generate-pdf.tabel-customer', ['records' => $dataCustomer])->setPaper('a4');
+      return $pdf->stream('Daftar CUstomer.pdf');
     }
 
     return view('pages.penerimaan-jasa.customer', [

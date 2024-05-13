@@ -14,6 +14,7 @@ use App\Models\DataCustomer;
 use Illuminate\Http\Request;
 use App\Models\DetailCustomer;
 use App\Models\KeuDetailJurnal;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\MetilRecordsheet;
 
 class InvoiceController extends Controller
@@ -23,6 +24,20 @@ class InvoiceController extends Controller
      */
     public function index()
     {
+        if (request()->get('export') == 'pdf-detail') {
+            $detail = Invoice::where('id', request()->id)->get()->first();
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.invoice', ['detail' => $detail])->setPaper('a4');
+            return $pdf->stream('Invoice.pdf');
+        }
         date_default_timezone_set("Asia/Jakarta");
         return view('pages.penerimaan-jasa.invoice', [
             'invoice' => Invoice::get(),
@@ -161,23 +176,27 @@ class InvoiceController extends Controller
             'no_bukti' => $request->id_invoice,
         ]);
 
+        $id_jurnal = KeuJurnal::where('no_jurnal', $no_jurnal)->get()->first()->id;
+        $id_1120 = KeuAkun::where('kode_akun', '1120')->get()->first()->id;
+        $id_2120 = KeuAkun::where('kode_akun', '2120')->get()->first()->id;
+        $id_4110 = KeuAkun::where('kode_akun', '4110')->get()->first()->id;
 
         // Masukkan Data invoice Ke Detail Jurnal Umum bagian debet
         KeuDetailJurnal::create([
-            'no_jurnal' => $no_jurnal,
-            'kode_akun' => '1120',
+            'no_jurnal' => $id_jurnal,
+            'kode_akun' => $id_1120,
             'debet' => $jumlah_dibayar
         ]);
         // Masukkan Data invoice Ke Detail Jurnal Umum bagian debet
         KeuDetailJurnal::create([
-            'no_jurnal' => $no_jurnal,
-            'kode_akun' => '2120',
+            'no_jurnal' => $id_jurnal,
+            'kode_akun' => $id_2120,
             'debet' => $request->ppn
         ]);
         // Masukkan Data invoice Ke Detail Jurnal Umum bagian kredit
         KeuDetailJurnal::create([
-            'no_jurnal' => $no_jurnal,
-            'kode_akun' => '4110',
+            'no_jurnal' => $id_jurnal,
+            'kode_akun' => $id_4110,
             'kredit' => $totalPenjualan
         ]);
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DataImporter;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ImporterController extends Controller
 {
@@ -12,9 +13,23 @@ class ImporterController extends Controller
      */
     public function index()
     {
+        $dataImporter = DataImporter::get();
+        if (request()->get('export') == 'pdf') {
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.tabel-importer', ['dataImporter' => $dataImporter])->setPaper('a4');
+            return $pdf->stream('Daftar Importer.pdf');
+        }
         return view('pages.master.importer', [
             'title' => 'Importer',
-            'records' => DataImporter::all(),
+            'records' => $dataImporter,
         ]);
     }
 
@@ -32,15 +47,15 @@ class ImporterController extends Controller
     public function store(Request $request)
     {
         $validator = request()->validate([
-          'id_importer' => 'required',
-          'nama_importer' => 'required',
-          'alamat_importer' => 'required',
-          'telp_importer' => 'required',
-          'fax' => 'required',
-          'usci' => 'required',
-          'pic' => 'required',
+            'id_importer' => 'required',
+            'nama_importer' => 'required',
+            'alamat_importer' => 'required',
+            'telp_importer' => 'required',
+            'fax' => 'required',
+            'usci' => 'required',
+            'pic' => 'required',
         ]);
-    
+
         DataImporter::create($validator);
         return redirect(route('Importer'))->with('add', 'Data Berhasil Ditambahkan');
     }
@@ -75,7 +90,7 @@ class ImporterController extends Controller
             'usci' => 'required',
             'pic' => 'required',
         ]);
-        
+
         DataImporter::where('id', '=', $id)->update($validator);
         return redirect(route('Importer'))->with('add', 'Data Berhasil Ditambahkan');
     }
@@ -86,7 +101,7 @@ class ImporterController extends Controller
     public function destroy(string $id)
     {
         DataImporter::where('id', $id)->delete();
-        
+
         return redirect(route('Importer'))->with('delete', 'Data Berhasil Dihapus');
     }
 }

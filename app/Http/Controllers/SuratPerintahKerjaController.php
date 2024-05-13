@@ -7,6 +7,7 @@ use App\Models\DataOrder;
 use App\Models\DataPegawai;
 use App\Models\DetailOrder;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\SuratPerintahKerja;
 
 class SuratPerintahKerjaController extends Controller
@@ -16,9 +17,36 @@ class SuratPerintahKerjaController extends Controller
      */
     public function index()
     {
+        $spk = SuratPerintahKerja::get();
+        if (request()->get('export') == 'pdf') {
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.tabel_surat_perintah_kerja', ['spk' => $spk])->setPaper('a4');
+            return $pdf->stream('Daftar Surat Perintah Kerja.pdf');
+        } else if (request()->get('export') == 'pdf-detail') {
+            $record = SuratPerintahKerja::where('id', request()->id)->get()->first();
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.baris_surat_perintah_kerja', ['record' => $record])->setPaper('a4');
+            return $pdf->stream('Surat Perintah Kerja.pdf');
+        }
         return view('pages.operasional.surat-perintah-kerja', [
             'title' => 'Surat Perintah Kerja',
-            'spk' => SuratPerintahKerja::get(),
+            'spk' => $spk,
             'dataOrder' => DataOrder::get(),
             'dataPegawai' => DataPegawai::get(),
             'detailOrder' => DetailOrder::get(),

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->decimal('pembelian', 65, 2);
             $table->decimal('pembayaran', 65, 2);
             $table->string('saldo_akhir_supplier');
+            $table->string('status')->nullable();
             $table->timestamps();
         });
 

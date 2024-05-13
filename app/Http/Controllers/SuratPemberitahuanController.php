@@ -6,6 +6,7 @@ use Throwable;
 use App\Models\DataOrder;
 use App\Models\DetailOrder;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\SuratPemberitahuan;
 
 class SuratPemberitahuanController extends Controller
@@ -15,10 +16,37 @@ class SuratPemberitahuanController extends Controller
      */
     public function index()
     {
+        $sp = SuratPemberitahuan::get();
+        if (request()->get('export') == 'pdf') {
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.tabel_surat_pemberitahuan', ['sp' => $sp])->setPaper('a4');
+            return $pdf->stream('Daftar Surat Pemberitahuan.pdf');
+        } else if (request()->get('export') == 'pdf-detail') {
+            $record = SuratPemberitahuan::where('id', request()->id)->get()->first();
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.baris_surat_pemberitahuan', ['record' => $record])->setPaper('a4');
+            return $pdf->stream('Surat Pemberitahuan.pdf');
+        }
         return view('pages.operasional.surat-pemberitahuan', [
             'title' => 'Surat Pemberitahuan',
             'detailOrder' => DetailOrder::get(),
-            'sp' => SuratPemberitahuan::get(),
+            'sp' => $sp
         ]);
     }
 

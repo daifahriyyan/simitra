@@ -71,7 +71,7 @@
                     <div class="mb-3">
                       <label for="id_rekap" class="form-label">ID Rekap:</label>
                       <input type="text" class="form-control" id="id_rekap" name="id_rekap"
-                        value="{{ $rekapHPPStandar->count() + 1 }}" required>
+                        value="RHPP{{ str_pad($rekapHPPStandar->count() + 1, 5, 0, STR_PAD_LEFT) }}" required>
                     </div>
                     <div class="mb-3">
                       <label for="tanggal_input" class="form-label">Tanggal Input:</label>
@@ -228,10 +228,10 @@
                     </div>
                     <!-- Tombol Cetak Tabel dengan Icon -->
                     <div>
-                      <button type="button" class="btn btn-sm btn-warning" style='width: 60px; height: 30px;'
-                        onclick="cetakTabel()">
+                      <a href="{{ route('Rekap HPP Standar') }}?export=pdf" class="btn btn-sm btn-warning"
+                        style='width: 60px; height: 30px;'>
                         Cetak
-                      </button>
+                      </a>
                     </div>
                   </div>
 

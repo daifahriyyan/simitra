@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('detail_customer', function (Blueprint $table) {
             $table->id();
+            $table->string('id_detail_customer');
             $table->unsignedBigInteger('id_customer');
             $table->string('termin');
             $table->date('tanggal_input');
@@ -20,7 +21,8 @@ return new class extends Migration
             $table->integer('total_penjualan');
             $table->integer('penerimaan');
             $table->integer('saldo_akhir');
-            $table->string('status');
+            $table->date('tanggal_jatuh_tempo');
+            $table->string('status')->nullable();
             $table->timestamps();
         });
 

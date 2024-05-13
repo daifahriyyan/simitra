@@ -71,7 +71,7 @@
                     <div class="mb-3">
                       <label for="id_spk" class="form-label">ID SPK:</label>
                       <input type="text" class="form-control" id="id_spk" name="id_spk"
-                        value="{{ $spk->count()+1 }}.10D/SPK/MIM/II/2024" required>
+                        value="SPK{{ str_pad($spk->count()+1, 5, 0 ,STR_PAD_LEFT) }}" required>
                     </div>
                     <div class="mb-3">
                       <label for="tanggal" class="form-label">Tanggal:</label>
@@ -317,10 +317,10 @@
                     </div>
                     <!-- Tombol Cetak Tabel dengan Icon -->
                     <div>
-                      <button type="button" class="btn btn-sm btn-warning" style='width: 60px; height: 30px;'
-                        onclick="cetakTabel()">
+                      <a href="{{ route('Surat Perintah Kerja') }}?export=pdf" class="btn btn-sm btn-warning"
+                        style='width: 60px; height: 30px;'>
                         Cetak
-                      </button>
+                      </a>
                     </div>
                   </div>
 
@@ -388,7 +388,7 @@
                             data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
                           <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
                             data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
-                          <a href='generate_pdf.php?id_spk=".htmlspecialchars($data[' id_spk'])."'
+                          <a href="{{ route('Surat Perintah Kerja') }}?export=pdf-detail&id={{ $record->id }}"
                             class='btn btn-primary btn-sm' style='width: 30px; height: 30px;' target='_blank'
                             role='button'><i class='fas fa-print'></i></a>
                         </td>

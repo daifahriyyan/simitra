@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Models\KeuPenggajian;
 use App\Models\DetailSupplier;
 use App\Models\KeuDetailJurnal;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class JurnalUmumController extends Controller
 {
@@ -18,6 +19,20 @@ class JurnalUmumController extends Controller
      */
     public function index()
     {
+        $jurnalUmum = KeuDetailJurnal::get();
+        if (request()->get('export') == 'pdf') {
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.tabel-jurnal', ['jurnalUmum' => $jurnalUmum])->setPaper('a4');
+            return $pdf->stream('Jurnal Umum.pdf');
+        }
         return view('pages.akuntansi.jurnal-umum', [
             // ambil seluruh data Detail Jurnal
             'jurnalUmum' => KeuDetailJurnal::get(),

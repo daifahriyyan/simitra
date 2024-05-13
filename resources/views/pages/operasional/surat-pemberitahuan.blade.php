@@ -273,10 +273,10 @@
                     </div>
                     <!-- Tombol Cetak Tabel dengan Icon -->
                     <div>
-                      <button type="button" class="btn btn-sm btn-warning" style='width: 60px; height: 30px;'
-                        onclick="cetakTabel()">
+                      <a href="{{ route('Surat Pemberitahuan') }}?export=pdf" class="btn btn-sm btn-warning"
+                        style='width: 60px; height: 30px;'>
                         Cetak
-                      </button>
+                      </a>
                     </div>
                   </div>
 
@@ -338,37 +338,12 @@
                             data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
                           <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
                             data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
-                          <a href='generate_pdf.php?id_pemberitahuan=".htmlspecialchars($data[' id_pemberitahuan'])."'
+                          <a href="{{ route('Surat Pemberitahuan') }}?export=pdf-detail&id={{ $record->id }}"
                             class='btn btn-primary btn-sm' style='width: 30px; height: 30px;' target='_blank'
                             role='button'><i class='fas fa-print'></i></a>
                         </td>
                       </tr>
                       @endforeach
-                      {{--
-                      <?php
-              $query = "SELECT * FROM surat_pemberitahuan";
-              $result = mysqli_query($conn, $query);
-
-              while ($data = mysqli_fetch_assoc($result)) {
-                  echo "<tr>";
-                  echo "<td>".$data['id_pemberitahuan']."</td>";
-                  echo "<td>".$data['id_order']."</td>";
-                  echo "<td>".$data['id_order_container']."</td>";
-                  echo "<td>".$data['commodity']."</td>";
-                  echo "<td>".$data['container']."</td>";
-                  echo "<td>".$data['place_fumigation']."</td>";
-                  echo "<td>".$data['fumigan']."</td>";
-                  echo "<td>".$data['tanggal']."</td>";
-                  echo "<td>".$data['tanggal_selesai']."</td>";
-                  echo "<td>".$data['dimohon_kesediaan']."</td>";
-                  echo "<td>";
-                  echo "<button type='button' class='btn btn-success btn-sm' style='width: 30px; height: 30px;' data-bs-toggle='modal' data-bs-target='#editModal' onclick='openEditModal(\"".$data['id_pemberitahuan']."\", \"".$data['id_order']."\", \"".$data['id_order_container']."\", \"".$data['commodity']."\", \"".$data['container']."\", \"".$data['place_fumigation']."\", \"".$data['fumigan']."\", \"".$data['tanggal']."\", \"".$data['tanggal_selesai']."\", \"".$data['dimohon_kesediaan']."\")'><i class='fas fa-edit'></i></button>";
-                  echo "<button type='button' class='btn btn-danger btn-sm' style='width: 30px; height: 30px;' onclick='openDeleteModal(\"".$data['id_pemberitahuan']."\")'><i class='fas fa-trash'></i></button>";
-                  echo "<a href='generate_pdf.php?id_pemberitahuan=".htmlspecialchars($data['id_pemberitahuan'])."' class='btn btn-primary btn-sm' style='width: 30px; height: 30px;' target='_blank' role='button'><i class='fas fa-print'></i></a>";
-                  echo "</td>";
-                  echo "</tr>"; 
-              }
-              ?> --}}
                     </tbody>
                     <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
                   </table>

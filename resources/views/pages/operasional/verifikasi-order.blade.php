@@ -313,10 +313,10 @@
                     </div>
                     <!-- Tombol Cetak Tabel dengan Icon -->
                     <div>
-                      <button type="button" class="btn btn-sm btn-warning" style='width: 60px; height: 30px;'
-                        onclick="cetakTabel()">
+                      <a href="{{ route('Verifikasi Order') }}?export=pdf" class="btn btn-sm btn-warning"
+                        style='width: 60px; height: 30px;'>
                         Cetak
-                      </button>
+                      </a>
                     </div>
                   </div>
 
@@ -377,7 +377,7 @@
                         <td>{{ $record->detailOrder->dataOrder->dataCustomer->id_customer }}</td>
                         <td>{{ $record->detailOrder->dataOrder->dataCustomer->nama_customer }}</td>
                         <td>{{ $record->detailOrder->dataOrder->dataCustomer->alamat_customer }}</td>
-                        <td>{{ $record->detailOrder->id }}</td>
+                        <td>{{ $record->detailOrder->commodity }}</td>
                         <td>{{ $record->detailOrder->stuffing_date }}</td>
                         <td>{{ $record->detailOrder->closing_time }}</td>
                         <td>{{ $record->waktu }}</td>
@@ -392,9 +392,9 @@
                             data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
                           <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
                             data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
-                          <a href="{{ route('PDF Verifikasi Order', $record->id) }}" class='btn btn-primary btn-sm'
-                            style='width: 30px; height: 30px;' target='_blank' role='button'><i
-                              class='fas fa-print'></i></a>
+                          <a href="{{ route('Verifikasi Order') }}?export=pdf-detail&id={{ $record->id }}"
+                            class='btn btn-primary btn-sm' style='width: 30px; height: 30px;' target='_blank'
+                            role='button'><i class='fas fa-print'></i></a>
                           <button type='button' class='btn btn-info btn-sm' style='width: 30px; height: 30px;'
                             onclick='approveData(\"".$data[' id_verifikasi']."\")'><i class='fas fa-check'></i></button>
                           <button type='button' class='btn btn-danger btn-sm' style='width: 30px; height: 30px;'

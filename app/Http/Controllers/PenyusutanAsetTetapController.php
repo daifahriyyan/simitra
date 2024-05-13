@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\KeuAsetTetap;
-use App\Models\KeuPenyusutanAt;
 use Illuminate\Http\Request;
+use App\Models\KeuPenyusutanAt;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PenyusutanAsetTetapController extends Controller
 {
@@ -13,6 +14,32 @@ class PenyusutanAsetTetapController extends Controller
      */
     public function index()
     {
+        if (request()->get('export') == 'pdf') {
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.tabel-penyusutan-aset', ['penyusutanAt' => KeuPenyusutanAt::get()])->setPaper('a4');
+            return $pdf->stream('Daftar Penyusutan Aset Tetap.pdf');
+        } else if (request()->get('export') == 'pdf-detail') {
+            $detail = KeuPenyusutanAt::where('id', request()->id)->get()->first();
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.baris-penyusutan-aset', ['detail' => $detail])->setPaper('a4');
+            return $pdf->stream('Penyusutan Aset Tetap.pdf');
+        }
         return view("pages.akuntansi.penyusutan-aset-tetap", [
             'penyusutanAt' => KeuPenyusutanAt::get(),
             'id_PAT' => KeuPenyusutanAt::latest()->get()->first()->id ?? 1,

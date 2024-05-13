@@ -2,19 +2,19 @@
 
 @section('container-fluid')
 <div class="container-fluid" id="container-wrapper">
-  @if ($errors->any())
-  <div class="alert alert-danger alert-dismissible fade show" role="alert">
-    <h3>Pesan Error</h3>
-    <ul>
-      @foreach ($errors->all() as $error)
-      <li>{{ $error }}</li>
-      @endforeach
-    </ul>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  @endif
+	@if ($errors->any())
+	<div class="alert alert-danger alert-dismissible fade show" role="alert">
+		<h3>Pesan Error</h3>
+		<ul>
+			@foreach ($errors->all() as $error)
+			<li>{{ $error }}</li>
+			@endforeach
+		</ul>
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	@endif
 	<!-- Your container content -->
 	<div class="d-sm-flex align-items-center justify-content-between mb-4">
 		<h1 class="h3 mb-0 text-gray-800">Importer</h1> <!-- EDIT NAMA -->
@@ -37,7 +37,8 @@
 						@csrf
 						<div class="mb-3">
 							<label for="id_importer" class="form-label">ID Importer:</label>
-							<input type="text" class="form-control" id="id_importer" name="id_importer" value="I00{{ $records->count()+1 }}" readonly>
+							<input type="text" class="form-control" id="id_importer" name="id_importer"
+								value="I00{{ $records->count()+1 }}" readonly>
 						</div>
 						<div class="mb-3">
 							<label for="nama_importer" class="form-label">Nama Importer:</label>
@@ -74,7 +75,8 @@
 	</div>
 	@foreach ($records as $record)
 	<!-- Modal Edit Data -->
-	<div class="modal fade" id="editModal{{ $record->id }}" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+	<div class="modal fade" id="editModal{{ $record->id }}" tabindex="-1" aria-labelledby="editModalLabel"
+		aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -86,19 +88,23 @@
 						@csrf @method('put')
 						<div class="mb-3">
 							<label for="id_importer" class="form-label">ID Importer:</label>
-							<input type="text" class="form-control" id="id_importer" value="{{ $record->id_importer }}" name="id_importer" readonly required>
+							<input type="text" class="form-control" id="id_importer" value="{{ $record->id_importer }}"
+								name="id_importer" readonly required>
 						</div>
 						<div class="mb-3">
 							<label for="nama_importer" class="form-label">Nama Importer:</label>
-							<input type="text" class="form-control" id="nama_importer" value="{{ $record->nama_importer }}" name="nama_importer" required>
+							<input type="text" class="form-control" id="nama_importer" value="{{ $record->nama_importer }}"
+								name="nama_importer" required>
 						</div>
 						<div class="mb-3">
 							<label for="alamat_importer" class="form-label">Alamat Importer:</label>
-							<input type="text" class="form-control" id="alamat_importer" value="{{ $record->alamat_importer }}" name="alamat_importer" required>
+							<input type="text" class="form-control" id="alamat_importer" value="{{ $record->alamat_importer }}"
+								name="alamat_importer" required>
 						</div>
 						<div class="mb-3">
 							<label for="telp_importer" class="form-label">Telepon Importer:</label>
-							<input type="text" class="form-control" id="telp_importer" value="{{ $record->telp_importer }}" name="telp_importer" required>
+							<input type="text" class="form-control" id="telp_importer" value="{{ $record->telp_importer }}"
+								name="telp_importer" required>
 						</div>
 						<div class="mb-3">
 							<label for="fax" class="form-label">Fax:</label>
@@ -122,26 +128,26 @@
 		</div>
 	</div>
 	<!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
-  <!-- Modal Delete -->
-  <div class="modal fade" id="deleteRecord{{ $record->id }}" tabindex="-1" aria-labelledby="deleteRecordLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <form method="POST" action="{{ route('Hapus Importer', $record->id) }}">
-          @method('delete')@csrf
-          <div class="modal-body">
-            Apakah Anda sudah yakin ingin menghapus Record ini?
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-danger">Delete</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
+	<!-- Modal Delete -->
+	<div class="modal fade" id="deleteRecord{{ $record->id }}" tabindex="-1" aria-labelledby="deleteRecordLabel"
+		aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<form method="POST" action="{{ route('Hapus Importer', $record->id) }}">
+					@method('delete')@csrf
+					<div class="modal-body">
+						Apakah Anda sudah yakin ingin menghapus Record ini?
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-danger">Delete</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 	@endforeach
-			
+
 
 	<!-- Row -->
 	<div class="row">
@@ -156,9 +162,9 @@
 							Tambah
 						</button>
 						<!-- Tombol Cetak Tabel dengan Icon -->
-						<button type="button" class="btn btn-sm btn-warning" onclick="cetakTabel()">
+						<a href="{{ route('Importer') }}?export=pdf" class="btn btn-sm btn-warning">
 							Cetak
-						</button>
+						</a>
 					</div>
 
 					<!-- Skrip JavaScript untukCetak Tabel -->
@@ -198,34 +204,14 @@
 								<td>{{ $record->fax }}</td>
 								<td>{{ $record->usci }}</td>
 								<td>{{ $record->pic }}</td>
-                <td>
-                  <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
-                    data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
-                  <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
-                    data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
-                </td>
+								<td>
+									<button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
+										data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
+									<button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
+										data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
+								</td>
 							</tr>
 							@endforeach
-							{{--
-							<?php
-            $query = "SELECT * FROM data_importer";
-            $result = mysqli_query($conn, $query);
-            while ($data = mysqli_fetch_assoc($result)) {
-                echo "<tr>";
-                echo "<td>".$data['id_importer']."</td>";
-                echo "<td>".$data['nama_importer']."</td>";
-                echo "<td>".$data['alamat_importer']."</td>";
-                echo "<td>".$data['telp_importer']."</td>";
-                echo "<td>".$data['fax']."</td>";
-                echo "<td>".$data['usci']."</td>";
-                echo "<td>".$data['pic']."</td>";
-                echo "<td>";
-                echo "<button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal' data-bs-target='#editModal' onclick='openEditModal(\"".$data['id_importer']."\", \"".$data['nama_importer']."\", \"".$data['alamat_importer']."\", \"".$data['telp_importer']."\", \"".$data['fax']."\", \"".$data['usci']."\", \"".$data['pic']."\")'><i class='fas fa-edit'></i></button>";
-                echo "<button type='button' class='btn btn-danger btn-sm' onclick='deleteData(\"".$data['id_importer']."\")'><i class='fas fa-trash'></i></button>";
-                echo "</td>";
-                echo "</tr>"; 
-            }
-          ?> --}}
 						</tbody>
 						<!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
 					</table>

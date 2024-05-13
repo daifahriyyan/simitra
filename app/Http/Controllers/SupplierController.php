@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\KeuSupplier;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class SupplierController extends Controller
 {
@@ -12,6 +13,19 @@ class SupplierController extends Controller
      */
     public function index()
     {
+        if (request()->get('export') == 'pdf') {
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.tabel-supplier', ['keuSupplier' => KeuSupplier::get()])->setPaper('a4');
+            return $pdf->stream('Daftar Supplier.pdf');
+        }
         return view('pages.akuntansi.supplier', [
             'keuSupplier' => KeuSupplier::get()
         ]);

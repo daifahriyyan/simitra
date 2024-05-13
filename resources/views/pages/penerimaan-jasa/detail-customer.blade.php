@@ -37,12 +37,17 @@
           <form method="POST" action="{{ route('Tambah Detail Customer') }}">
             @csrf
             <div class="mb-3">
+              <label for="id_detail_customer" class="form-label">ID Detail Customer:</label>
+              <input type="text" class="form-control" id="id_detail_customer" name="id_detail_customer"
+                value="DC{{ str_pad($id_detail_customer + 1, 5, 0, STR_PAD_LEFT) }}" required>
+            </div>
+            <div class="mb-3">
               <label for="id_customer" class="form-label">ID Customer:</label>
               <select class="custom-select form-select-lg mb-3" aria-label="Large select example" id="id_customer"
                 name="id_customer">
                 <option selected>Pilih ID Customer</option>
                 @foreach ($customers as $customer)
-                <option value="{{ $customer->id_customer }}">{{ $customer->id_customer }}</option>
+                <option value="{{ $customer->id }}">{{ $customer->id_customer }}</option>
                 @endforeach
               </select>
             </div>
@@ -93,6 +98,11 @@
           <form method="POST" action="{{ route('Ubah Detail Customer', $record->id_customer) }}">
             @method('put')
             @csrf
+            <div class="mb-3">
+              <label for="id_detail_customer" class="form-label">ID Detail Customer:</label>
+              <input type="text" class="form-control" id="id_detail_customer" value="{{ $record->id_detail_customer }}"
+                name="id_detail_customer" readonly required>
+            </div>
             <div class="mb-3">
               <label for="id_customer" class="form-label">ID Customer:</label>
               <input type="text" class="form-control" id="id_customer" value="{{ $record->id_customer }}"
@@ -242,7 +252,7 @@
             <tbody>
               @foreach ($records as $record)
               <tr>
-                <td>{{ $record->id_customer }}</td>
+                <td>{{ $record->dataCustomer->id_customer }}</td>
                 <td>{{ $record->termin }}</td>
                 <td>{{ $record->tanggal_input }}</td>
                 <td>{{ $record->saldo_awal }}</td>
@@ -269,7 +279,7 @@
                     data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
                   <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
                     data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
-                  <a href='generate_pdf.php?id_detail_customer=".htmlspecialchars($data[' id_detail_customer'])."'
+                  <a href="{{ route('Detail Customer') }}?export=pdf&id_customer={{ $record->id }}"
                     class='btn btn-primary btn-sm' style='width: 30px; height: 30px;' target='_blank' role='button'><i
                       class='fas fa-print'></i></a>
                 </td>

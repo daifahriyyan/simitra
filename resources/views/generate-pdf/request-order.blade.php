@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Surat Request Order</title>
-  <link rel="stylesheet" href="{{ asset('assets/img/logo-surat.jpg') }}">
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -90,15 +90,16 @@
     <hr>
     <div class="request-info">
       <h3 style="text-align: center; font-weight: bold; text-decoration: underline;">REQUEST ORDER</h3>
-      <p style="text-align: center;">NO. 00001/RO/MIMM/II/2024</p>
+      <p style="text-align: center;">NO. {{ substr($detail->id_detailorder, 3) }}/RO/MIMM/II/2024</p>
       <table>
         <tr>
           <th>Date</th>
-          <td>: 07-02-2020</td>
+          <td>: {{ $detail->dataOrder->tanggal_order }}</td>
         </tr>
         <tr>
           <th>Request By</th>
-          <td>: Pak Arick<br>Jonggrangan klaten</td>
+          <td>: {{ $detail->dataOrder->dataCustomer->nama_customer }}<br>{{
+            $detail->dataOrder->dataCustomer->alamat_customer }}</td>
         </tr>
       </table>
     </div>
@@ -107,64 +108,63 @@
       <table>
         <tr>
           <th style="width: 250px;">TREATMENT AQIS FUMIGATION</th>
-          <td>: FCL</td>
-          <td>: LCL</td>
+          <td>: {{ $detail->dataOrder->treatment }}</td>
         </tr>
         <tr>
           <th>STUFFING DATE</th>
-          <td>: 09-02-2020</td>
+          <td>: {{ $detail->stuffing_date }}</td>
           <td></td>
         </tr>
         <tr>
           <th>VOLUME</th>
-          <td>: 1 x 20'</td>
+          <td>: {{ $detail->dataOrder->volume }}'</td>
           <td></td>
         </tr>
         <tr>
           <th>CONTAINER / VOLUME</th>
-          <td>: PCIU2344174/SG507934465</td>
+          <td>: {{ $detail->container }} / {{ $detail->container_volume }}</td>
           <td></td>
         </tr>
         <tr>
           <th>COMMODITY</th>
-          <td>: SONOKELING</td>
+          <td>: {{ $detail->commodity }}</td>
           <td></td>
         </tr>
         <tr>
           <th>VESSEL</th>
-          <td>: HIGHWAY 0978</td>
+          <td>: {{ $detail->vessel }}</td>
           <td></td>
         </tr>
         <tr>
           <th>CLOSING TIME</th>
-          <td>: 15/02/2020 14:00 WIB</td>
+          <td>: {{ $detail->closing_time }} WIB</td>
           <td></td>
         </tr>
         <tr>
           <th>DESTINATION</th>
-          <td>: CHINA</td>
+          <td>: {{ $detail->destination }}</td>
           <td></td>
         </tr>
         <tr>
           <th>PLACE FUMIGATION</th>
-          <td>: DEPO PELINDO SEMARANG</td>
+          <td>: {{ $detail->dataOrder->place_fumigation }}</td>
           <td></td>
         </tr>
         <tr>
           <th>PIC</th>
-          <td>: Pak Arick</td>
+          <td>: {{ $detail->dataOrder->dataCustomer->pic }}</td>
           <td></td>
         </tr>
         <tr>
           <th>PHONE</th>
-          <td>: 0812-1537-4664</td>
+          <td>: {{ $detail->dataOrder->dataCustomer->phone_pic }}</td>
           <td></td>
         </tr>
       </table>
     </div>
     <div class="signature">
       <p>ADMINISTRASI,</p>
-      <img src="ttd.jpg" alt="Signature">
+      <br><br><br>
       <p>(ASMAUL HUDA)</p>
     </div>
   </div>

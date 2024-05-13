@@ -250,10 +250,10 @@
                     </div> --}}
                     <!-- Tombol Cetak Tabel dengan Icon -->
                     <div>
-                      <button type="button" class="btn btn-sm btn-warning" style='width: 60px; height: 30px;'
-                        onclick="cetakTabel()">
+                      <a href="{{ route('Detail Supplier') }}?export=pdf" class="btn btn-sm btn-warning"
+                        style='width: 60px; height: 30px;'>
                         Cetak
-                      </button>
+                      </a>
                     </div>
                   </div>
 
@@ -334,9 +334,10 @@
                             data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
                           <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
                             data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
-                          <a href='generate_pdf.php?id_detail_supplier=" . htmlspecialchars($data['
-                            id_detail_supplier']) . "' class='btn btn-primary btn-sm' style='width: 30px; height: 30px;' target='_blank' role='button'><i class='fas fa-print'></i></a>
-                      </td>
+                          <a href="{{ route('Detail Supplier') }}?export=pdf-detail&id={{ $record->id }}"
+                            class='btn btn-primary btn-sm' style='width: 30px; height: 30px;' target='_blank'
+                            role='button'><i class='fas fa-print'></i></a>
+                        </td>
                       </tr>
                       @endforeach
                     </tbody>
@@ -352,13 +353,14 @@
   </div>
 
   <!-- Footer -->
-    <footer>
-      <p id=" tanggalJam" style="font-size: 12px; margin: 0; justify-content: flex-end; display: flex; background-color: #f8f9fa;">
-                            </p>
-                            </footer>
+  <footer>
+    <p id=" tanggalJam"
+      style="font-size: 12px; margin: 0; justify-content: flex-end; display: flex; background-color: #f8f9fa;">
+    </p>
+  </footer>
 
-                            <script>
-                              function updateTanggalJam() {
+  <script>
+    function updateTanggalJam() {
       var date = new Date();
       var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
       var formattedDate = date.toLocaleDateString('id-ID', options);
@@ -370,29 +372,28 @@
 
     // Memperbarui tanggal dan jam setiap detik
     setInterval(updateTanggalJam, 1000);
-                            </script>
+  </script>
 
-                            <script src=" https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-                            <script
-                              src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/js/bootstrap.bundle.min.js">
-                            </script>
-                            <script src="//cdn.datatables.net/2.0.3/js/dataTables.min.js"></script>
-                            <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
-                            <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-                            <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js')}}"></script>
-                            <script src="{{ asset('js/simitra.min.js') }}"></script>
-                            <script src="{{ asset('vendor/chart.js/Chart.min.js') }}"></script>
-                            <script src="{{ asset('js/demo/chart-area-demo.js') }}"></script>
-                            <!-- Page level plugins -->
-                            <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
-                            <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
-                            <!-- Page level custom scripts -->
-                            <script>
-                              $(document).ready(function () {
+  <script src=" https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/js/bootstrap.bundle.min.js">
+  </script>
+  <script src="//cdn.datatables.net/2.0.3/js/dataTables.min.js"></script>
+  <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+  <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js')}}"></script>
+  <script src="{{ asset('js/simitra.min.js') }}"></script>
+  <script src="{{ asset('vendor/chart.js/Chart.min.js') }}"></script>
+  <script src="{{ asset('js/demo/chart-area-demo.js') }}"></script>
+  <!-- Page level plugins -->
+  <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
+  <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+  <!-- Page level custom scripts -->
+  <script>
+    $(document).ready(function () {
       $('#dataTableHover').DataTable();
     });
-                            </script>
-                            <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
+  </script>
+  <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
 
 </body>
 

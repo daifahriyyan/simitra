@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\HppSesungguhnya;
 use Illuminate\Http\Request;
+use App\Models\HppSesungguhnya;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class HPPSesungguhnyaController extends Controller
 {
@@ -12,8 +13,22 @@ class HPPSesungguhnyaController extends Controller
      */
     public function index()
     {
+        $hppSesungguhnya = HppSesungguhnya::get();
+        if (request()->get('export') == 'pdf') {
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.tabel_hpp_sesungguhnya', ['hppSesungguhnya' => $hppSesungguhnya])->setPaper('a4');
+            return $pdf->stream('Daftar HPP Sesungguhnya.pdf');
+        }
         return view('pages.operasional.hpp-sesungguhnya', [
-            'hppSesungguhnya' => HppSesungguhnya::get()
+            'hppSesungguhnya' => $hppSesungguhnya
         ]);
     }
 

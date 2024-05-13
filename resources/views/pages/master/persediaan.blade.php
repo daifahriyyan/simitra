@@ -136,9 +136,9 @@
               Tambah
             </button>
             <!-- Tombol Cetak Tabel dengan Icon -->
-            <button type="button" class="btn btn-sm btn-warning" onclick="cetakTabel()">
+            <a href="{{ route('Persediaan') }}?export=pdf" class="btn btn-sm btn-warning">
               Cetak
-            </button>
+            </a>
           </div>
 
           <!-- Skrip JavaScript untuk Cetak Tabel -->
@@ -180,23 +180,6 @@
                 </td>
               </tr>
               @endforeach
-              {{--
-              <?php
-              $query = "SELECT * FROM data_persediaan";
-              $result = mysqli_query($conn, $query);
-              while ($data = mysqli_fetch_assoc($result)) {
-                  echo "<tr>";
-                  echo "<td>".$data['id_persediaan']."</td>";
-                  echo "<td>".$data['nama_persediaan']."</td>";
-                  echo "<td>".$data['quantity']."</td>";
-                  echo "<td>".number_format($data['Saldo'], 2, ',', '.')."</td>";
-                  echo "<td>";
-                  echo "<button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal' data-bs-target='#editModal' onclick='openEditModal(\"".$data['id_persediaan']."\", \"".$data['nama_persediaan']."\", \"".$data['quantity']."\", \"".$data['Saldo']."\")'><i class='fas fa-edit'></i></button>";
-                  echo "<button type='button' class='btn btn-danger btn-sm' onclick='deleteData(\"".$data['id_persediaan']."\")'><i class='fas fa-trash'></i></button>";
-                  echo "</td>";
-                  echo "</tr>"; 
-              }
-            ?> --}}
             </tbody>
             <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
           </table>

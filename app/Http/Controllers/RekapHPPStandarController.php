@@ -7,6 +7,7 @@ use App\Models\RekapHpp;
 use App\Models\DataHargar;
 use Illuminate\Http\Request;
 use App\Models\RekapPenjualan;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class RekapHPPStandarController extends Controller
 {
@@ -15,8 +16,22 @@ class RekapHPPStandarController extends Controller
      */
     public function index()
     {
+        $rekapHppStandar = RekapHpp::get();
+        if (request()->get('export') == 'pdf') {
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.tabel_rekap_hpp_standar', ['rekapHppStandar' => $rekapHppStandar])->setPaper('a4');
+            return $pdf->stream('Rekap Hpp Standar.pdf');
+        }
         return view("pages.akuntansi.rekap-hpp-standar", [
-            'rekapHPPStandar' => RekapHpp::get(),
+            'rekapHPPStandar' => $rekapHppStandar,
             'dataHarga' => DataHargar::get(),
             'rekapPenjualan' => RekapPenjualan::get(),
         ]);

@@ -216,14 +216,14 @@
                 <td>{{ $record->pic }}</td>
                 <td>{{ $record->phone_pic }}</td>
                 <td><span class='badge badge-danger'>Process</span></td>
-                <td>
-                  {{-- <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
+                {{-- <td>
+                  <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
                     data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
                   <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
                     data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
                   <a href="" class='btn btn-primary btn-sm' target='_blank' role='button'><i
-                      class='fas fa-print'></i></a> --}}
-                </td>
+                      class='fas fa-print'></i></a>
+                </td> --}}
               </tr>
               @endforeach
             </tbody>

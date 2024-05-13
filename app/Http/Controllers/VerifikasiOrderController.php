@@ -6,6 +6,7 @@ use Throwable;
 use App\Models\DataOrder;
 use Illuminate\Http\Request;
 use App\Models\VerifikasiOrder;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class VerifikasiOrderController extends Controller
 {
@@ -14,9 +15,36 @@ class VerifikasiOrderController extends Controller
      */
     public function index()
     {
+        $verifikasi = VerifikasiOrder::get();
+        if (request()->get('export') == 'pdf') {
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.tabel_verifikasi_order', ['verifikasi' => $verifikasi])->setPaper('a4');
+            return $pdf->stream('Daftar Verifikasi Order.pdf');
+        } else if (request()->get('export') == 'pdf-detail') {
+            $record = VerifikasiOrder::where('id', request()->id)->get()->first();
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.baris_verifikasi_order', ['record' => $record])->setPaper('a4');
+            return $pdf->stream('Verifikasi Order.pdf');
+        }
         return view('pages.operasional.verifikasi-order', [
             'dataOrder' => DataOrder::get(),
-            'verifikasi' => VerifikasiOrder::get(),
+            'verifikasi' => $verifikasi,
         ]);
     }
 
@@ -53,9 +81,7 @@ class VerifikasiOrderController extends Controller
      */
     public function show(VerifikasiOrder $verifikasiOrder)
     {
-        $mpdf = new \Mpdf\Mpdf();
-        $mpdf->WriteHTML('<h1>Hello world!</h1>');
-        $mpdf->Output();
+        // 
     }
 
     /**

@@ -37,7 +37,8 @@
             @csrf
             <div class="mb-3">
               <label for="id_pegawai" class="form-label">ID Pegawai:</label>
-              <input type="text" class="form-control" id="id_pegawai" name="id_pegawai" value="P00{{ $records->count()+1 }}" readonly>
+              <input type="text" class="form-control" id="id_pegawai" name="id_pegawai"
+                value="P00{{ $records->count()+1 }}" readonly>
             </div>
             <div class="mb-3">
               <label for="nama_pegawai" class="form-label">Nama Pegawai:</label>
@@ -83,7 +84,8 @@
   </div>
   @foreach ($records as $record)
   <!-- Modal Edit Data -->
-  <div class="modal fade" id="editModal{{ $record->id }}" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal fade" id="editModal{{ $record->id }}" tabindex="-1" aria-labelledby="editModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -95,19 +97,23 @@
             @csrf @method('put')
             <div class="mb-3">
               <label for="id_pegawai" class="form-label">ID Pegawai:</label>
-              <input type="text" class="form-control" id="id_pegawai" value="{{ $record->id_pegawai }}" name="id_pegawai" readonly required>
+              <input type="text" class="form-control" id="id_pegawai" value="{{ $record->id_pegawai }}"
+                name="id_pegawai" readonly required>
             </div>
             <div class="mb-3">
               <label for="nama_pegawai" class="form-label">Nama Pegawai:</label>
-              <input type="text" class="form-control" id="nama_pegawai" value="{{ $record->nama_pegawai }}" name="nama_pegawai" required>
+              <input type="text" class="form-control" id="nama_pegawai" value="{{ $record->nama_pegawai }}"
+                name="nama_pegawai" required>
             </div>
             <div class="mb-3">
               <label for="alamat_pegawai" class="form-label">Alamat Pegawai:</label>
-              <input type="text" class="form-control" id="alamat_pegawai" value="{{ $record->alamat_pegawai }}" name="alamat_pegawai" required>
+              <input type="text" class="form-control" id="alamat_pegawai" value="{{ $record->alamat_pegawai }}"
+                name="alamat_pegawai" required>
             </div>
             <div class="mb-3">
               <label for="telp_pegawai" class="form-label">Telepon Pegawai:</label>
-              <input type="text" class="form-control" id="telp_pegawai" value="{{ $record->telp_pegawai }}" name="telp_pegawai" required>
+              <input type="text" class="form-control" id="telp_pegawai" value="{{ $record->telp_pegawai }}"
+                name="telp_pegawai" required>
             </div>
             <div class="mb-3">
               <label for="posisi" class="form-label">Posisi:</label>
@@ -129,11 +135,13 @@
             </div>
             <div class="mb-3">
               <label for="noreg_fumigasi" class="form-label">No. Registrasi Fumigasi:</label>
-              <input type="text" class="form-control" id="noreg_fumigasi" value="{{ $record->noreg_fumigasi }}" name="noreg_fumigasi">
+              <input type="text" class="form-control" id="noreg_fumigasi" value="{{ $record->noreg_fumigasi }}"
+                name="noreg_fumigasi">
             </div>
             <div class="mb-3">
               <label for="gaji_pokok" class="form-label">Gaji Pokok:</label>
-              <input type="number" class="form-control" id="gaji_pokok" value="{{ $record->gaji_pokok }}" name="gaji_pokok" required>
+              <input type="number" class="form-control" id="gaji_pokok" value="{{ $record->gaji_pokok }}"
+                name="gaji_pokok" required>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -178,9 +186,9 @@
               Tambah
             </button>
             <!-- Tombol Cetak Tabel dengan Icon -->
-            <button type="button" class="btn btn-sm btn-warning" onclick="cetakTabel()">
+            <a href="{{ route('pegawai.index') }}?export=pdf" class="btn btn-sm btn-warning">
               Cetak
-            </button>
+            </a>
           </div>
 
           <!-- Skrip JavaScript untuk Cetak Tabel -->
@@ -228,26 +236,6 @@
                 </td>
               </tr>
               @endforeach
-              {{--
-              <?php
-            $query = "SELECT * FROM data_pegawai";
-            $result = mysqli_query($conn, $query);
-            while ($data = mysqli_fetch_assoc($result)) {
-                echo "<tr>";
-                echo "<td>".$data['id_pegawai']."</td>";
-                echo "<td>".$data['nama_pegawai']."</td>";
-                echo "<td>".$data['alamat_pegawai']."</td>";
-                echo "<td>".$data['telp_pegawai']."</td>";
-                echo "<td>".$data['posisi']."</td>";
-                echo "<td>".$data['noreg_fumigasi']."</td>";
-                echo "<td>".number_format($data['gaji_pokok'], 2, ',', '.')."</td>"; 
-                echo "<td>";
-                echo "<button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal' data-bs-target='#editModal' onclick='openEditModal(\"".$data['id_pegawai']."\", \"".$data['nama_pegawai']."\", \"".$data['alamat_pegawai']."\", \"".$data['telp_pegawai']."\", \"".$data['posisi']."\", \"".$data['noreg_fumigasi']."\", \"".$data['gaji_pokok']."\")'><i class='fas fa-edit'></i></button>";
-                echo "<button type='button' class='btn btn-danger btn-sm' onclick='deleteData(\"".$data['id_pegawai']."\")'><i class='fas fa-trash'></i></button>";
-                echo "</td>";
-                echo "</tr>"; 
-            }
-          ?> --}}
             </tbody>
             <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
           </table>

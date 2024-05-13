@@ -6,6 +6,7 @@ use Throwable;
 use App\Models\DataCustomer;
 use Illuminate\Http\Request;
 use App\Models\DetailCustomer;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DetailCustomerController extends Controller
 {
@@ -14,6 +15,21 @@ class DetailCustomerController extends Controller
    */
   public function index()
   {
+    $detailCustomer = DetailCustomer::with('dataCustomer')->where('id', request()->get('id_customer'))->get()->first();
+    if (request()->get('export') == 'pdf') {
+      Pdf::setOption([
+        'enabled' => true,
+        'isRemoteEnabled' => true,
+        'chroot' => realpath(''),
+        'isPhpEnabled' => true,
+        'isFontSubsettingEnabled' => true,
+        'pdfBackend' => 'CPDF',
+        'isHtml5ParserEnabled' => true
+      ]);
+      $pdf = Pdf::loadView('generate-pdf.detail-customer', ['detailCustomer' => $detailCustomer])->setPaper('a4');
+      return $pdf->stream('Detail Customer.pdf');
+    }
+
     if (request()->get('status') == 'Lunas') {
       DetailCustomer::where('id', request()->get('id'))->update([
         'status' => request()->get('status')
@@ -24,6 +40,7 @@ class DetailCustomerController extends Controller
     return view('pages.penerimaan-jasa.detail-customer', [
       'title' => 'Detail Customer',
       'records' => DetailCustomer::with('dataCustomer')->get(),
+      'id_detail_customer' => DetailCustomer::latest()->get()->first()->id ?? 1,
       'customers' => DataCustomer::all()
     ]);
   }
@@ -40,17 +57,20 @@ class DetailCustomerController extends Controller
    */
   public function store(Request $request)
   {
-    $validator = request()->validate([
-      'id_customer' => 'required|unique:detail_customer,id_customer',
-      'termin' => 'required',
-      'tanggal_input' => 'required',
-      'saldo_awal' => 'required',
-      'total_penjualan' => 'required',
-      'penerimaan' => 'required',
-      'saldo_akhir' => 'required',
-    ]);
+    $termin = explode('/', $request->termin);
+    $tglJatuhTempo = date("Y-m-d", strtotime("+$termin[1] days", strtotime($request['tanggal_input'])));
 
-    DetailCustomer::create($validator);
+    DetailCustomer::create([
+      'id_detail_customer' => request()->id_detail_customer,
+      'id_customer' => request()->id_customer,
+      'termin' => request()->termin,
+      'tanggal_input' => request()->tanggal_input,
+      'saldo_awal' => request()->saldo_awal,
+      'total_penjualan' => request()->total_penjualan,
+      'penerimaan' => request()->penerimaan,
+      'saldo_akhir' => request()->saldo_akhir,
+      'tanggal_jatuh_tempo' => $tglJatuhTempo,
+    ]);
     return redirect(route('Detail Customer'))->with('add', 'Data Berhasil Ditambahkan');
   }
 

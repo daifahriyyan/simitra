@@ -15,11 +15,11 @@ class KeuDetailJurnal extends Model
 
     public function jurnal()
     {
-        return $this->belongsTo(KeuJurnal::class, 'no_jurnal', 'no_jurnal');
+        return $this->belongsTo(KeuJurnal::class, 'no_jurnal', 'id');
     }
 
     public function akun()
     {
-        return $this->belongsTo(Keuakun::class, 'kode_akun', 'kode_akun');
+        return $this->belongsTo(Keuakun::class, 'kode_akun', 'id');
     }
 }

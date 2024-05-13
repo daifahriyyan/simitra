@@ -279,9 +279,9 @@
               </button>
             </div>
             <!-- Tombol Cetak Tabel dengan Icon -->
-            <button type="button" class="btn btn-sm btn-warning" onclick="cetakTabel()">
+            <a href="{{ route('Data Order') }}?export=pdf" class="btn btn-sm btn-warning">
               Cetak
-            </button>
+            </a>
           </div>
 
           <!-- Skrip JavaScript untuk Filter Tanggal dan Cetak Tabel -->
@@ -374,7 +374,7 @@
                     data-bs-target='#editModal{{ $item->id }}'><i class='fas fa-edit'></i></button> --}}
                   <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
                     data-bs-target="#deleteRecord{{ $item->id }}"><i class='fas fa-trash'></i></button>
-                  <a href='generate_pdf.php?id_order=".htmlspecialchars($data[' id_order'])."'
+                  <a href="{{ route('Data Order') }}?export=pdf-detail&id_detailorder={{ $item->id_detailorder }}"
                     class='btn btn-primary btn-sm' style='width: 30px; height: 30px;' target='_blank' role='button'><i
                       class='fas fa-print'></i></a>
                   <button type='button' class='btn btn-info btn-sm' style='width: 30px; height: 30px;'

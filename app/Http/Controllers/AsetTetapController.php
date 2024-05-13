@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DataPegawai;
 use App\Models\KeuAsetTetap;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class AsetTetapController extends Controller
 {
@@ -13,8 +14,22 @@ class AsetTetapController extends Controller
      */
     public function index()
     {
+        $asetTetap = KeuAsetTetap::get();
+        if (request()->get('export') == 'pdf') {
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.tabel-aset', ['asetTetap' => $asetTetap])->setPaper('a4');
+            return $pdf->stream('Daftar Aset Tetap.pdf');
+        }
         return view('pages.akuntansi.aset-tetap', [
-            'asetTetap' => KeuAsetTetap::get(),
+            'asetTetap' => $asetTetap,
             'pegawai' => DataPegawai::get()
         ]);
     }

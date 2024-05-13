@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\KeuAkun;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DaftarAkunController extends Controller
 {
@@ -12,8 +13,22 @@ class DaftarAkunController extends Controller
      */
     public function index()
     {
+        $keuAkun = KeuAkun::get();
+        if (request()->get('export') == 'pdf') {
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.tabel-akun', ['keuAkun' => $keuAkun])->setPaper('a4');
+            return $pdf->stream('Daftar Akun.pdf');
+        }
         return view("pages.akuntansi.akun", [
-            'keuAkun' => KeuAkun::get()
+            'keuAkun' => $keuAkun
         ]);
     }
 

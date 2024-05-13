@@ -9,6 +9,7 @@ use App\Models\KeuSupplier;
 use Illuminate\Http\Request;
 use App\Models\DetailSupplier;
 use App\Models\KeuDetailJurnal;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DetailSupplierController extends Controller
 {
@@ -17,6 +18,33 @@ class DetailSupplierController extends Controller
      */
     public function index()
     {
+        $detailSupplier = DetailSupplier::get();
+        if (request()->get('export') == 'pdf') {
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.tabel-detail-supplier', ['detailSupplier' => $detailSupplier])->setPaper('a4');
+            return $pdf->stream('Daftar Detail Supplier.pdf');
+        } else if (request()->get('export') == 'pdf-detail') {
+            $detail = DetailSupplier::where('id', request()->id)->get()->first();
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.baris-detail-supplier', ['detail' => $detail])->setPaper('a4');
+            return $pdf->stream('Detail Supplier.pdf');
+        }
         if (request()->get('status') == 'Lunas') {
             DetailSupplier::where('id', request()->get('id'))->update([
                 'status' => request()->get('status')
@@ -27,7 +55,7 @@ class DetailSupplierController extends Controller
         $tgl = date("Y-m-d");
         // dd(date('Y-m-d', strtotime('+6 days', strtotime($tgl))));
         return view('pages.akuntansi.detail-supplier', [
-            'detailSupplier' => DetailSupplier::get(),
+            'detailSupplier' => $detailSupplier,
             'id_DS' => DetailSupplier::latest()->get()->first()->id ?? 1,
             'keuSupplier' => KeuSupplier::get()
         ]);
@@ -78,7 +106,7 @@ class DetailSupplierController extends Controller
         // Ambil nama pegawai 
         $nama_pegawai = KeuSupplier::where('id', $request['id_supplier'])->first()->nama_supplier;
         // ambil id penggajian terakhir
-        $no_JUBYR = DetailSupplier::latest()->first()->id;
+        $no_JUBYR = DetailSupplier::latest()->first()->id ?? 1;
         // Buat No Jurnal JUBYR
         $no_jurnal = 'JUBYR' . str_pad($no_JUBYR, 4, 0, STR_PAD_LEFT);
 
@@ -90,17 +118,19 @@ class DetailSupplierController extends Controller
             'no_bukti' => $request->id_detail_supplier,
         ]);
 
+        $id_2110 = KeuAkun::where('kode_akun', '2110')->get()->first()->id;
+        $id_1110 = KeuAkun::where('kode_akun', '1110')->get()->first()->id;
 
         // Masukkan Data Penggajian Ke Detail Jurnal Umum bagian debet
         KeuDetailJurnal::create([
-            'no_jurnal' => $no_jurnal,
-            'kode_akun' => '5220',
+            'no_jurnal' => $id_2110,
+            'kode_akun' => '2110',
             'debet' => $request->pembayaran
         ]);
         // Masukkan Data Penggajian Ke Detail Jurnal Umum bagian kredit
         KeuDetailJurnal::create([
-            'no_jurnal' => $no_jurnal,
-            'kode_akun' => '2130',
+            'no_jurnal' => $id_1110,
+            'kode_akun' => '1110',
             'kredit' => $request->pembayaran
         ]);
 

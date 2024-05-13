@@ -15,7 +15,7 @@
 </div>
 <!-- end breadcrumb section -->
 
-<br>
+{{-- <br>
 <div class="container-neworder">
   <div class="row">
     <div class="col-md-12 text-left">
@@ -24,7 +24,7 @@
       </div>
     </div>
   </div>
-</div>
+</div> --}}
 
 @foreach ($order as $record)
 <div class="status-order-container mt-5 mb-5">
