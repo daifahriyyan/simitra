@@ -287,6 +287,9 @@
                             data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
                           <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
                             data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
+                          <a href="{{ route('Ceklist Fumigasi') }}?verif={{ $record->id_order }}"
+                            class='btn btn-info btn-sm' style='width: 30px; height: 30px;'><i
+                              class='fas fa-check'></i></a>
                         </td>
                       </tr>
                       @endforeach

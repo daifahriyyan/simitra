@@ -42,6 +42,11 @@ class PemberitahuanKegiatanController extends Controller
             $pdf = Pdf::loadView('generate-pdf.baris_pemberitahuan_kegiatan', ['formPemberitahuan' => $formPemberitahuan])->setPaper('a4');
             return $pdf->stream('Formulir Pemberitahuan.pdf');
         }
+        if (request()->get('verif') !== null) {
+            DataOrder::where('id', request()->get('verif'))->update([
+                'verifikasi' => 3
+            ]);
+        }
         return view('pages.operasional.pemberitahuan-kegiatan', [
             'pemberitahuanKegiatan' => $pemberitahuanKegiatan,
             'dataOrder' => DataOrder::get(),

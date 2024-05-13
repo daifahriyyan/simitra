@@ -15,6 +15,11 @@ class CeklistFumigasiController extends Controller
      */
     public function index()
     {
+        if (request()->get('verif') !== null) {
+            DataOrder::where('id', request()->get('verif'))->update([
+                'verifikasi' => 2
+            ]);
+        }
         return view('pages.operasional.ceklist-fumigasi', [
             'title' => 'Ceklist Fumigasi',
             'ceklist' => CeklistFumigasi::get(),

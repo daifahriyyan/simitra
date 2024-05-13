@@ -407,8 +407,8 @@
                           <a href="{{ route('Invoice') }}?export=pdf-detail&id={{ $record->id }}"
                             class='btn btn-primary btn-sm' style='width: 30px; height: 30px;' target='_blank'
                             role='button'><i class='fas fa-print'></i></a>
-                          <button type='button' class='btn btn-info btn-sm' style='width: 30px; height: 30px;'
-                            onclick='approveData(\"".$data[' id_invoice']."\")'><i class='fas fa-check'></i></button>
+                          <a href=" {{ route('Invoice') }}?verif={{ $record->id_order }}" class='btn btn-info btn-sm'
+                            style='width: 30px; height: 30px;'><i class='fas fa-check'></i></a>
                         </td>
                       </tr>
                       @endforeach

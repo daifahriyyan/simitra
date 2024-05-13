@@ -68,6 +68,16 @@ class DataOrder extends Model
         return $this->hasOne(Sertifikat::class, 'id', 'id_order');
     }
 
+    public function sertif()
+    {
+        return $this->belongsTo(Sertifikat::class, 'id', 'id_order');
+    }
+
+    public function invoicee()
+    {
+        return $this->belongsTo(Invoice::class, 'id', 'id_order');
+    }
+
     public function invoice()
     {
         return $this->hasOne(Invoice::class, 'id', 'id_order');

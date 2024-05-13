@@ -42,10 +42,12 @@ class DraftPelayaranController extends Controller
             Storage::disk('public')->put($uploadDP, file_get_contents($DP));
         }
 
+        $request['id_draft'] = 'D00' . strval(DraftPelayaran::get()->count() + 1);
+
         DraftPelayaran::create([
             'id_draft' => $request['id_draft'],
             'id_order' => $request['id_order'],
-            'tanggal_order' => $request['tanggal_order'],
+            'tanggal_order' => $request['tanggal_order'] ?? date('Y-m-d'),
             'draft_pelayaran' => $fileDP
         ]);
 

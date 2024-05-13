@@ -69,7 +69,11 @@ class BuktiPembayaranController extends Controller
      */
     public function show(string $id)
     {
-
+        if (request()->get('verif') !== null) {
+            DataOrder::where('id', request()->get('verif'))->update([
+                'verifikasi' => 6
+            ]);
+        }
         // ambil data Bukti Pembayaran
         $dataBP = BuktiPembayaran::where('id', $id)->get()->first();
         // ambil data Piutang Usaha dengan kode 1110 dari table keu_akun
@@ -126,9 +130,13 @@ class BuktiPembayaranController extends Controller
         ]);
 
 
+        $id_jurnal = KeuJurnal::where('no_jurnal', $no_jurnal)->get()->first()->id;
+        $id_1110 = KeuAkun::where('kode_akun', '1110')->get()->first()->id;
+        $id_1120 = KeuAkun::where('kode_akun', '1120')->get()->first()->id;
+
         // Masukkan Data Penggajian Ke Jurnal Umum
         KeuJurnal::create([
-            'no_jurnal' => $no_jurnal,
+            'no_jurnal' => $id_jurnal,
             'tanggal_jurnal' => $invoice->tanggal_invoice,
             'uraian_jurnal' => 'Pelunasan ' . $invoice->id_invoice,
             'no_bukti' => $invoice->id_invoice,
@@ -137,14 +145,14 @@ class BuktiPembayaranController extends Controller
 
         // Masukkan Data Penggajian Ke Detail Jurnal Umum bagian debet
         KeuDetailJurnal::create([
-            'no_jurnal' => $no_jurnal,
-            'kode_akun' => '1110',
+            'no_jurnal' => $id_jurnal,
+            'kode_akun' => $id_1110,
             'debet' => $invoice->jumlah_dibayar
         ]);
         // Masukkan Data Penggajian Ke Detail Jurnal Umum bagian kredit
         KeuDetailJurnal::create([
-            'no_jurnal' => $no_jurnal,
-            'kode_akun' => '1120',
+            'no_jurnal' => $id_jurnal,
+            'kode_akun' => $id_1120,
             'kredit' => $invoice->jumlah_dibayar
         ]);
 

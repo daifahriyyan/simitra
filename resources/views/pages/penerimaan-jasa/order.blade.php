@@ -368,7 +368,21 @@
                 <td>{{ $item->telp_driver }}</td>
                 <td>{{ $item->shipment_instruction }}</td>
                 <td>{{ $item->packing_list }}</td>
-                <td><span class="badge-pill badge-warning">process</span></td>
+                <td>
+                  <?php
+                    if ($item->dataOrder->verifikasi == 0){
+                      echo '<span class="badge-pill badge-warning">Sedang Diverifikasi</span>';
+                    } else if($item->dataOrder->verifikasi == 1){
+                      echo '<span class="badge-pill badge-info">Menunggu Kedatangan Kontainer';
+                    }else if($item->dataOrder->verifikasi == 2){
+                      echo '<span class="badge-pill badge-primary">Kontainer Telah Diverifikasi';
+                    }else if($item->dataOrder->verifikasi >= 3 && $item->dataOrder->verifikasi < 6){ 
+                      echo '<span class="badge-pill badge-info">Proses Fumigasi Selesai' ; 
+                    }else if($item->dataOrder->verifikasi >= 6){
+                      echo '<span class="badge-pill badge-success">Proses Selesai';
+                    }
+                    ?>
+                </td>
                 <td>
                   {{-- <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
                     data-bs-target='#editModal{{ $item->id }}'><i class='fas fa-edit'></i></button> --}}
@@ -377,8 +391,8 @@
                   <a href="{{ route('Data Order') }}?export=pdf-detail&id_detailorder={{ $item->id_detailorder }}"
                     class='btn btn-primary btn-sm' style='width: 30px; height: 30px;' target='_blank' role='button'><i
                       class='fas fa-print'></i></a>
-                  <button type='button' class='btn btn-info btn-sm' style='width: 30px; height: 30px;'
-                    onclick='approveData(\"".$data[' id_order']."\")'><i class='fas fa-check'></i></button>
+                  <a href="{{ route('Data Order') }}?verif={{ $item->id }}" class='btn btn-info btn-sm'
+                    style='width: 30px; height: 30px;'><i class='fas fa-check'></i></a>
                   <button type='button' class='btn btn-danger btn-sm' style='width: 30px; height: 30px;'
                     onclick='rejectData(\"".$data[' id_order']."\")'><i class='fas fa-times'></i></button>"
                 </td>

@@ -38,7 +38,11 @@ class InvoiceController extends Controller
             $pdf = Pdf::loadView('generate-pdf.invoice', ['detail' => $detail])->setPaper('a4');
             return $pdf->stream('Invoice.pdf');
         }
-        date_default_timezone_set("Asia/Jakarta");
+        if (request()->get('verif') !== null) {
+            DataOrder::where('id', request()->get('verif'))->update([
+                'verifikasi' => 5
+            ]);
+        }
         return view('pages.penerimaan-jasa.invoice', [
             'invoice' => Invoice::get(),
             'id_invoice' => isset(Invoice::latest()->get()->first()->id) + 1 ?? 1,

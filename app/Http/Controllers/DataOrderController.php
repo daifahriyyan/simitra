@@ -44,6 +44,11 @@ class DataOrderController extends Controller
             $pdf = Pdf::loadView('generate-pdf.request-order', ['detail' => $detail])->setPaper('a4');
             return $pdf->stream('Request Order.pdf');
         }
+        if (request()->get('verif') !== null) {
+            DataOrder::where('id', request()->get('verif'))->update([
+                'verifikasi' => 1
+            ]);
+        }
 
         return view('pages.penerimaan-jasa.order', [
             'title' => 'Data Order',

@@ -16,6 +16,11 @@ class SertifikatController extends Controller
    */
   public function index()
   {
+    if (request()->get('verif') !== null) {
+      DataOrder::where('id', request()->get('verif'))->update([
+        'verifikasi' => 4
+      ]);
+    }
     return view('pages.penerimaan-jasa.sertifikat', [
       'sertifikat' => Sertifikat::get(),
       'dataOrder' => DataOrder::get(),
