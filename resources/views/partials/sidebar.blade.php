@@ -87,6 +87,7 @@
         <a class="collapse-item" href="{{ route('Daftar Akun') }}">Daftar Akun</a>
         <a class="collapse-item" href="{{ route('Supplier') }}">Supplier</a>
         <a class="collapse-item" href="{{ route('Detail Supplier') }}">Detail Supplier</a>
+        <a class="collapse-item" href="{{ route('Pembelian') }}">Pembelian</a>
         <a class="collapse-item" href="{{ route('Penggajian') }}">Penggajian</a>
         <a class="collapse-item" href="{{ route('Aset Tetap') }}">Aset Tetap</a>
         <a class="collapse-item" href="{{ route('Penyusutan Aset Tetap') }}">Penyusutan Aset Tetap</a>

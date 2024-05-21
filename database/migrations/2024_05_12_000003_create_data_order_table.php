@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('volume');
             $table->string('place_fumigation');
             $table->integer('jumlah_order');
-            $table->integer('verifikasi');
+            $table->integer('verifikasi')->nullable();
             $table->timestamps();
         });
 

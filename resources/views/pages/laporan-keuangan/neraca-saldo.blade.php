@@ -149,24 +149,24 @@
                       $saldoKredit = 0;
                       if(isset(request()->bulan) && isset(request()->tahun)){
                       $debet = App\Models\KeuDetailJurnal::where('kode_akun',
-                      $record->kode_akun)->whereMonth('created_at', request()->bulan)->whereYear('created_at',
+                      $record->id)->whereMonth('created_at', request()->bulan)->whereYear('created_at',
                       request()->tahun)->sum('debet');
                       $kredit = App\Models\KeuDetailJurnal::where('kode_akun',
-                      $record->kode_akun)->whereMonth('created_at', request()->bulan)->whereYear('created_at',
+                      $record->id)->whereMonth('created_at', request()->bulan)->whereYear('created_at',
                       request()->tahun)->sum('kredit');
                       } else if (isset(request()->bulan)){
                       $debet = App\Models\KeuDetailJurnal::where('kode_akun',
-                      $record->kode_akun)->whereMonth('created_at', request()->bulan)->sum('debet');
+                      $record->id)->whereMonth('created_at', request()->bulan)->sum('debet');
                       $kredit = App\Models\KeuDetailJurnal::where('kode_akun',
-                      $record->kode_akun)->whereMonth('created_at', request()->bulan)->sum('kredit');
+                      $record->id)->whereMonth('created_at', request()->bulan)->sum('kredit');
                       } else if (isset(request()->tahun)){
                       $debet = App\Models\KeuDetailJurnal::where('kode_akun',
-                      $record->kode_akun)->whereYear('created_at', request()->tahun)->sum('debet');
+                      $record->id)->whereYear('created_at', request()->tahun)->sum('debet');
                       $kredit = App\Models\KeuDetailJurnal::where('kode_akun',
-                      $record->kode_akun)->whereYear('created_at', request()->tahun)->sum('kredit');
+                      $record->id)->whereYear('created_at', request()->tahun)->sum('kredit');
                       } else {
-                      $debet = App\Models\KeuDetailJurnal::where('kode_akun', $record->kode_akun)->sum('debet');
-                      $kredit = App\Models\KeuDetailJurnal::where('kode_akun', $record->kode_akun)->sum('kredit');
+                      $debet = App\Models\KeuDetailJurnal::where('kode_akun', $record->id)->sum('debet');
+                      $kredit = App\Models\KeuDetailJurnal::where('kode_akun', $record->id)->sum('kredit');
                       }
 
                       if($record->jenis_akun == 'debet'){

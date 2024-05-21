@@ -52,10 +52,12 @@
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                  <form method="POST">
+                  <form method="POST" action="{{ route('Tambah Pembelian') }}">
+                    @csrf
                     <div class="mb-3">
-                      <label for="id_beli" class="form-label">ID Pembelian:</label>
-                      <input type="text" class="form-control" id="id_beli" name="id_beli" required>
+                      <label for="id_pembelian" class="form-label">ID Pembelian:</label>
+                      <input type="text" class="form-control" id="id_pembelian" name="id_pembelian"
+                        value="P{{ str_pad($id_pembelian, 4, 0, STR_PAD_LEFT) }}" required>
                     </div>
                     <div class="mb-3">
                       <label for="tanggal_beli" class="form-label">Tanggal Pembelian:</label>
@@ -67,11 +69,13 @@
                     </div>
                     <div class="mb-3">
                       <label for="id_supplier" class="form-label">ID Supplier:</label>
-                      <input type="text" class="form-control" id="id_supplier" name="id_supplier" required>
-                    </div>
-                    <div class="mb-3">
-                      <label for="nama_supplier" class="form-label">Nama Supplier:</label>
-                      <input type="text" class="form-control" id="nama_supplier" name="nama_supplier" required>
+                      <select class="custom-select form-select-lg mb-3" aria-label="Large select example"
+                        id="id_supplier" name="id_supplier">
+                        <option selected>Pilih ID Supplier</option>
+                        @foreach ($keuSupplier as $item)
+                        <option value="{{ $item->id }}">{{ $item->id_supplier }}</option>
+                        @endforeach
+                      </select>
                     </div>
                     <div class="mb-3">
                       <label for="metode_beli" class="form-label">Metode Pembelian:</label>
@@ -84,11 +88,12 @@
                     </div>
                     <div class="mb-3">
                       <label for="id_persediaan" class="form-label">ID Persediaan:</label>
-                      <input type="text" class="form-control" id="id_persediaan" name="id_persediaan" required>
-                    </div>
-                    <div class="mb-3">
-                      <label for="nama_persediaan" class="form-label">Nama Persediaan:</label>
-                      <input type="text" class="form-control" id="nama_persediaan" name="nama_persediaan" required>
+                      <select class="form-control form-select-lg" name="id_persediaan" id="id_persediaan" required>
+                        <option selected>Pilih ID Persediaan</option>
+                        @foreach ($dataPersediaan as $item)
+                        <option value="{{ $item->id }}">{{ $item->id_persediaan }}</option>
+                        @endforeach
+                      </select>
                     </div>
                     <div class="mb-3">
                       <label for="jumlah_beli" class="form-label">Jumlah Pembelian:</label>
@@ -99,8 +104,8 @@
                       <input type="number" class="form-control" id="harga_beli" name="harga_beli">
                     </div>
                     <div class="mb-3">
-                      <label for="total_beli" class="form-label">Total Pembelian:</label>
-                      <input type="number" class="form-control" id="total_beli" name="total_beli">
+                      <label for="total_pembelian" class="form-label">Total Pembelian:</label>
+                      <input type="number" class="form-control" id="total_pembelian" name="total_pembelian">
                     </div>
                     <div class="mb-3">
                       <label for="ppn_masukan" class="form-label">PPN Masukan:</label>
@@ -130,8 +135,9 @@
                 <div class="modal-body">
                   <form method="POST">
                     <div class="mb-3">
-                      <label for="edit_id_beli" class="form-label">ID Pembelian:</label>
-                      <input type="text" class="form-control" id="edit_id_beli" name="edit_id_beli" readonly required>
+                      <label for="edit_id_pembelian" class="form-label">ID Pembelian:</label>
+                      <input type="text" class="form-control" id="edit_id_pembelian" name="edit_id_pembelian" readonly
+                        required>
                     </div>
                     <div class="mb-3">
                       <label for="edit_tanggal_beli" class="form-label">Tanggal Pembelian:</label>
@@ -179,8 +185,8 @@
                       <input type="number" class="form-control" id="edit_harga_beli" name="edit_harga_beli">
                     </div>
                     <div class="mb-3">
-                      <label for="edit_total_beli" class="form-label">Total Pembelian:</label>
-                      <input type="number" class="form-control" id="edit_total_beli" name="edit_total_beli">
+                      <label for="edit_total_pembelian" class="form-label">Total Pembelian:</label>
+                      <input type="number" class="form-control" id="edit_total_pembelian" name="edit_total_pembelian">
                     </div>
                     <div class="mb-3">
                       <label for="edit_ppn_masukan" class="form-label">PPN Masukan:</label>
@@ -261,7 +267,8 @@
                       <select class="form-control-sm border-1" style="width: 100px; height: 30px;" id="id_supplier"
                         onchange="filterData()">
                         <option value="">Supplier</option>
-                        <?php echo $id_supplier_options; ?>
+                        {{--
+                        <?php echo $id_supplier_options; ?> --}}
                       </select>
                       <input type="date" class="form-control-sm border-1" id="tanggalMulai"
                         aria-describedby="tanggalMulaiLabel">
@@ -325,12 +332,13 @@
                       </tr>
                     </thead>
                     <tbody>
+                      {{--
                       <?php
                       $query = "SELECT * FROM keu_pembelian";
                       $result = mysqli_query($conn, $query);
                       while ($data = mysqli_fetch_assoc($result)) {
                           echo "<tr>";
-                          echo "<td>".$data['id_beli']."</td>";
+                          echo "<td>".$data['id_pembelian']."</td>";
                           echo "<td>".$data['tanggal_beli']."</td>";
                           echo "<td>".$data['termin_pembayaran']."</td>";
                           echo "<td>".$data['id_supplier']."</td>";
@@ -340,17 +348,17 @@
                           echo "<td>".$data['nama_persediaan']."</td>";
                           echo "<td>".$data['jumlah_beli']."</td>";
                           echo "<td>".number_format($data['harga_beli'], 2, ',', '.')."</td>";
-                          echo "<td>".number_format($data['total_beli'], 2, ',', '.')."</td>";
+                          echo "<td>".number_format($data['total_pembelian'], 2, ',', '.')."</td>";
                           echo "<td>".number_format($data['ppn_masukan'], 2, ',', '.')."</td>";
                           echo "<td>".number_format($data['total_bayar'], 2, ',', '.')."</td>";
                           echo "<td>";
-                          echo "<button type='button' class='btn btn-success btn-sm' style='width: 30px; height: 30px;' data-bs-toggle='modal' data-bs-target='#editModal' onclick='openEditModal(\"".$data['id_beli']."\", \"".$data['tanggal_beli']."\", \"".$data['termin_pembayaran']."\", \"".$data['id_supplier']."\", \"".$data['nama_supplier']."\", \"".$data['metode_beli']."\", \"".$data['id_persediaan']."\", \"".$data['nama_persediaan']."\", \"".$data['jumlah_beli']."\", \"".$data['harga_beli']."\", \"".$data['total_beli']."\", \"".$data['ppn_masukan']."\", \"".$data['total_bayar']."\")'><i class='fas fa-edit'></i></button>";
-                          echo "<button type='button' class='btn btn-danger btn-sm' style='width: 30px; height: 30px;' onclick='openDeleteModal(\"".$data['id_beli']."\")'><i class='fas fa-trash'></i></button>";
-                          echo "<a href='generate_pdf.php?id_beli=".htmlspecialchars($data['id_beli'])."' class='btn btn-primary btn-sm' style='width: 30px; height: 30px;' target='_blank' role='button'><i class='fas fa-print'></i></a>";
+                          echo "<button type='button' class='btn btn-success btn-sm' style='width: 30px; height: 30px;' data-bs-toggle='modal' data-bs-target='#editModal' onclick='openEditModal(\"".$data['id_pembelian']."\", \"".$data['tanggal_beli']."\", \"".$data['termin_pembayaran']."\", \"".$data['id_supplier']."\", \"".$data['nama_supplier']."\", \"".$data['metode_beli']."\", \"".$data['id_persediaan']."\", \"".$data['nama_persediaan']."\", \"".$data['jumlah_beli']."\", \"".$data['harga_beli']."\", \"".$data['total_pembelian']."\", \"".$data['ppn_masukan']."\", \"".$data['total_bayar']."\")'><i class='fas fa-edit'></i></button>";
+                          echo "<button type='button' class='btn btn-danger btn-sm' style='width: 30px; height: 30px;' onclick='openDeleteModal(\"".$data['id_pembelian']."\")'><i class='fas fa-trash'></i></button>";
+                          echo "<a href='generate_pdf.php?id_pembelian=".htmlspecialchars($data['id_pembelian'])."' class='btn btn-primary btn-sm' style='width: 30px; height: 30px;' target='_blank' role='button'><i class='fas fa-print'></i></a>";
                           echo "</td>";
                           echo "</tr>";
                       }
-                      ?>
+                      ?> --}}
                     </tbody>
                     <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
                   </table>
@@ -391,7 +399,7 @@
     <!-- AWAL EDIT SESUAIKAN TABEL DATABASE -->
     <script>
       function openEditModal(idBeli, tanggalBeli, idSupplier, terminPembayaran, namaSupplier, metodeBeli, idPersediaan, namaPersediaan, jumlahBeli, hargaBeli, totalBeli, ppnMasukan, totalBayar) {
-        document.getElementById("edit_id_beli").value = idBeli;
+        document.getElementById("edit_id_pembelian").value = idBeli;
         document.getElementById("edit_tanggal_beli").value = tanggalBeli;
         document.getElementById("edit_termin_pembayaran").value = terminPembayaran;
         document.getElementById("edit_id_supplier").value = idSupplier;
@@ -401,7 +409,7 @@
         document.getElementById("edit_nama_persediaan").value = namaPersediaan;
         document.getElementById("edit_jumlah_beli").value = jumlahBeli;
         document.getElementById("edit_harga_beli").value = hargaBeli;
-        document.getElementById("edit_total_beli").value = totalBeli;
+        document.getElementById("edit_total_pembelian").value = totalBeli;
         document.getElementById("edit_ppn_masukan").value = ppnMasukan;
         document.getElementById("edit_total_bayar").value = totalBayar;
     }
@@ -414,7 +422,7 @@
         
         // Tambahkan event listener pada tombol konfirmasi hapus
         document.getElementById('confirmDeleteBtn').onclick = function() {
-            window.location.href = "?id_beli=" + idBeli;
+            window.location.href = "?id_pembelian=" + idBeli;
         };
     }
     </script>

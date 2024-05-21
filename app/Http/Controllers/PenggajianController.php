@@ -94,6 +94,21 @@ class PenggajianController extends Controller
             'gaji_bersih' => $gaji_bersih
         ]);
 
+        // jika jenis akun adalah kredit maka kurangi 
+        $beban_gaji = $beban_gaji->saldo_akun + $gaji_bersih;
+        // jika jenis akun adalah kredit maka kurangi 
+        $hutang_gaji = $hutang_gaji->saldo_akun + $gaji_bersih;
+
+        // ubah sesuai operasi diatas
+        KeuAkun::where('kode_akun', '5220')->update([
+            'saldo_akun' => $beban_gaji,
+        ]);
+        // ubah sesuai operasi diatas
+        KeuAkun::where('kode_akun', '2130')->update([
+            'saldo_akun' => $hutang_gaji,
+        ]);
+
+
         // Ambil nama pegawai 
         $nama_pegawai = DataPegawai::where('id', $request['id_pegawai'])->first()->nama_pegawai;
         // ambil id penggajian terakhir

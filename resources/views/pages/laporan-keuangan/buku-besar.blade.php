@@ -85,9 +85,11 @@
                           <option value="{{ $item->kode_akun }}">{{ $item->nama_akun }}</option>
                           @endforeach
                         </select>
-                        <input type="date" class="form-control-sm border-1" id="tanggalMulai" name="tanggalMulai"
+                        <input type="date" class="form-control-sm border-1" id="tanggalMulai"
+                          value="{{ request()->tanggalMulai }}" name="tanggalMulai"
                           aria-describedby="tanggalMulaiLabel">
-                        <input type="date" class="form-control-sm border-1" id="tanggalAkhir" name="tanggalAkhir"
+                        <input type="date" class="form-control-sm border-1" id="tanggalAkhir"
+                          value="{{ request()->tanggalAkhir }}" name="tanggalAkhir"
                           aria-describedby="tanggalAkhirLabel">
                         <button type="subnit" class="btn btn-secondary btn-sm" style="width: 60px; height: 30px;">
                           Filter
@@ -150,8 +152,8 @@
                       }
                       @endphp
                       <tr>
-                        <td>{{ $record->no_jurnal}}</td>
-                        <td>{{ $record->jurnal->tanggal_jurnal }}</td>
+                        <td>{{ $record->jurnal->no_jurnal}}</td>
+                        <td>{{ $record->created_at }}</td>
                         <td>{{ $record->jurnal->no_bukti }}</td>
                         <td>{{ $record->jurnal->uraian_jurnal }}</td>
                         <td>{{ $record->akun->kode_akun}}</td>

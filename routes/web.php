@@ -136,12 +136,6 @@ Route::resource('/dashboard/penerimaan-jasa/bukti-pembayaran', BuktiPembayaranCo
     'update' => 'Ubah Bukti Pembayaran',
     'destroy' => 'Hapus Bukti Pembayaran',
 ]);
-Route::resource('/dashboard/penerimaan-jasa/pembelian', PembelianController::class)->names([
-    'index' => 'Pembelian',
-    'store' => 'Tambah Pembelian',
-    'update' => 'Ubah Pembelian',
-    'destroy' => 'Hapus Pembelian',
-]);
 Route::resource('/dashboard/penerimaan-jasa/detail-customer', DetailCustomerController::class)->names([
     'index' => 'Detail Customer',
     'store' => 'Tambah Detail Customer',
@@ -267,13 +261,19 @@ Route::resource('/dashboard/akuntansi/detail-supplier', DetailSupplierController
     'update' => 'Ubah Detail Supplier',
     'destroy' => 'Hapus Detail Supplier',
 ]);
+Route::resource('/dashboard/akuntansi/pembelian', PembelianController::class)->names([
+    'index' => 'Pembelian',
+    'store' => 'Tambah Pembelian',
+    'update' => 'Ubah Pembelian',
+    'destroy' => 'Hapus Pembelian',
+]);
 
 // Laporan Keuangan
 Route::get('/dashboard/laporan-keuangan/buku-besar', [LapKeuController::class, 'bukuBesar'])->name('Buku Besar');
 Route::get('/dashboard/laporan-keuangan/neraca-saldo', [LapKeuController::class, 'neracaSaldo'])->name('Neraca Saldo');
-Route::view('/dashboard/laporan-keuangan/hpp', 'pages.laporan-keuangan.hpp')->name('Harga Pokok Penjualan');
-Route::view('/dashboard/laporan-keuangan/laba-rugi', 'pages.laporan-keuangan.laba-rugi')->name('Laporan Laba Rugi');
-Route::view('/dashboard/laporan-keuangan/posisi-keuangan', 'pages.laporan-keuangan.posisi-keuangan')->name('Posisi Keuangan');
+Route::get('/dashboard/laporan-keuangan/hpp', [LapKeuController::class, 'hpp'])->name('Harga Pokok Penjualan');
+Route::get('/dashboard/laporan-keuangan/laba-rugi', [LapKeuController::class, 'labaRugi'])->name('Laporan Laba Rugi');
+Route::get('/dashboard/laporan-keuangan/posisi-keuangan', [LapKeuController::class, 'posKeu'])->name('Posisi Keuangan');
 
 
 // Route::post('/dashboard/ajax-order', [DataOrderController::class, 'ajaxOrder'])->name('ajax-order');
