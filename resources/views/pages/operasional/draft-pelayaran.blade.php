@@ -58,7 +58,7 @@
           </div>
           <!-- AWAL EDIT SESUAIKAN TABEL DATABASE -->
           <!-- Modal Tambah Data -->
-          <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+          {{-- <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
@@ -98,7 +98,7 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> --}}
           @foreach ($draftPelayaran as $record)
           <!-- Modal Edit Data -->
           <div class="modal fade" id="editModal{{ $record->id }}" tabindex="-1" aria-labelledby="editModalLabel"
@@ -177,12 +177,12 @@
                   <h6 class="m-0 font-weight-bold text-primary">Draft Pelayaran</h6> <!-- EDIT NAMA -->
                   <div class="btn-group" role="group" aria-label="Basic mixed styles example">
                     <!-- Tombol Tambah dengan Icon -->
-                    <div>
+                    {{-- <div>
                       <button type="button" class="btn btn-sm btn-info" style='width: 70px; height: 30px;'
                         data-bs-toggle="modal" data-bs-target="#addModal">
                         Tambah
                       </button>
-                    </div>
+                    </div> --}}
                     <!-- Tombol Filter Tanggal dengan Icon -->
                     <div class="input-group">
                       <input type="date" class="form-control-sm border-1" id="tanggalMulai"

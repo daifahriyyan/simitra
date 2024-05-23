@@ -275,6 +275,7 @@
                     </thead>
                     <tbody>
                       @foreach ($rekapHPPStandar as $record)
+                      <?php $JumlahTotalHPP += $record->total_hpp ?>
                       <tr>
                         <td>{{ $record->id_rekap }}</td>
                         <td>{{ $record->tanggal_input }}</td>
@@ -292,6 +293,12 @@
                         </td>
                       </tr>
                       @endforeach
+                      @if ($JumlahTotalHPP != 0)
+                      <tr>
+                        <th colspan="7">Jumlah Total HPP</th>
+                        <th>Rp. {{ number_format($JumlahTotalHPP) }}</th>
+                      </tr>
+                      @endif
                     </tbody>
                     <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
                   </table>

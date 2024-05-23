@@ -128,6 +128,7 @@
         </tr>
         @foreach ($hppSesungguhnya as $record)
         <tr>
+          <td>{{ $loop->iteration }}</td>
           <td>{{ $record->id_beban_hpp }}</td>
           <td>{{ $record->tanggal_input }}</td>
           <td>{{ $record->bbb_sesungguhnya }}</td>

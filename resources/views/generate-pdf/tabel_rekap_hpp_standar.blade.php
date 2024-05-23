@@ -128,6 +128,7 @@
           <th style="width: 15%;">Total</th>
         </tr>
         @foreach ($rekapHppStandar as $record)
+        <?php $JumlahTotalHPP += $record->total_hpp ?>
         <tr>
           <td>{{ $loop->iteration }}</td>
           <td>{{ $record->id_rekap }}</td>
@@ -140,6 +141,12 @@
           <td>{{ number_format($record->total_hpp, 2, ',', '.') }}</td>
         </tr>
         @endforeach
+        @if ($JumlahTotalHPP != 0)
+        <tr>
+          <th colspan="8">Jumlah Total HPP</th>
+          <th>Rp. {{ number_format($JumlahTotalHPP) }}</th>
+        </tr>
+        @endif
       </table>
       <br>
       <br>

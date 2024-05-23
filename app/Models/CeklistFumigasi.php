@@ -17,4 +17,9 @@ class CeklistFumigasi extends Model
     {
         return $this->belongsTo(DataOrder::class, 'id_order', 'id');
     }
+
+    public function detailOrder()
+    {
+        return $this->belongsTo(DetailOrder::class, 'id_order', 'id');
+    }
 }

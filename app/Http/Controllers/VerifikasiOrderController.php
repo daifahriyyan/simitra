@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Throwable;
 use App\Models\DataOrder;
+use App\Models\DetailOrder;
 use Illuminate\Http\Request;
 use App\Models\VerifikasiOrder;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -41,6 +42,11 @@ class VerifikasiOrderController extends Controller
             ]);
             $pdf = Pdf::loadView('generate-pdf.baris_verifikasi_order', ['record' => $record])->setPaper('a4');
             return $pdf->stream('Verifikasi Order.pdf');
+        }
+        if (request()->get('verif') !== null) {
+            DetailOrder::where('id', request()->get('verif'))->update([
+                'verifikasi' => 2
+            ]);
         }
         return view('pages.operasional.verifikasi-order', [
             'dataOrder' => DataOrder::get(),

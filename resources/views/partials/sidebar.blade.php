@@ -46,6 +46,7 @@
         <a class="collapse-item" href="{{ route('Sertifikat') }}">Sertifikat</a>
         <a class="collapse-item" href="{{ route('Invoice') }}">Invoice</a>
         <a class="collapse-item" href="{{ route('Bukti Pembayaran') }}">Bukti Pembayaran</a>
+        <a class="collapse-item" href="{{ route('Draft Pelayaran') }}">Draft Pelayaran</a>
         <a class="collapse-item" href="{{ route('Detail Customer') }}">Detail Customer</a>
         <a class="collapse-item" href="{{ route('Rekap Penjualan') }}">Rekap Penjualan</a>
       </div>
@@ -66,11 +67,11 @@
         <a class="collapse-item" href="{{ route('Surat Pemberitahuan') }}">Surat Pemberitahuan</a>
         <a class="collapse-item" href="{{ route('Ceklist Fumigasi') }}">Ceklist Fumigasi</a>
         <a class="collapse-item" href="{{ route('Methyl Recordsheet') }}">Methyl Recordsheet</a>
-        <a class="collapse-item" href="{{ route('Pemakaian Methyl') }}">Pemakaian Methyl</a>
+        {{-- <a class="collapse-item" href="{{ route('Pemakaian Methyl') }}">Pemakaian Methyl</a> --}}
         <a class="collapse-item" href="{{ route('Kartu Stok Persediaan') }}">Kartu Stok Persediaan</a>
         <a class="collapse-item" href="{{ route('Pemberitahuan Kegiatan') }}">Pemberitahuan Kegiatan</a>
-        <a class="collapse-item" href="{{ route('Draft Pelayaran') }}">Draft Pelayaran</a>
         <a class="collapse-item" href="{{ route('HPP Sesungguhnya') }}">HPP Sesunggguhnya</a>
+        <a class="collapse-item" href="{{ route('Rekap HPP Standar') }}">Rekap HPP Standar</a>
       </div>
     </div>
   </li>
@@ -86,12 +87,11 @@
         <h6 class="collapse-header">Akuntansi</h6>
         <a class="collapse-item" href="{{ route('Daftar Akun') }}">Daftar Akun</a>
         <a class="collapse-item" href="{{ route('Supplier') }}">Supplier</a>
-        <a class="collapse-item" href="{{ route('Detail Supplier') }}">Detail Supplier</a>
         <a class="collapse-item" href="{{ route('Pembelian') }}">Pembelian</a>
+        <a class="collapse-item" href="{{ route('Detail Supplier') }}">Detail Supplier</a>
         <a class="collapse-item" href="{{ route('Penggajian') }}">Penggajian</a>
         <a class="collapse-item" href="{{ route('Aset Tetap') }}">Aset Tetap</a>
         <a class="collapse-item" href="{{ route('Penyusutan Aset Tetap') }}">Penyusutan Aset Tetap</a>
-        <a class="collapse-item" href="{{ route('Rekap HPP Standar') }}">Rekap HPP Standar</a>
         <a class="collapse-item" href="{{ route('Jurnal Umum') }}">Jurnal Umum</a>
       </div>
     </div>

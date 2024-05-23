@@ -58,10 +58,6 @@
               </select>
             </div>
             <div class="mb-3">
-              <label for="commodity" class="form-label">Commodity:</label>
-              <input type="text" class="form-control" id="commodity" name="commodity" required>
-            </div>
-            <div class="mb-3">
               <label for="consignment" class="form-label">Consignment:</label>
               <input type="text" class="form-control" id="consignment" name="consignment" required>
             </div>
@@ -74,16 +70,12 @@
               <input type="text" class="form-control" id="pol" name="pol" value="SEMARANG, INDONESIA" readonly required>
             </div>
             <div class="mb-3">
-              <label for="destination" class="form-label">Destination:</label>
-              <input type="text" class="form-control" id="destination" name="destination" required>
-            </div>
-            <div class="mb-3">
               <label for="id_order" class="form-label">ID Order:</label>
               {{-- <input type="number" class="form-control" id="id_order" name="id_order" required> --}}
               <select class="form-control form-select-lg" name="id_order" id="id_order">
                 <option selected>Pilih ID Order</option>
                 @foreach ($dataOrder as $item)
-                <option value="{{ $item->id }}">{{ $item->id_order }}</option>
+                <option value="{{ $item->id }}">{{ $item->id_detailorder }}</option>
                 @endforeach
               </select>
             </div>
@@ -174,11 +166,6 @@
               </select>
             </div>
             <div class="mb-3">
-              <label for="commodity" class="form-label">Commodity:</label>
-              <input type="text" class="form-control" id="commodity" name="commodity" value="{{ $record->commodity }}"
-                required>
-            </div>
-            <div class="mb-3">
               <label for="consignment" class="form-label">Consignment:</label>
               <input type="text" class="form-control" id="consignment" name="consignment"
                 value="{{ $record->consignment }}" required>
@@ -193,17 +180,12 @@
               <input type="text" class="form-control" id="pol" name="pol" value="SEMARANG, INDONESIA" readonly required>
             </div>
             <div class="mb-3">
-              <label for="destination" class="form-label">Destination:</label>
-              <input type="text" class="form-control" id="destination" name="destination"
-                value="{{ $record->destination }}" required>
-            </div>
-            <div class="mb-3">
               <label for="id_order" class="form-label">ID Order:</label>
               {{-- <input type="number" class="form-control" id="id_order" name="id_order" required> --}}
               <select class="form-control form-select-lg" name="id_order" id="id_order">
-                <option value="{{ $record->id_order }}">{{ $record->dataOrder->id_order }}</option>
+                <option value="{{ $record->id_order }}">{{ $record->detailOrder->id_detailorder }}</option>
                 @foreach ($dataOrder as $item)
-                <option value="{{ $item->id }}">{{ $item->id_order }}</option>
+                <option value="{{ $item->id }}">{{ $item->id_detailorder }}</option>
                 @endforeach
               </select>
             </div>
@@ -346,7 +328,7 @@
                 <th>Port of Loading</th>
                 <th>Destination</th>
                 <th>Id Order</th>
-                <th>Id Order Container</th>
+                <th>Id Detail Order</th>
                 <th>Nama Customer</th>
                 <th>Telp Customer</th>
                 <th>ATTN</th>
@@ -379,15 +361,15 @@
                 <td>{{ $record->id_sertif }}</td>
                 <td>{{ $record->id_reg }}</td>
                 <td>{{ $record->target }}</td>
-                <td>{{ $record->commodity }}</td>
+                <td>{{ $record->detailOrder->commodity }}</td>
                 <td>{{ $record->consignment }}</td>
                 <td>{{ $record->country }}</td>
                 <td>{{ $record->pol }}</td>
-                <td>{{ $record->destination }}</td>
-                <td>{{ $record->dataOrder->id_order }}</td>
-                <td>ID Order Container</td>
-                <td>{{ $record->dataOrder->dataCustomer->nama_customer }}</td>
-                <td>{{ $record->dataOrder->dataCustomer->telepon_customer }}</td>
+                <td>{{ $record->detailOrder->destination }}</td>
+                <td>{{ $record->detailOrder->dataOrder->id_order }}</td>
+                <td>{{ $record->detailOrder->id_detailorder }}</td>
+                <td>{{ $record->detailOrder->dataOrder->dataCustomer->nama_customer }}</td>
+                <td>{{ $record->detailOrder->dataOrder->dataCustomer->telepon_customer }}</td>
                 <td>{{ $record->attn }}</td>
                 <td>{{ $record->tin }}</td>
                 <td>{{ $record->dataImporter->id_importer }}</td>

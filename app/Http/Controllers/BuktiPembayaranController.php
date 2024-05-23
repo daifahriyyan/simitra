@@ -7,6 +7,7 @@ use App\Models\Invoice;
 use App\Models\KeuAkun;
 use App\Models\DataOrder;
 use App\Models\KeuJurnal;
+use App\Models\DetailOrder;
 use Illuminate\Http\Request;
 use App\Models\BuktiPembayaran;
 use App\Models\KeuDetailJurnal;
@@ -20,6 +21,11 @@ class BuktiPembayaranController extends Controller
      */
     public function index()
     {
+        if (request()->get('verif') !== null) {
+            DetailOrder::where('id', request()->get('verif'))->update([
+                'verifikasi' => 6
+            ]);
+        }
         return view('pages.penerimaan-jasa.bukti-pembayaran', [
             'title' => 'Bukti Pembayaran',
             'records' => BuktiPembayaran::get(),
@@ -51,6 +57,14 @@ class BuktiPembayaranController extends Controller
         $buktiPembayaran = $request->file('bukti_pembayaran');
         $fileBP = time() . "-" . $buktiPembayaran->getClientOriginalName();
         $tujuanBP = 'Bukti_pembayaran/' . $fileBP;
+
+        $data = BuktiPembayaran::where('id_order', request()->id_order)->get()->first();
+
+        if (isset($data->bukti_pembayaran)) {
+            Storage::disk('public')->delete('Bukti_pembayaran/' . $data->bukti_pembayaran);
+
+            BuktiPembayaran::where('id_order', request()->id_order)->delete();
+        }
 
         Storage::disk('public')->put($tujuanBP, file_get_contents($buktiPembayaran));
 

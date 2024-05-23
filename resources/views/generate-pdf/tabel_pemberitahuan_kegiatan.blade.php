@@ -123,11 +123,11 @@
       <table>
         <tr>
           <th style="font-weight: normal;">Tanggal Mulai</th>
-          <td>: (get "start date" saat disortir berdasarkan tanggal)</td>
+          <td>: {{ request()->tanggalMulai?? 'Tidak Ada' }}</td>
         </tr>
         <tr>
           <th style="font-weight: normal;">Tanggal Selesai</th>
-          <td>: (get "end date" saat disortir berdasarkan tanggal)</td>
+          <td>: {{ request()->tanggalAkhir?? 'Tidak Ada' }}</td>
           <td></td>
         </tr>
       </table>
@@ -144,8 +144,8 @@
         @foreach ($pemberitahuanKegiatan as $record)
         <tr>
           <td>{{ $loop->iteration }}</td>
-          <td>{{ $record->dataOrder->container }}</td>
-          <td>{{ $record->dataOrder->volume }}</td>
+          <td>{{ $record->detailOrder->container }}</td>
+          <td>{{ $record->detailOrder->dataOrder->volume }}</td>
           <td>{{ $record->jam_mulai }}</td>
           <td>{{ $record->jam_selesai }}</td>
           <td>{{ $record->keterangan }}</td>

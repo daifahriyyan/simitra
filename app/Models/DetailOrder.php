@@ -41,6 +41,16 @@ class DetailOrder extends Model
         return $this->hasOne(Invoice::class, 'id_order', 'id');
     }
 
+    public function invoicee()
+    {
+        return $this->belongsTo(Invoice::class, 'id', 'id_order');
+    }
+
+    public function sertif()
+    {
+        return $this->belongsTo(Sertifikat::class, 'id', 'id_order');
+    }
+
     public function suratPemberitahuan()
     {
         return $this->hasOne(SuratPemberitahuan::class, 'id', 'id_order');

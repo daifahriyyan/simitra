@@ -138,7 +138,7 @@
           <td>Rp. {{ number_format($record->bbb_standar) }}</td>
           <td>Rp. {{ number_format($record->btk_standar) }}</td>
           <td>Rp. {{ number_format($record->bop_standar) }}</td>
-          <td>{{ number_format($record->markup) }}%</td>
+          <td>{{ $record->markup }}%</td>
           <td>Rp. {{ number_format($record->harga_jual) }}</td>
         </tr>
         @endforeach

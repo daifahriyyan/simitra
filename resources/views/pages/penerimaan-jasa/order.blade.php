@@ -370,15 +370,15 @@
                 <td>{{ $item->packing_list }}</td>
                 <td>
                   <?php
-                    if ($item->dataOrder->verifikasi == 0){
+                    if ($item->verifikasi == 0){
                       echo '<span class="badge-pill badge-warning">Sedang Diverifikasi</span>';
-                    } else if($item->dataOrder->verifikasi == 1){
+                    } else if($item->verifikasi == 1){
                       echo '<span class="badge-pill badge-info">Menunggu Kedatangan Kontainer';
-                    }else if($item->dataOrder->verifikasi == 2){
+                    }else if($item->verifikasi == 2){
                       echo '<span class="badge-pill badge-primary">Kontainer Telah Diverifikasi';
-                    }else if($item->dataOrder->verifikasi >= 3 && $item->dataOrder->verifikasi < 6){ 
+                    }else if($item->verifikasi >= 3 && $item->verifikasi < 6){ 
                       echo '<span class="badge-pill badge-info">Proses Fumigasi Selesai' ; 
-                    }else if($item->dataOrder->verifikasi >= 6){
+                    }else if($item->verifikasi >= 6){
                       echo '<span class="badge-pill badge-success">Proses Selesai';
                     }
                     ?>
@@ -394,7 +394,7 @@
                   <a href="{{ route('Data Order') }}?verif={{ $item->id }}" class='btn btn-info btn-sm'
                     style='width: 30px; height: 30px;'><i class='fas fa-check'></i></a>
                   <button type='button' class='btn btn-danger btn-sm' style='width: 30px; height: 30px;'
-                    onclick='rejectData(\"".$data[' id_order']."\")'><i class='fas fa-times'></i></button>"
+                    onclick='rejectData(\"".$data[' id_order']."\")'><i class='fas fa-times'></i></button>
                 </td>
               </tr>
               @endforeach

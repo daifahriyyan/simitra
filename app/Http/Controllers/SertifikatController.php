@@ -6,6 +6,7 @@ use Throwable;
 use App\Models\DataOrder;
 use App\Models\Sertifikat;
 use App\Models\DataImporter;
+use App\Models\DetailOrder;
 use Illuminate\Http\Request;
 use App\Models\MetilRecordsheet;
 
@@ -17,13 +18,13 @@ class SertifikatController extends Controller
   public function index()
   {
     if (request()->get('verif') !== null) {
-      DataOrder::where('id', request()->get('verif'))->update([
+      DetailOrder::where('id', request()->get('verif'))->update([
         'verifikasi' => 4
       ]);
     }
     return view('pages.penerimaan-jasa.sertifikat', [
       'sertifikat' => Sertifikat::get(),
-      'dataOrder' => DataOrder::get(),
+      'dataOrder' => DetailOrder::get(),
       'dataImporter' => DataImporter::get(),
       'metilRecordsheet' => MetilRecordsheet::get(),
     ]);
@@ -48,11 +49,9 @@ class SertifikatController extends Controller
       'id_recordsheet'  => $request->id_recordsheet,
       'id_order'        => $request->id_order,
       'target'          => $request->target,
-      'commodity'       => $request->commodity,
       'consignment'     => $request->consignment,
       'country'         => $request->country,
       'pol'             => $request->pol,
-      'destination'     => $request->destination,
       'attn'            => $request->attn,
       'tin'             => $request->tin,
       'wrapping'        => $request->wrapping,
@@ -88,11 +87,9 @@ class SertifikatController extends Controller
       'id_sertif'       => $request->id_sertif,
       'id_reg'          => $request->id_reg,
       'target'          => $request->target,
-      'commodity'       => $request->commodity,
       'consignment'     => $request->consignment,
       'country'         => $request->country,
       'pol'             => $request->pol,
-      'destination'     => $request->destination,
       'id_order'        => $request->id_order,
       'attn'            => $request->attn,
       'tin'             => $request->tin,

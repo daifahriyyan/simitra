@@ -128,11 +128,11 @@
       <table>
         <tr>
           <th style="font-weight: normal;">No Kontainer</th>
-          <td>: {{ $formPemberitahuan->dataOrder->container }}</td>
+          <td>: {{ $formPemberitahuan->detailOrder->container }}</td>
         </tr>
         <tr>
           <th style="font-weight: normal;">Volume</th>
-          <td>: {{ $formPemberitahuan->dataOrder->volume }}</td>
+          <td>: {{ $formPemberitahuan->detailOrder->dataOrder->volume }}</td>
         </tr>
         <tr>
           <th style="font-weight: normal;">Tanggal Mulai</th>

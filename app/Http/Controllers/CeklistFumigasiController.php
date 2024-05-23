@@ -6,6 +6,7 @@ use Throwable;
 use App\Models\DataOrder;
 use Illuminate\Http\Request;
 use App\Models\CeklistFumigasi;
+use App\Models\DetailOrder;
 use Illuminate\Support\Facades\Storage;
 
 class CeklistFumigasiController extends Controller
@@ -15,15 +16,10 @@ class CeklistFumigasiController extends Controller
      */
     public function index()
     {
-        if (request()->get('verif') !== null) {
-            DataOrder::where('id', request()->get('verif'))->update([
-                'verifikasi' => 2
-            ]);
-        }
         return view('pages.operasional.ceklist-fumigasi', [
             'title' => 'Ceklist Fumigasi',
             'ceklist' => CeklistFumigasi::get(),
-            'dataOrder' => DataOrder::get()
+            'dataOrder' => DetailOrder::get()
         ]);
     }
 

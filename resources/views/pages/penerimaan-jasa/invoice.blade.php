@@ -84,7 +84,7 @@
                       <select class="form-control form-select-lg" name="id_order" id="id_order" required>
                         <option selected>Pilih ID Order</option>
                         @foreach ($dataOrder as $item)
-                        <option value="{{ $item->id }}">{{ $item->id_order }}</option>
+                        <option value="{{ $item->id }}">{{ $item->id_detailorder }}</option>
                         @endforeach
                       </select>
                     </div>
@@ -174,9 +174,9 @@
                     <div class="mb-3">
                       <label for="id_order" class="form-label">ID Order:</label>
                       <select class="form-control form-select-lg" name="id_order" id="id_order" required>
-                        <option value="{{ $record->id_order }}">{{ $record->dataOrder->id_order }}</option>
+                        <option value="{{ $record->id }}">{{ $record->detailOrder->id_detailorder }}</option>
                         @foreach ($dataOrder as $item)
-                        <option value="{{ $item->id }}">{{ $item->id_order }}</option>
+                        <option value="{{ $item->id }}">{{ $item->id_detailorder }}</option>
                         @endforeach
                       </select>
                     </div>
@@ -375,9 +375,9 @@
                       <tr>
                         <td>{{ $record->id_invoice }}</td>
                         <td>{{ $record->tanggal_invoice }}</td>
-                        <td>{{ $record->dataOrder->id_order }}</td>
-                        <td>{{ $record->dataOrder->dataCustomer->nama_customer }}</td>
-                        <td>{{ $record->dataOrder->dataCustomer->alamat_customer }}</td>
+                        <td>{{ $record->detailOrder->dataOrder->id_order }}</td>
+                        <td>{{ $record->detailOrder->dataOrder->dataCustomer->nama_customer }}</td>
+                        <td>{{ $record->detailOrder->dataOrder->dataCustomer->alamat_customer }}</td>
                         <td>{{ $record->sertifikat->id_sertif }}</td>
                         <td>{{ $record->no_bl }}</td>
                         <td>{{ $record->shipper }}</td>
@@ -387,11 +387,11 @@
                             Ditemukan</span>" !!}</td>
                         <td>{{ $record->stuffing_date }}</td>
                         <td>{{ $record->closing_time }}</td>
-                        <td>{{ $record->id_recordsheet }}</td>
+                        <td>{{ $record->methylRecordsheet->id_recordsheet }}</td>
                         <td>{{ $record->methylRecordsheet->applied_dose_rate }}</td>
-                        <td>{{ $record->dataOrder->treatment }}</td>
-                        <td>{{ $record->dataOrder->jumlah_order }}</td>
-                        <td>{{ $record->dataOrder->volume }}</td>
+                        <td>{{ $record->detailOrder->dataOrder->treatment }}</td>
+                        <td>{{ $record->detailOrder->dataOrder->jumlah_order }}</td>
+                        <td>{{ $record->detailOrder->dataOrder->volume }}</td>
                         <td>{!! $record->detailOrder->container ?? "<span class='text-danger'>Data Tidak
                             Ditemukan</span>" !!}</td>
                         <td>{{ $record->dataHarga->id_datastandar}}</td>

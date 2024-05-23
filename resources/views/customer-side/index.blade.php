@@ -13,8 +13,8 @@
                             <p class="subtitle">Layanan Profesional</p>
                             <h1>Fumigasi Kontainer</h1>
                             <div class="hero-btns">
-                                <a href="form_order.html" class="boxed-btn">Order Now</a>
-                                <a href="contact.html" class="bordered-btn">Contact Us</a>
+                                <a href="#services" class="boxed-btn">Order Now</a>
+                                <a href="https://wa.me/6282137253446" class="bordered-btn">Contact Us</a>
                             </div>
                         </div>
                     </div>
@@ -32,8 +32,8 @@
                             <p class="subtitle">Langkah Pertama</p>
                             <h1>Menuju Distribusi yang Aman dan Efisien</h1>
                             <div class="hero-btns">
-                                <a href="form_order.html" class="boxed-btn">Order Now</a>
-                                <a href="contact.html" class="bordered-btn">Contact Us</a>
+                                <a href="#services" class="boxed-btn">Order Now</a>
+                                <a href="https://wa.me/6282137253446" class="bordered-btn">Contact Us</a>
                             </div>
                         </div>
                     </div>
@@ -51,8 +51,8 @@
                             <p class="subtitle">Dapat Diandalkan</p>
                             <h1>Kualitas yang Dapat Anda Percaya</h1>
                             <div class="hero-btns">
-                                <a href="form_order.html" class="boxed-btn">Order Now</a>
-                                <a href="contact.html" class="bordered-btn">Contact Us</a>
+                                <a href="#services" class="boxed-btn">Order Now</a>
+                                <a href="https://wa.me/6282137253446" class="bordered-btn">Contact Us</a>
                             </div>
                         </div>
                     </div>
@@ -179,7 +179,7 @@
 <!-- end featured section -->
 
 <!-- product section -->
-<div class="product-section mt-150 mb-150">
+<div class="product-section mt-150 mb-150" id="services">
     <div class="container">
         <div class="row">
             <div class="col-lg-8 offset-lg-2 text-center">
@@ -241,7 +241,9 @@
     <img src="assets/img/whatsapp_logo.png" alt="">
     <span class="close-btn" id="close-btn">&times;</span>
 </div>
-<img class="open-btn" id="open-btn" src="assets/img/whatsapp_logo.png" alt="">
+<a href="https://wa.me/6282137253446" class="open-btn" id="open-btn">
+    <img src="assets/img/whatsapp_logo.png" alt="">
+</a>
 
 <!-- logo carousel -->
 <div class="logo-carousel-section">

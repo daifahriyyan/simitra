@@ -33,6 +33,11 @@ class Invoice extends Model
         return $this->belongsTo(DetailOrder::class, 'id_order', 'id');
     }
 
+    public function statusOrder()
+    {
+        return $this->HasOne(DetailOrder::class, 'id', 'id_order');
+    }
+
     public function methylRecordsheet()
     {
         return $this->belongsTo(MetilRecordsheet::class, 'id_recordsheet', 'id');

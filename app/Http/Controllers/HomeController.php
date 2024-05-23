@@ -78,7 +78,7 @@ class HomeController extends Controller
             ]);
         }
 
-        return redirect(route('Home'))->with('success', 'Data Order Berhasil Ditambah');
+        return redirect(route('Daftar Order'))->with('success', 'Data Order Berhasil Ditambah');
     }
 
     public function contact()
@@ -93,10 +93,10 @@ class HomeController extends Controller
         ]);
     }
 
-    public function statusOrder()
+    public function statusOrder($id)
     {
         return view('customer-side.status-order', [
-            'order' => DataOrder::where('id_customer', Auth::user()->id)->get()
+            'order' => DetailOrder::with('dataOrder')->where('id_order', $id)->get()
         ]);
     }
 }

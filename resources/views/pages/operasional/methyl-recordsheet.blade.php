@@ -79,7 +79,7 @@
                       <select class="form-control form-select-lg" name="id_order" id="id_order" required>
                         <option selected>Pilih ID Order</option>
                         @foreach ($dataOrder as $item)
-                        <option value="{{ $item->id }}">{{ $item->id_order }}</option>
+                        <option value="{{ $item->id }}">{{ $item->id_detailorder }}</option>
                         @endforeach
                       </select>
                     </div>
@@ -148,7 +148,7 @@
                       <select class="form-control form-select-lg" name="id_order" id="id_order" required>
                         <option value="{{ $record->id_order }}">{{ $record->dataOrder->id_order }}</option>
                         @foreach ($dataOrder as $item)
-                        <option value="{{ $item->id }}">{{ $item->id_order }}</option>
+                        <option value="{{ $item->id }}">{{ $item->id_detailorder }}</option>
                         @endforeach
                       </select>
                     </div>
@@ -226,10 +226,10 @@
                   <div class="btn-group" role="group" aria-label="Basic mixed styles example">
                     <!-- Tombol Download dengan Icon -->
                     <div>
-                      <button type="button" class="btn btn-sm btn-success" style='width: 90px; height: 30px;'
-                        onclick="downloadPDF()">
+                      <a href="{{ asset('assets/file/DOWNLOAD METHYL RECORDSHEET.pdf') }}"
+                        class="btn btn-sm btn-success" style='width: 90px; height: 30px;' target="_blank">
                         Download
-                      </button>
+                      </a>
                     </div>
                     <!-- Tombol Tambah dengan Icon -->
                     <div>
@@ -303,7 +303,7 @@
                 </div>
 
                 <div class="table-responsive p-3">
-                  <table class="table align-items-center table-flush table-hover" id="dataTableHover">
+                  <table class="table align-items-center table-flush table-hover nowrap" id="dataTableHover">
                     <!-- AWAL EDIT SESUAIKAN TABEL DATABASE -->
                     <thead class="thead-light">
                       <tr>
@@ -323,8 +323,8 @@
                       @foreach ($dataRecordsheet as $record)
                       <tr>
                         <td>{{ $record->id_recordsheet }}</td>
-                        <td>{{ $record->dataOrder->id_order }}</td>
-                        <td>ID Order Container</td>
+                        <td>{{ $record->detailOrder->dataOrder->id_order }}</td>
+                        <td>{{ $record->detailOrder->id_detailorder }}</td>
                         <td>{{ $record->tanggal_selesai }}</td>
                         <td>{{ $record->daff_prescribed_doses_rate }}</td>
                         <td>{{ $record->forecast_minimum_temperature }}</td>

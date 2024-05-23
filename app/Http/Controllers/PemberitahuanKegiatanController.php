@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Throwable;
 use App\Models\DataOrder;
+use App\Models\DetailOrder;
 use Illuminate\Http\Request;
 use App\Models\Pemberitahuan;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -15,7 +16,13 @@ class PemberitahuanKegiatanController extends Controller
      */
     public function index()
     {
-        $pemberitahuanKegiatan = Pemberitahuan::get();
+
+        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+            $pemberitahuanKegiatan = Pemberitahuan::whereBetween('created_at', [request()->tanggalMulai, request()->tanggalAkhir])->get();
+        } else {
+            $pemberitahuanKegiatan = Pemberitahuan::get();
+        }
+
         if (request()->get('export') == 'pdf') {
             Pdf::setOption([
                 'enabled' => true,
@@ -42,14 +49,16 @@ class PemberitahuanKegiatanController extends Controller
             $pdf = Pdf::loadView('generate-pdf.baris_pemberitahuan_kegiatan', ['formPemberitahuan' => $formPemberitahuan])->setPaper('a4');
             return $pdf->stream('Formulir Pemberitahuan.pdf');
         }
+
         if (request()->get('verif') !== null) {
-            DataOrder::where('id', request()->get('verif'))->update([
+            DetailOrder::where('id', request()->get('verif'))->update([
                 'verifikasi' => 3
             ]);
         }
+
         return view('pages.operasional.pemberitahuan-kegiatan', [
             'pemberitahuanKegiatan' => $pemberitahuanKegiatan,
-            'dataOrder' => DataOrder::get(),
+            'dataOrder' => DetailOrder::get(),
         ]);
     }
 

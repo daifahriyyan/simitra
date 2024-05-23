@@ -68,8 +68,8 @@ Route::middleware('auth')->group(function () {
 Route::get('/home', [HomeController::class, 'index'])->name('Home');
 Route::get('/contact', [HomeController::class, 'contact']);
 Route::post('/order', [HomeController::class, 'order'])->name('Order');
-Route::get('/daftar-order', [HomeController::class, 'daftarOrder']);
-Route::get('/status-order', [HomeController::class, 'statusOrder'])->name('Status Order');
+Route::get('/daftar-order', [HomeController::class, 'daftarOrder'])->name('Daftar Order');
+Route::get('/status-order/{id}', [HomeController::class, 'statusOrder'])->name('Status Order');
 
 // Master
 Route::resource('/dashboard/standar-hpp', StandarHPPController::class)->names([

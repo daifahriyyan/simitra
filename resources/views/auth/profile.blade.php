@@ -5,7 +5,7 @@
   <div class="form-container-register">
     <div class="form-container-register-form">
       <div class="breadcrumb-text">
-        <h1>Register</h1>
+        <h1>Edit Profile</h1>
       </div>
       <br>
       <form action="{{ route('Update Profile') }}" method="POST">

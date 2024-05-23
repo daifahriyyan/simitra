@@ -234,7 +234,6 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <?php $jumlahTotalPenjualan = 0 ?>
                       @foreach ($rekapPenjualan as $record)
                       <?php $jumlahTotalPenjualan += $record->total_penjualan ?>
                       <tr>

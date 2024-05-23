@@ -36,6 +36,7 @@ class RekapPenjualanController extends Controller
             'id_rekapPenjualan' => RekapPenjualan::latest()->get()->first()->id ?? 1,
             'invoice' => Invoice::get(),
             'dataOrder' => DataOrder::get(),
+            'jumlahTotalPenjualan' => 0
         ]);
     }
 

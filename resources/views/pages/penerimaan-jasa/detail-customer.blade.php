@@ -263,7 +263,7 @@
                   @if($record->status == 'Lunas')
                   <span class='badge badge-success'>Lunas</span>
                   @elseif ($record->tanggal_jatuh_tempo > date('Y-m-d') && isset($record->saldo_akhir))
-                  <span class='badge badge-warning'>Masa Hutang</span>
+                  <span class='badge badge-warning'>Masa Piutang</span>
                   @elseif($record->tanggal_jatuh_tempo > date('Y-m-d') && is_null($record->saldo_akhir))
                   <span class='badge badge-success'>Lunas</span>
                   @elseif($record->tanggal_jatuh_tempo < date('Y-m-d') && isset($record->saldo_akhir))

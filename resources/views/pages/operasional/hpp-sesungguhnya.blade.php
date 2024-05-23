@@ -56,7 +56,7 @@
                     <div class="mb-3">
                       <label for="id_beban_hpp" class="form-label">ID Beban HPP:</label>
                       <input type="text" class="form-control" id="id_beban_hpp" name="id_beban_hpp"
-                        value="{{ $hppSesungguhnya->count() + 1 }}" readonly required>
+                        value="H00{{ $hppSesungguhnya->count() + 1 }}" readonly required>
                     </div>
                     <div class="mb-3">
                       <label for="tanggal_input" class="form-label">Tanggal Input:</label>

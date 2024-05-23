@@ -24,23 +24,24 @@
 <div class="status-order-container mt-50 mb-50">
   <div class="container">
     <div class="order-info">
-      <p class="order-date">{{ $record->tanggal_order }}</p>
-      <p class="order-number">Nomor Order: {{ $record->id_order }} </p>
+      <p class="order-date">{{ $record->dataOrder->tanggal_order }}</p>
+      <p class="order-number">Nomor Order: {{ $record->id_detailorder }} </p>
     </div>
     <div class="row">
       <div class="col-md-3">
         <div class="single-product-img2">
-          <img src="assets/img/products/product-img-5.jpg" alt="">
+          <img src="{{ asset('assets/img/products/product-img-5.jpg') }}" alt="">
         </div>
       </div>
       <div class="col-md-3">
         <div class="single-product-content">
-          <p class="single-product-pricing"><span>{{ $record->dataHarga->volume }} {{
-              $record->dataHarga->standarHPP->id_standar }}</span>{{ ($record->dataHarga->treatment == "FCL")? "Full
+          <p class="single-product-pricing"><span>{{ $record->dataOrder->dataHarga->volume }} {{
+              $record->dataOrder->dataHarga->standarHPP->id_standar }}</span>{{
+            ($record->dataOrder->dataHarga->treatment == "FCL")? "Full
             Container Load":
-            "Less Container Load" }} ({{ $record->dataHarga->treatment }})
+            "Less Container Load" }} ({{ $record->dataOrder->dataHarga->treatment }})
           </p>
-          <p>Rp {{ number_format($record->dataHarga->harga_jual ) }}</p>
+          <p>Rp {{ number_format($record->dataOrder->dataHarga->harga_jual ) }}</p>
           @if ($record->verifikasi == 2)
           <form method="POST" action="{{ route('Tambah Draft Pelayaran') }}" enctype="multipart/form-data">
             @csrf
@@ -51,20 +52,20 @@
             <button class="btn btn-primary" type="submit">Upload</button>
           </form>
           @endif
-          @if ($record->verifikasi >= 3)
-          <a href="{{ route('Sertifikat') }}?verif={{ $record->id }}" target="_blank" class="download-btn"><i
-              class="fas fa-cloud-download-alt"></i> Sertifikat</a>
-          @endif
           @if ($record->verifikasi >= 4)
-          <a href="{{ route('Invoice') }}?export=pdf-detail&id={{ $record->id }}" target="_blank"
+          <a href="{{ route('Sertifikat') }}?export=pdf-detail&id={{ $record->sertif->id }}" target="_blank"
+            class="download-btn"><i class="fas fa-cloud-download-alt"></i> Sertifikat</a>
+          @endif
+          @if ($record->verifikasi >= 5)
+          <a href="{{ route('Invoice') }}?export=pdf-detail&id={{ $record->invoicee->id }}" target="_blank"
             class="download-btn"><i class="fas fa-cloud-download-alt"></i> Invoice</a>
           @endif
-          @if ($record->verifikasi == 4)
+          @if ($record->verifikasi == 5)
           <form method="POST" action="{{ route('Tambah Bukti Pembayaran') }}" enctype="multipart/form-data">
             @csrf
             <label for="bukti_pembayaran" class="upload-btn"><a class="upload-btn"><i
                   class="fas fa-cloud-upload-alt"></i>Bukti Pembayaran</a></label>
-            <input type="hidden" name="id_invoice" id="id_invoice" value="{{ $record->invoicee->id }}">
+            <input type="hidden" name="id_invoice" id="id_invoice" value="{{ $record->invoice->id }}">
             <input type="hidden" name="id_order" id="id_order" value="{{ $record->id }}">
             <input type="hidden" name="tanggal_pembayaran" id="tanggal_pembayaran" value="{{ date('Y-m-d') }}">
             <input type="file" name="bukti_pembayaran" id="bukti_pembayaran" required>
@@ -79,7 +80,7 @@
             @if ($record->verifikasi >= 1)
             ✅
             @else
-            <button class="step-btn" style="border: 2px solid green;">1</button>
+            <button class="step-btn">1</button>
             @endif
             <p>Verifikasi dokumen order</p>
           </div>

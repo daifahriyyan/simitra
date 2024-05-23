@@ -227,7 +227,7 @@
                 <td>{{ $record->telp_pegawai }}</td>
                 <td>{{ $record->posisi }}</td>
                 <td>{{ $record->noreg_fumigasi?? '-' }}</td>
-                <td>{{ $record->gaji_pokok }}</td>
+                <td>{{ number_format($record->gaji_pokok) }}</td>
                 <td>
                   <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
                     data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>

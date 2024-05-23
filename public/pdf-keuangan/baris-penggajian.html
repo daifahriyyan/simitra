@@ -4,7 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HPP Standar</title>
+  <title>Penggajian</title>
+  <link rel="stylesheet" href="{{ asset('assets/img/logo-surat.jpg') }}">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -61,42 +62,52 @@
 
     .request-info th {
       text-align: left;
+      width: 100px;
+      border: none;
     }
 
-    .request-details th {
-      text-align: center;
-      padding-bottom: 10px;
+    .request-info td {
+      text-align: left;
+      width: 200px;
+      border: none;
     }
-
-    .custom-table {
-      border: 1px solid black;
+    
+    .request-details table {
+      width: 100%;
       border-collapse: collapse;
     }
-
-    .custom-table th,
-    .custom-table td {
-      border: 1px solid black;
+  
+    .request-details th {
       padding: 8px;
-      text-align: center;
+      width: 250px;
+      padding-bottom: 10px;
+      text-align: left;
+    }
+
+    .request-details td {
+      padding: 8px;
+      width: 300px;
+      padding-bottom: 10px;
+      text-align: left;
     }
 
     .signature {
       display: flex;
       justify-content: flex-end;
     }
-
+    
     .signature th {
       text-align: center;
-      width: 50px;
-      font-weight: normal;
+      width: 300px;
+      font-weight: normal; 
       border: none;
     }
-
+    
     .signature td {
       text-align: center;
       width: 300px;
       border: none;
-    }
+    }    
   </style>
 </head>
 
@@ -112,59 +123,83 @@
       </div>
     </div>
     <hr>
-    <div class="request-info">
-      <h3 style="text-align: center; font-weight: bold; text-decoration: underline;">DATA HPP STANDAR</h3>
-      <br>
-      <table class="custom-table">
-        <tr>
-          <th style="width: 5%;">No</th>
-          <th>Id Standar</th>
-          <th style="width: 20%;">BBB/feet</th>
-          <th style="width: 20%;">BTK/feet</th>
-          <th style="width: 20%;">BOP/feet</th>
-          <th style="width: 20%;">Jumlah HPP/feet</th>
-        </tr>
-        @foreach ($records as $record)
-        <tr>
-          <td>{{ $loop->iteration }}</td>
-          <td>{{ $record->id_standar }}</td>
-          <td>{{ number_format($record->bbb_feet, 2, ',', '.') }}</td>
-          <td>{{ number_format($record->btk_feet, 2, ',', '.') }}</td>
-          <td>{{ number_format($record->bop_feet, 2, ',', '.') }}</td>
-          <td>{{ number_format($record->jumlah_hpp_feet, 2, ',', '.') }}</td>
-        </tr>
-        @endforeach
-      </table>
-      <br>
-      <br>
-      <br>
-    </div>
-    <div class="signature" style="text-align: right; margin-left: 400px">
+    <div class="request-details">
+      <h3 style="text-align: center; font-weight: bold; text-decoration: underline;">DETAIL GAJI</h3>
       <table>
         <tr>
-          <th>Semarang, {{ date('d M Y') }}</th>
+          <th>Id Penggajian</th>
+          <td>: PG001</td>
+          <td></td>
         </tr>
         <tr>
-          <th>Manajer Teknik,</th>
+          <th>Tanggal Input</th>
+          <td>: 2024-05-14</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>Id Pegawai</th>
+          <td>: P002</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>Nama Pegawai</th>
+          <td>: Asep</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>Gaji Pokok</th>
+          <td>: 3.900.000,00</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>Bonus</th>
+          <td>: 1.000.000,00</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>Tunjangan Lembur</th>
+          <td>: 600.000,00</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>Iuran</th>
+          <td>: 100.000,00</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>Gaji Bersih</th>
+          <td>: 5.600.000,00</td>
+          <td></td>
+        </tr>
+      </table>      
+    </div>
+    <br>
+    <div class="signature" style="text-align: right;">
+      <table>
+        <tr>
+          <th>Semarang, + (Tanggal Print)</th>
+        </tr>
+        <tr>
+          <th>Bagian Keuangan</th>
         </tr>
         <tr>
           <td>
             <br>
             <br>
             <br>
-            (DIDIK SETIAWAN)
+            (Sita Permatasari)
           </td>
-        </tr>
+        </tr>        
       </table>
     </div>
+    <br>
     <div class="request-info">
-      <table>
         <tr>
-          <th style="font-size: 10px;">Print by</th>
-          <td style="font-size: 10px;">: {{ Auth::user()->username }}</td>
+          <th style="font-size: 7px;">Print by</th>
+          <td style="font-size: 7px;">: (siapa yang ngeklik print)</td>
         </tr>
       </table>
     </div>
+  </div>
 </body>
-
 </html>

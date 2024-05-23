@@ -39,7 +39,7 @@ class InvoiceController extends Controller
             return $pdf->stream('Invoice.pdf');
         }
         if (request()->get('verif') !== null) {
-            DataOrder::where('id', request()->get('verif'))->update([
+            DetailOrder::where('id', request()->get('verif'))->update([
                 'verifikasi' => 5
             ]);
         }
@@ -47,7 +47,7 @@ class InvoiceController extends Controller
             'invoice' => Invoice::get(),
             'id_invoice' => isset(Invoice::latest()->get()->first()->id) + 1 ?? 1,
             'dataSertif' => Sertifikat::get(),
-            'dataOrder' => DataOrder::get(),
+            'dataOrder' => DetailOrder::get(),
             'recordsheet' => MetilRecordsheet::get(),
             'dataHarga' => DataHargar::get(),
         ]);
@@ -346,7 +346,7 @@ class InvoiceController extends Controller
         // Ambil id_invoice dari table Penggajian dimana id sesuai dengan id yang dikirimkan
         $id_invoice = Invoice::where('id', $id)->get()->first()->id_invoice;
         // Ambil no jurnal dari table jurnal umum dimana no bukti sesuai dengan id penggajian
-        $no_jurnal = KeuJurnal::where('no_bukti', $id_invoice)->get()->first()->no_jurnal ?? null;
+        $no_jurnal = KeuJurnal::where('no_bukti', $id_invoice)->get()->first()->id ?? null;
 
         if (isset($no_jurnal)) {
             // ambil seluruh data detail jurnal
@@ -356,7 +356,7 @@ class InvoiceController extends Controller
                 // hapus record table detail jurnal berdasarkan no jurnal
                 KeuDetailJurnal::where('no_jurnal', $no_jurnal)->delete();
                 // hapus record table jurnal berdasarkan no jurnal
-                KeuJurnal::where('no_jurnal', $no_jurnal)->delete();
+                KeuJurnal::where('id', $no_jurnal)->delete();
 
                 Invoice::where('id', $id)->delete();
                 // Validate the value...

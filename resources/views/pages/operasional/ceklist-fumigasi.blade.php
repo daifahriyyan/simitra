@@ -82,7 +82,7 @@
                       <select class="form-control form-select-lg" name="id_order" id="id_order" required>
                         <option selected>Pilih ID Order</option>
                         @foreach ($dataOrder as $item)
-                        <option value="{{ $item->id }}">{{ $item->id_order }}</option>
+                        <option value="{{ $item->id }}">{{ $item->id_detailorder }}</option>
                         @endforeach
                       </select>
                     </div>
@@ -130,7 +130,7 @@
                       <select class="form-control form-select-lg" name="id_order" id="id_order" required>
                         <option value="{{ $record->id_order }}">{{ $record->dataOrder->id_order }}</option>
                         @foreach ($dataOrder as $item)
-                        <option value="{{ $item->id }}">{{ $item->id_order }}</option>
+                        <option value="{{ $item->id }}">{{ $item->id_detailorder }}</option>
                         @endforeach
                       </select>
                     </div>
@@ -185,10 +185,10 @@
                   <div class="btn-group" role="group" aria-label="Basic mixed styles example">
                     <!-- Tombol Download dengan Icon -->
                     <div>
-                      <button type="button" class="btn btn-sm btn-success" style='width: 90px; height: 30px;'
-                        onclick="downloadPDF()">
+                      <a href="{{asset('assets/file/DOWNLOAD CEKLIST FUMIGASI.pdf')}}" class="btn btn-sm btn-success"
+                        style='width: 90px; height: 30px;' target="_blank">
                         Download
-                      </button>
+                      </a>
                     </div>
                     <!-- Tombol Tambah dengan Icon -->
                     <div>
@@ -278,8 +278,8 @@
                       @foreach ($ceklist as $record)
                       <tr>
                         <td>{{ $record->id_ceklist }}</td>
-                        <td>{{ $record->dataOrder->id_order }}</td>
-                        <td>{{ $record->dataOrder->detailOrder }}</td>
+                        <td>{{ $record->detailOrder->dataOrder->id_order }}</td>
+                        <td>{{ $record->detailOrder->id_detailorder }}</td>
                         <td>{{ $record->ceklist_fumigasi }}</td>
                         <td>{{ $record->tanggal_order }}</td>
                         <td>
@@ -287,9 +287,6 @@
                             data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
                           <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
                             data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
-                          <a href="{{ route('Ceklist Fumigasi') }}?verif={{ $record->id_order }}"
-                            class='btn btn-info btn-sm' style='width: 30px; height: 30px;'><i
-                              class='fas fa-check'></i></a>
                         </td>
                       </tr>
                       @endforeach
@@ -354,6 +351,23 @@
 
       // Memperbarui tanggal dan jam setiap detik
       setInterval(updateTanggalJam, 1000);
+
+      
+    function download(url, fileName) {
+      // Buat elemen <a> baru
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = fileName;
+
+      // Tambahkan elemen <a> ke dalam dokumen
+      document.body.appendChild(a);
+
+      // Klik pada elemen <a> untuk memulai proses download
+      a.click();
+
+      // Hapus elemen <a> setelah proses download selesai
+      document.body.removeChild(a);
+    }
     </script>
     <!-- Script Tanggal -->
 </body>

@@ -395,8 +395,9 @@
                           <a href="{{ route('Verifikasi Order') }}?export=pdf-detail&id={{ $record->id }}"
                             class='btn btn-primary btn-sm' style='width: 30px; height: 30px;' target='_blank'
                             role='button'><i class='fas fa-print'></i></a>
-                          <button type='button' class='btn btn-info btn-sm' style='width: 30px; height: 30px;'
-                            onclick='approveData(\"".$data[' id_verifikasi']."\")'><i class='fas fa-check'></i></button>
+                          <a href="{{ route('Verifikasi Order') }}?verif={{ $record->id_order }}"
+                            class='btn btn-info btn-sm' style='width: 30px; height: 30px;'><i
+                              class='fas fa-check'></i></a>
                           <button type='button' class='btn btn-danger btn-sm' style='width: 30px; height: 30px;'
                             onclick='rejectData(\"".$data[' id_verifikasi']."\")'><i
                               class='fas fa-times'></i></button>";

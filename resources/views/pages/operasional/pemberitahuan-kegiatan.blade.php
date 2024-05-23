@@ -77,8 +77,9 @@
                     <div class="mb-3">
                       <label for="id_order" class="form-label">ID Order:</label>
                       <select class="form-control form-select-lg" name="id_order" id="id_order" required>
+                        <option>Pilih ID Order</option>
                         @foreach ($dataOrder as $item)
-                        <option value="{{ $item->id }}">{{ $item->id_order }}</option>
+                        <option value="{{ $item->id }}">{{ $item->id_detailorder }}</option>
                         @endforeach
                       </select>
                     </div>
@@ -126,7 +127,7 @@
                       <select class="form-control form-select-lg" name="id_order" id="id_order" required>
                         <option value="{{ $record->id_order }}">{{ $record->dataOrder->id_order }}</option>
                         @foreach ($dataOrder as $item)
-                        <option value="{{ $item->id }}">{{ $item->id_order }}</option>
+                        <option value="{{ $item->id }}">{{ $item->id_detailorder }}</option>
                         @endforeach
                       </select>
                     </div>
@@ -212,18 +213,22 @@
                     </div>
                     <!-- Tombol Filter Tanggal dengan Icon -->
                     <div class="input-group">
-                      <input type="date" class="form-control-sm border-1" id="tanggalMulai"
-                        aria-describedby="tanggalMulaiLabel">
-                      <input type="date" class="form-control-sm border-1" id="tanggalAkhir"
-                        aria-describedby="tanggalAkhirLabel">
-                      <button type="button" class="btn btn-secondary btn-sm" style='width: 60px; height: 30px;'
-                        onclick="filterTanggal()">
-                        Filter
-                      </button>
+                      <form action="{{ route('Pemberitahuan Kegiatan') }}">
+                        <input type="date" class="form-control-sm border-1" id="tanggalMulai"
+                          value="{{ request()->tanggalMulai }}" name="tanggalMulai"
+                          aria-describedby="tanggalMulaiLabel">
+                        <input type="date" class="form-control-sm border-1" id="tanggalAkhir"
+                          value="{{ request()->tanggalAkhir }}" name="tanggalAkhir"
+                          aria-describedby="tanggalAkhirLabel">
+                        <button type="subnit" class="btn btn-secondary btn-sm" style="width: 60px; height: 30px;">
+                          Filter
+                        </button>
+                      </form>
                     </div>
                     <!-- Tombol Cetak Tabel dengan Icon -->
                     <div>
-                      <a href="{{ route('Pemberitahuan Kegiatan') }}?export=pdf" class="btn btn-sm btn-warning">
+                      <a href="{{ route('Pemberitahuan Kegiatan') }}?export=pdf{{ (request()->tanggalMulai)? '&tanggalMulai='.request()->tanggalMulai : '' }}{{ (request()->tanggalAkhir)? '&tanggalAkhir='.request()->tanggalAkhir : '' }}"
+                        class="btn btn-sm btn-warning">
                         Cetak
                       </a>
                     </div>
@@ -271,10 +276,10 @@
                       @foreach ($pemberitahuanKegiatan as $record)
                       <tr>
                         <td>{{ $record->id_kegiatan }}</td>
-                        <td>{{ $record->dataOrder->id_order }}</td>
-                        <td>{{ $record->dataOrder->id_detailorder }}</td>
-                        <td>{{ $record->dataOrder->container }}</td>
-                        <td>{{ $record->dataOrder->volume }}</td>
+                        <td>{{ $record->detailOrder->dataOrder->id_order }}</td>
+                        <td>{{ $record->detailOrder->id_detailorder }}</td>
+                        <td>{{ $record->detailOrder->container }}</td>
+                        <td>{{ $record->detailOrder->dataOrder->volume }}</td>
                         <td>{{ $record->jam_mulai }}</td>
                         <td>{{ $record->jam_selesai }}</td>
                         <td>{{ $record->keterangan }}</td>

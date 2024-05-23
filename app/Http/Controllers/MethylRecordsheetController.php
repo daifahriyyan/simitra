@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Throwable;
 use App\Models\DataOrder;
+use App\Models\DetailOrder;
 use Illuminate\Http\Request;
 use App\Models\MetilRecordsheet;
 use Illuminate\Support\Facades\Storage;
@@ -16,7 +17,7 @@ class MethylRecordsheetController extends Controller
     public function index()
     {
         return view('pages.operasional.methyl-recordsheet', [
-            'dataOrder' => DataOrder::get(),
+            'dataOrder' => DetailOrder::get(),
             'dataRecordsheet' => MetilRecordsheet::get()
         ]);
     }

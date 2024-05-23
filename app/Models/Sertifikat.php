@@ -18,6 +18,16 @@ class Sertifikat extends Model
         return $this->belongsTo(DataOrder::class, 'id_order', 'id');
     }
 
+    public function detailOrder()
+    {
+        return $this->belongsTo(DetailOrder::class, 'id_order', 'id');
+    }
+
+    public function statusOrder()
+    {
+        return $this->HasOne(DetailOrder::class, 'id_order', 'id');
+    }
+
     public function order()
     {
         return $this->hasOne(DataOrder::class, 'id_order', 'id');

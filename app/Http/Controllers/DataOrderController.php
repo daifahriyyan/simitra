@@ -45,7 +45,7 @@ class DataOrderController extends Controller
             return $pdf->stream('Request Order.pdf');
         }
         if (request()->get('verif') !== null) {
-            DataOrder::where('id', request()->get('verif'))->update([
+            DetailOrder::where('id', request()->get('verif'))->update([
                 'verifikasi' => 1
             ]);
         }

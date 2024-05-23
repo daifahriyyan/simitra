@@ -303,13 +303,13 @@
                 </div>
 
                 <div class="table-responsive p-3">
-                  <table class="table align-items-center table-flush table-hover" id="dataTableHover">
+                  <table class="table align-items-center table-flush table-hover nowrap" id="dataTableHover">
                     <!-- AWAL EDIT SESUAIKAN TABEL DATABASE -->
                     <thead class="thead-light">
                       <tr>
                         <th>Id Pemberitahuan</th>
                         <th>Id Order</th>
-                        <th>Id Order Container</th>
+                        <th>Id Detail Order</th>
                         <th>Commodity</th>
                         <th>Container</th>
                         <th>Place Fumigation</th>
@@ -325,14 +325,14 @@
                       <tr>
                         <td>{{ $record->id_sp }}</td>
                         <td>{{ $record->detailOrder->dataOrder->id_order }}</td>
-                        <td>{{ $record->detailOrder->closing_time }}</td>
+                        <td>{{ $record->detailOrder->id_detailorder }}</td>
                         <td>{{ $record->detailOrder->commodity }}</td>
                         <td>{{ $record->detailOrder->container }}</td>
                         <td>{{ $record->place_fumigation }}</td>
                         <td>{{ $record->fumigan }}</td>
                         <td>{{ $record->tanggal }}</td>
                         <td>{{ $record->tanggal_selesai }}</td>
-                        <td>{{ $record->dimohon_kesediaan }}</td>
+                        <td class="text-wrap">{{ $record->dimohon_kesediaan }}</td>
                         <td class="d-flex">
                           <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
                             data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>

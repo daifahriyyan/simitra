@@ -201,7 +201,6 @@
                 <th>Email Customer</th>
                 <th>Nama PIC</th>
                 <th>Telp PIC</th>
-                <th>Status</th>
                 {{-- <th>Aksi</th> --}}
               </tr>
             </thead>
@@ -215,7 +214,6 @@
                 <td>{{ $record->email_customer }}</td>
                 <td>{{ $record->pic }}</td>
                 <td>{{ $record->phone_pic }}</td>
-                <td><span class='badge badge-danger'>Process</span></td>
                 {{-- <td>
                   <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
                     data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>

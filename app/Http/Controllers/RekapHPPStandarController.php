@@ -27,13 +27,14 @@ class RekapHPPStandarController extends Controller
                 'pdfBackend' => 'CPDF',
                 'isHtml5ParserEnabled' => true
             ]);
-            $pdf = Pdf::loadView('generate-pdf.tabel_rekap_hpp_standar', ['rekapHppStandar' => $rekapHppStandar])->setPaper('a4');
+            $pdf = Pdf::loadView('generate-pdf.tabel_rekap_hpp_standar', ['rekapHppStandar' => $rekapHppStandar, 'JumlahTotalHPP' => 0])->setPaper('a4');
             return $pdf->stream('Rekap Hpp Standar.pdf');
         }
         return view("pages.akuntansi.rekap-hpp-standar", [
             'rekapHPPStandar' => $rekapHppStandar,
             'dataHarga' => DataHargar::get(),
             'rekapPenjualan' => RekapPenjualan::get(),
+            'JumlahTotalHPP' => 0
         ]);
     }
 
@@ -50,8 +51,8 @@ class RekapHPPStandarController extends Controller
      */
     public function store(Request $request)
     {
-        $quantity = RekapPenjualan::get()->first()->quantity;
-        $hpp = DataHargar::get()->first()->hpp;
+        $quantity = intval(RekapPenjualan::where('id', request()->id_rekap_penjualan)->get()->first()->dataOrder->jumlah_order);
+        $hpp = intval(DataHargar::where('id', request()->id_data_standar)->get()->first()->hpp);
         $totalHpp = $quantity * $hpp;
 
         RekapHpp::create([
