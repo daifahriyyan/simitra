@@ -98,7 +98,7 @@ neraca saldo✅ :
 Buku Besar✅ : 
 - kurang cetak pdf.✅
 laporan hpp✅ : 
-- ngga pake button posting. karna logicnya terlalu rumit. harus ngerubah db juga
+- ngga pake button posting. karna harus ngerubah db juga
 - kurang cetak pdf✅
 laba rugi✅ : 
 - ngga ada fitur posting, sudah auto✅
@@ -106,7 +106,7 @@ laba rugi✅ :
 posisi keuangan✅ : 
 - ngga ada fitur posting, sudah auto✅
 - kurang cetak pdf ✅
-- laba/rugi bersih menambah/mengurang dari laporan laba rugi kaya gimana sistemnya?✅(jadinya aku nambahin table database kaulabarugi, nampilin berdasarkan laba rugi per bulan brpnya. jadi kalua posting harus filter bulan tahun dlu)
+- laba/rugi bersih menambah/mengurang dari laporan laba rugi kaya gimana sistemnya?✅(jadinya aku nambahin table database keulabarugi, nampilin berdasarkan laba rugi per bulan brpnya. jadi kalau posting harus filter bulan tahun dlu)
 
 User
 - Account✅

@@ -9,19 +9,20 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
     public function index()
     {
-        return view('auth.login', [
+        return view('customer-side.auth.login', [
             'title' => 'Login'
         ]);
     }
 
     public function register()
     {
-        return view('auth.register', [
+        return view('customer-side.auth.register', [
             'title' => 'Registrasi'
         ]);
     }
@@ -81,7 +82,7 @@ class UserController extends Controller
 
     public function profile()
     {
-        return view('auth.profile');
+        return view('customer-side.auth.profile');
     }
 
     public function update()
@@ -106,7 +107,7 @@ class UserController extends Controller
 
     public function daftarUser()
     {
-        return view('auth.account', [
+        return view('customer-side.auth.account', [
             'dataUsers' => User::where('posisi', '!=', null)->get()
         ]);
     }
@@ -146,5 +147,94 @@ class UserController extends Controller
         }
 
         return redirect()->route('Daftar User');
+    }
+
+    public function loginPegawai()
+    {
+        return view('auth.login');
+    }
+
+    public function authenticatePegawai(Request $request): RedirectResponse
+    {
+        $credentials = $request->validate([
+            'email' => ['required'],
+            'password' => ['required'],
+        ]);
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+
+            return redirect()->route('Dashboard');
+        }
+
+        return back()->with('error', 'password atau email anda salah');
+    }
+
+    public function registerPegawai()
+    {
+        return view('auth.register', [
+            'title' => 'Registrasi'
+        ]);
+    }
+
+    public function storePegawai()
+    {
+        $this->validate(request(), [
+            'username' => 'required',
+            'nama_lengkap' => 'required',
+            'posisi' => 'required',
+            'email' => 'required',
+            'password' => 'required',
+            'reenter_password' => 'required|same:password',
+        ]);
+
+        User::create([
+            'username' => request()->username,
+            'nama_lengkap' => request()->nama_lengkap,
+            'posisi' => request()->posisi,
+            'email' => request()->email,
+            'pass' => request()->password,
+            'password' => Hash::make(request()->password),
+        ]);
+
+        return redirect()->route('Login Pegawai');
+    }
+
+    public function profilePegawai()
+    {
+        return view('auth.profile');
+    }
+
+    public function updatePegawai()
+    {
+        $user = request()->validate([
+            'foto' => 'required',
+            'username' => 'required',
+            'nama_lengkap' => 'required',
+            'posisi' => 'required',
+            'email' => 'required',
+            'password' => 'required',
+            'reenter_password' => 'required|same:password',
+        ]);
+
+        if (request()->hasFile('foto')) {
+            $foto = request()->file("foto");
+            $filefoto    = time() . "-" . $foto->getClientOriginalName();
+            $uploadfoto   = "foto_pegawai/" . $filefoto;
+
+            Storage::disk('public')->put($uploadfoto, file_get_contents($foto));
+        }
+
+        User::where('id', Auth::user()->id)->update([
+            'foto' => 'storage/' . $uploadfoto,
+            'username' => request()->username,
+            'nama_lengkap' => request()->nama_lengkap,
+            'posisi' => request()->posisi,
+            'email' => request()->email,
+            'pass' => request()->password,
+            'password' => Hash::make(request()->password),
+        ]);
+
+        return redirect()->route('Profile Pegawai');
     }
 }

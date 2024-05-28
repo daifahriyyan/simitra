@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('id_customer');
+            $table->string('id_customer')->nullable();
             $table->string('username');
             $table->string('nama_lengkap')->nullable();
             $table->string('posisi')->nullable();
@@ -24,9 +24,9 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::table('users', function (Blueprint $table) {
-            $table->foreign('id')->references('id')->on('data_customer')->onDelete('restrict')->onUpdate('cascade');
-        });
+        // Schema::table('users', function (Blueprint $table) {
+        //     $table->foreign('id')->references('id')->on('data_customer')->onDelete('restrict')->onUpdate('cascade');
+        // });
     }
 
     /**

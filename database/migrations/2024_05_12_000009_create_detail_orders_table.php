@@ -29,8 +29,8 @@ return new class extends Migration
             $table->string('telp_driver');
             $table->string('shipment_instruction');
             $table->string('packing_list');
-            // $table->string('pic');
-            // $table->string('phone_pic');
+            $table->integer('verifikasi')->nullable();
+            $table->enum('is_reject', ['1', '0'])->default('0');
             $table->timestamps();
         });
 

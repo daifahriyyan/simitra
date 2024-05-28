@@ -19,11 +19,9 @@ return new class extends Migration
             $table->unsignedBigInteger('id_importer');
             $table->string('id_sertif');
             $table->string('target');
-            $table->string('commodity');
             $table->string('consignment');
             $table->string('country');
             $table->string('pol');
-            $table->string('destination');
             $table->string('attn');
             $table->string('tin');
             $table->string('wrapping');
@@ -33,7 +31,7 @@ return new class extends Migration
         });
 
         Schema::table('sertifikat', function (Blueprint $table) {
-            $table->foreign('id_order')->references('id')->on('data_order')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('id_order')->references('id')->on('detail_order')->onDelete('restrict')->onUpdate('cascade');
             $table->foreign('id_importer')->references('id')->on('data_importer')->onDelete('restrict')->onUpdate('cascade');
             $table->foreign('id_recordsheet')->references('id')->on('metil_recordsheet')->onDelete('restrict')->onUpdate('cascade');
         });

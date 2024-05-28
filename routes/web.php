@@ -57,10 +57,17 @@ Route::get('/register', [UserController::class, 'register'])->name('Register');
 Route::post('/signup', [UserController::class, 'store'])->name('Sign Up');
 Route::view('/ajax', 'ajax.input');
 
+Route::get('/dashboard/register', [UserController::class, 'registerPegawai'])->name('Register Pegawai');
+Route::post('/dashboard/signup', [UserController::class, 'storePegawai'])->name('Sign Up Pegawai');
+Route::get('/dashboard/login', [UserController::class, 'loginPegawai'])->name('Login Pegawai');
+Route::post('/dashboard/signin', [UserController::class, 'authenticatePegawai'])->name('Sign In Pegawai');
 Route::view('/dashboard', 'index')->name('Dashboard');
 
 // Customer Side
 Route::middleware('auth')->group(function () {
+    Route::get('/dashboard/profile', [UserController::class, 'profilePegawai'])->name('Profile Pegawai');
+    Route::post('/dashboard/profile/update', [UserController::class, 'updatePegawai'])->name('Update Profile Pegawai');
+
     Route::get('/profile', [UserController::class, 'profile'])->name('Profile');
     Route::post('/profile/update', [UserController::class, 'update'])->name('Update Profile');
     Route::get('/form-order', [HomeController::class, 'formOrder']);
