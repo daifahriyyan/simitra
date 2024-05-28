@@ -11,6 +11,7 @@ use App\Models\DetailOrder;
 use Illuminate\Http\Request;
 use App\Models\BuktiPembayaran;
 use App\Models\KeuDetailJurnal;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 
@@ -21,14 +22,42 @@ class BuktiPembayaranController extends Controller
      */
     public function index()
     {
+        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+            $tanggalMulai = request()->tanggalMulai;
+            $tanggalAkhir = request()->tanggalAkhir;
+            $buktiPembayaran = BuktiPembayaran::whereBetween('tanggal_pembayaran', [$tanggalMulai, $tanggalAkhir])->get();
+        } else {
+            $buktiPembayaran = BuktiPembayaran::get();
+        }
+
+        if (request()->get('export') == 'pdf') {
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.tabel-bukti-pembayaran', ['buktiPembayaran' => $buktiPembayaran])->setPaper('a4');
+            return $pdf->stream('Daftar Bukti Pembayaran.pdf');
+        }
+
         if (request()->get('verif') !== null) {
             DetailOrder::where('id', request()->get('verif'))->update([
                 'verifikasi' => 6
             ]);
         }
+        if (request()->get('reject') !== null) {
+            DetailOrder::where('id', request()->get('reject'))->update([
+                'verifikasi' => 6,
+                'is_reject' => '1'
+            ]);
+        }
         return view('pages.penerimaan-jasa.bukti-pembayaran', [
             'title' => 'Bukti Pembayaran',
-            'records' => BuktiPembayaran::get(),
+            'records' => $buktiPembayaran,
             'invoice' => Invoice::get(),
             'dataOrder' => DataOrder::get(),
         ]);
@@ -47,35 +76,44 @@ class BuktiPembayaranController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate(request(), [
-            'id_invoice' => 'required',
-            'id_order' => 'required',
-            'tanggal_pembayaran' => 'required',
-            'bukti_pembayaran' => 'required',
-        ]);
-
         $buktiPembayaran = $request->file('bukti_pembayaran');
         $fileBP = time() . "-" . $buktiPembayaran->getClientOriginalName();
         $tujuanBP = 'Bukti_pembayaran/' . $fileBP;
 
-        $data = BuktiPembayaran::where('id_order', request()->id_order)->get()->first();
+        $data = BuktiPembayaran::where('id_order', request()->id_order ?? request()->reject)->get()->first();
 
-        if (isset($data->bukti_pembayaran)) {
+        if ($request['reject'] != null) {
             Storage::disk('public')->delete('Bukti_pembayaran/' . $data->bukti_pembayaran);
 
-            BuktiPembayaran::where('id_order', request()->id_order)->delete();
+            Storage::disk('public')->put($tujuanBP, file_get_contents($buktiPembayaran));
+            BuktiPembayaran::where('id_order', request()->reject)->update([
+                'bukti_pembayaran' => $fileBP,
+                'tanggal_pembayaran' => $request['tanggal_pembayaran']
+            ]);
+
+            DetailOrder::where('id', request()->get('reject'))->update([
+                'is_reject' => '0'
+            ]);
+
+            return redirect()->back();
+        } else {
+            if (isset($data->bukti_pembayaran)) {
+                Storage::disk('public')->delete('Bukti_pembayaran/' . $data->bukti_pembayaran);
+
+                BuktiPembayaran::where('id_order', request()->id_order)->delete();
+            }
+
+            Storage::disk('public')->put($tujuanBP, file_get_contents($buktiPembayaran));
+
+            $storeData = new BuktiPembayaran;
+            $storeData->id_invoice = $request->id_invoice;
+            $storeData->id_order = $request->id_order;
+            $storeData->tanggal_pembayaran = $request->tanggal_pembayaran;
+            $storeData->bukti_pembayaran = $fileBP;
+            $storeData->save();
+
+            return redirect()->back();
         }
-
-        Storage::disk('public')->put($tujuanBP, file_get_contents($buktiPembayaran));
-
-        $storeData = new BuktiPembayaran;
-        $storeData->id_invoice = $request->id_invoice;
-        $storeData->id_order = $request->id_order;
-        $storeData->tanggal_pembayaran = $request->tanggal_pembayaran;
-        $storeData->bukti_pembayaran = $fileBP;
-        $storeData->save();
-
-        return redirect(route('Bukti Pembayaran'))->with('add', 'Data Berhasil Ditambahkan');
     }
 
     /**

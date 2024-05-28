@@ -73,13 +73,6 @@
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="m-0 font-weight-bold text-primary">Laporan Posisi Keuangan</h6>
                   <div class="btn-group ml-auto" role="group" aria-label="Basic mixed styles example">
-                    <!-- Tombol Tambah dengan Icon -->
-                    <div>
-                      <button type="button" class="btn btn-sm btn-primary" style='width: 70px; height: 30px;'
-                        data-bs-toggle="modal" data-bs-target="#addModal">
-                        Posting
-                      </button>
-                    </div>
                     <!-- Tombol Filter Pilih BUlan dan Tahun dengan Icon -->
                     <div class="input-group">
                       <form action="{{ route('Posisi Keuangan') }}">
@@ -87,15 +80,15 @@
                         <select class="form-control-sm border-1" style="width: 120px; height: 30px;" id="bulan"
                           name="bulan">
                           <option value="">Pilih Bulan</option>
-                          <option value="01">Januari</option>
-                          <option value="02">Februari</option>
-                          <option value="03">Maret</option>
-                          <option value="04">April</option>
-                          <option value="05">Mei</option>
-                          <option value="06">Juni</option>
-                          <option value="07">Juli</option>
-                          <option value="08">Agustus</option>
-                          <option value="09">September</option>
+                          <option value="1">Januari</option>
+                          <option value="2">Februari</option>
+                          <option value="3">Maret</option>
+                          <option value="4">April</option>
+                          <option value="5">Mei</option>
+                          <option value="6">Juni</option>
+                          <option value="7">Juli</option>
+                          <option value="8">Agustus</option>
+                          <option value="9">September</option>
                           <option value="10">Oktober</option>
                           <option value="11">November</option>
                           <option value="12">Desember</option>
@@ -117,10 +110,10 @@
                     </div>
                     <!-- Tombol Cetak Tabel dengan Icon -->
                     <div>
-                      <button type="button" class="btn btn-sm btn-warning" style="width: 60px; height: 30px;"
-                        onclick="cetakTabel()">
+                      <a href="{{ route('Posisi Keuangan') }}?export=pdf{{ (request()->bulan)? '&bulan='.request()->bulan : '' }}{{ (request()->tahun)? '&tahun='.request()->tahun : '' }}"
+                        class="btn btn-sm btn-warning" style='width: 60px; height: 30px;'>
                         Cetak
-                      </button>
+                      </a>
                     </div>
                   </div>
 
@@ -233,6 +226,11 @@
                       <tr>
                         <th colspan="3">Passiva</th>
                       </tr>
+                      @if ($kewajibanJkPdk != null || $kewajibanJkPjg != null)
+                      <tr>
+                        <th colspan="3">Kewajiban</th>
+                      </tr>
+                      @endif
                       {{-- Kewajiban Jangka Pendek --}}
                       @if ($kewajibanJkPdk != null)
                       <tr>
@@ -298,15 +296,21 @@
                       </tr>
                       @endforeach
                       <tr>
+                        <td>Laba / Rugi</td>
+                        <td>Rp. {{ number_format($labaRugi->jumlah_laba_rugi) }}</td>
+                        <td></td>
+                      </tr>
+                      <tr>
                         <th>Jumlah Ekuitas</th>
                         <th></th>
-                        <th>Rp. {{ number_format($jumlah_ekuitas) }}</th>
+                        <th>Rp. {{ number_format($jumlah_ekuitas + $labaRugi->jumlah_laba_rugi) }}</th>
                       </tr>
                       @endif
                       <tr>
                         <th>Jumlah Passiva</th>
                         <th></th>
-                        <th>Rp. {{ number_format($jumlah_ekuitas + $jumlah_kewajiban_jkpjg + $jumlah_kewajiban_jkpdk) }}
+                        <th>Rp. {{ number_format($jumlah_ekuitas + $labaRugi->jumlah_laba_rugi + $jumlah_kewajiban_jkpjg
+                          + $jumlah_kewajiban_jkpdk) }}
                         </th>
                       </tr>
                       @else

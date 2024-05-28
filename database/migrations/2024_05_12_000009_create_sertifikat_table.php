@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('id_reg');
             $table->unsignedBigInteger('id_order');
-            $table->string('id_order_container')->nullable();
             $table->unsignedBigInteger('id_recordsheet');
             $table->unsignedBigInteger('id_importer');
             $table->string('id_sertif');

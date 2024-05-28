@@ -278,18 +278,21 @@
             </button>
             <!-- Tombol Filter Tanggal dengan Icon -->
             <div class="input-group">
-              <input type="date" class="form-control-sm border-0" id="tanggalMulai"
-                aria-describedby="tanggalMulaiLabel">
-              <input type="date" class="form-control-sm border-0" id="tanggalAkhir"
-                aria-describedby="tanggalAkhirLabel">
-              <button type="button" class="btn btn-secondary btn-sm" onclick="filterTanggal()">
-                Filter
-              </button>
+              <form action="{{ route('Sertifikat') }}">
+                <input type="date" class="form-control-sm border-1" id="tanggalMulai"
+                  value="{{ request()->tanggalMulai }}" name="tanggalMulai" aria-describedby="tanggalMulaiLabel">
+                <input type="date" class="form-control-sm border-1" id="tanggalAkhir"
+                  value="{{ request()->tanggalAkhir }}" name="tanggalAkhir" aria-describedby="tanggalAkhirLabel">
+                <button type="subnit" class="btn btn-secondary btn-sm" style="width: 60px; height: 30px;">
+                  Filter
+                </button>
+              </form>
             </div>
             <!-- Tombol Cetak Tabel dengan Icon -->
-            <button type="button" class="btn btn-sm btn-warning" onclick="cetakTabel()">
+            <a href="{{ route('Sertifikat') }}?export=pdf{{ (request()->tanggalMulai)? '&tanggalMulai='.request()->tanggalMulai : '' }}{{ (request()->tanggalAkhir)? '&tanggalAkhir='.request()->tanggalAkhir : '' }}"
+              class="btn btn-sm btn-warning">
               Cetak
-            </button>
+            </a>
           </div>
 
           <!-- Skrip JavaScript untuk Filter Tanggal dan Cetak Tabel -->
@@ -386,11 +389,19 @@
                 <td>{{ $record->dataRecordsheet->exposure_period }}</td>
                 <td>{{ $record->dataRecordsheet->applied_dose_rate }}</td>
                 <td>{{ $record->dataRecordsheet->dokumen_metil_recordsheet }}</td>
-                <td>Container</td>
+                <td>{{ $record->detailOrder->container }}</td>
                 <td>{{ $record->wrapping }}</td>
                 <td>{{ $record->tanggal_sertif }}</td>
                 <td>{{ $record->no_reg }}</td>
-                <td><span class='badge badge-success'>Delivered</span></td>
+                <td>
+                  <?php
+                    if($item->detailOrder->verifikasi <= 3){ 
+                      echo '<span class="badge-pill badge-info">Process' ; 
+                    }else if($item->detailOrder->verifikasi >= 4){
+                      echo '<span class="badge-pill badge-success">Finish';
+                    }
+                    ?>
+                </td>
                 <td>
                   <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
                     data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>

@@ -16,7 +16,14 @@ class SuratPemberitahuanController extends Controller
      */
     public function index()
     {
-        $sp = SuratPemberitahuan::get();
+        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+            $tanggalMulai = request()->tanggalMulai;
+            $tanggalAkhir = request()->tanggalAkhir;
+            $sp = SuratPemberitahuan::whereBetween('tanggal', [$tanggalMulai, $tanggalAkhir])->orWhereBetween('tanggal_selesai', [$tanggalMulai, $tanggalAkhir])->get();
+        } else {
+            $sp = SuratPemberitahuan::get();
+        }
+
         if (request()->get('export') == 'pdf') {
             Pdf::setOption([
                 'enabled' => true,

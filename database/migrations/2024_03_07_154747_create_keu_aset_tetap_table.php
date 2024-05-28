@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('jenis_at');
             $table->string('nama_at');
             $table->integer('jumlah_at');
-            $table->string('keberadaan');
+            $table->string('keberadaan_at');
             $table->integer('tahun_perolehan');
             $table->integer('umur_ekonomis');
             $table->decimal('harga_perolehan', 65, 2);

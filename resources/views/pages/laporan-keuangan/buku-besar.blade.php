@@ -98,10 +98,10 @@
                     </div>
                     <!-- Tombol Cetak Tabel dengan Icon -->
                     <div>
-                      <button type="button" class="btn btn-sm btn-warning" style="width: 60px; height: 30px;"
-                        onclick="cetakTabel()">
+                      <a href="{{ route('Buku Besar') }}?export=pdf{{ (request()->nama_akun)? '&nama_akun='.request()->nama_akun : '' }}{{ (request()->tanggalMulai)? '&tanggalMulai='.request()->tanggalMulai : '' }}{{ (request()->tanggalAkhir)? '&tanggalAkhir='.request()->tanggalAkhir : '' }}"
+                        class="btn btn-sm btn-warning" style='width: 60px; height: 30px;'>
                         Cetak
-                      </button>
+                      </a>
                     </div>
                   </div>
 
@@ -124,10 +124,8 @@
                       <tr>
                         <th>No Jurnal</th>
                         <th>Tanggal Jurnal</th>
-                        <th>No Bukti</th>
                         <th>Uraian Jurnal</th>
-                        <th>Kode Akun</th>
-                        <th>Nama Akun</th>
+                        <th>Ref</th>
                         <th>Debet</th>
                         <th>Kredit</th>
                         <th>Saldo</th>
@@ -153,18 +151,16 @@
                       @endphp
                       <tr>
                         <td>{{ $record->jurnal->no_jurnal}}</td>
-                        <td>{{ $record->created_at }}</td>
-                        <td>{{ $record->jurnal->no_bukti }}</td>
+                        <td>{{ $record->jurnal->tanggal_jurnal }}</td>
                         <td>{{ $record->jurnal->uraian_jurnal }}</td>
-                        <td>{{ $record->akun->kode_akun}}</td>
-                        <td>{{ $record->akun->nama_akun}}</td>
+                        <td>{{ $record->jurnal->no_bukti }}</td>
                         <td>Rp. {{ number_format($record->debet) }}</td>
                         <td>Rp. {{ number_format($record->kredit) }}</td>
                         <td>Rp. {{ number_format($saldo) }}</td>
                       </tr>
                       @endforeach
                       <tr>
-                        <th colspan="6">Jumlah</th>
+                        <th colspan="4">Jumlah</th>
                         <th>Rp. {{ number_format($jumlahDebet) }}</th>
                         <th>Rp. {{ number_format($jumlahKredit) }}</th>
                       </tr>

@@ -18,7 +18,13 @@ class DetailSupplierController extends Controller
      */
     public function index()
     {
-        $detailSupplier = DetailSupplier::get();
+
+        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+            $detailSupplier = DetailSupplier::whereBetween('tanggal_input', [request()->tanggalMulai, request()->tanggalAkhir])->get();
+        } else {
+            $detailSupplier = DetailSupplier::get();
+        }
+
         if (request()->get('export') == 'pdf') {
             Pdf::setOption([
                 'enabled' => true,

@@ -81,6 +81,34 @@ class HomeController extends Controller
         return redirect(route('Daftar Order'))->with('success', 'Data Order Berhasil Ditambah');
     }
 
+    public function updateOrder()
+    {
+        $dataOrder = DetailOrder::where('id', request()->id_order)->get()->first();
+        if (request()->hasFile("shipment_instruction")) {
+            $SI = request()->file("shipment_instruction");
+            $fileSI    = time() . "-" . $SI->getClientOriginalName();
+            $uploadSI   = "shipment_instruction/" . $fileSI;
+            Storage::disk('public')->delete("shipment_instruction/" . $dataOrder->shipment_instruction);
+            Storage::disk('public')->put($uploadSI, file_get_contents($SI));
+        }
+
+        if (request()->hasFile("packing_list")) {
+            $PL = request()->file("packing_list");
+            $filePL    = time() . "-" . $PL->getClientOriginalName();
+            $uploadPL   = "packing_list/" . $filePL;
+            Storage::disk('public')->delete("packing_list/" . $dataOrder->packing_list);
+            Storage::disk('public')->put($uploadPL, file_get_contents($PL));
+        }
+
+        DetailOrder::where('id', request()->id_order)->update([
+            'shipment_instruction' => $fileSI,
+            'packing_list' => $filePL,
+            'is_reject' => '0'
+        ]);
+
+        return redirect()->back();
+    }
+
     public function contact()
     {
         return view('customer-side.contact');

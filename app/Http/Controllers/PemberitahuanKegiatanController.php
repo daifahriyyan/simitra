@@ -18,7 +18,7 @@ class PemberitahuanKegiatanController extends Controller
     {
 
         if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
-            $pemberitahuanKegiatan = Pemberitahuan::whereBetween('created_at', [request()->tanggalMulai, request()->tanggalAkhir])->get();
+            $pemberitahuanKegiatan = Pemberitahuan::whereBetween('jam_mulai', [request()->tanggalMulai, request()->tanggalAkhir])->orWhereBetween('jam_selesai', [request()->tanggalMulai, request()->tanggalAkhir])->get();
         } else {
             $pemberitahuanKegiatan = Pemberitahuan::get();
         }

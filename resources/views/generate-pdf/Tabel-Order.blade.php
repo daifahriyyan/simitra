@@ -138,40 +138,32 @@
       </table>
     </div>
     <br>
-    <table>
-      <tr>
-        <td>
-          <div class="request-info">
-            <table>
-              <tr>
-                <th style="font-size: 12px;">Print by</th>
-                <td style="font-size: 12px;">: {{ Auth::user()->username }}</td>
-              </tr>
-            </table>
-          </div>
-        </td>
-        <td>
-          <div class="signature" style="text-align: right;">
-            <table>
-              <tr>
-                <th>Semarang, {{ date('d / M / Y') }}</th>
-              </tr>
-              <tr>
-                <th>Administrasi</th>
-              </tr>
-              <tr>
-                <td>
-                  <br>
-                  <br>
-                  <br>
-                  (Bagus Ramadhan)
-                </td>
-              </tr>
-            </table>
-          </div>
-        </td>
-      </tr>
-    </table>
+    <div class="signature" style="text-align: right; margin-left: 400px">
+      <table>
+        <tr>
+          <th>Semarang, {{ date('d M Y') }}</th>
+        </tr>
+        <tr>
+          <th>Administrasi</th>
+        </tr>
+        <tr>
+          <td>
+            <br>
+            <br>
+            <br>
+            (Bagus Ramadhan)
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div class="request-info">
+      <table>
+        <tr>
+          <th style="font-size: 10px;">Print by</th>
+          <td style="font-size: 10px;">: {{ Auth::user()->username }}</td>
+        </tr>
+      </table>
+    </div>
   </div>
 </body>
 

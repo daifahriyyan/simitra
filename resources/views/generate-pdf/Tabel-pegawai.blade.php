@@ -143,8 +143,8 @@
           <td>{{ $record->nama_pegawai }}</td>
           <td>{{ $record->alamat_pegawai }}</td>
           <td>{{ $record->telp_pegawai }}</td>
-          <td>xxx</td>
-          <td>xxx</td>
+          <td>{{ $record->fax }}</td>
+          <td>{{ $record->usci }}</td>
           <td>xxx</td>
         </tr>
         @endforeach

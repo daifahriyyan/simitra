@@ -24,7 +24,27 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        if (request()->get('export') == 'pdf-detail') {
+        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+            $tanggalMulai = request()->tanggalMulai;
+            $tanggalAkhir = request()->tanggalAkhir;
+            $invoice = Invoice::whereBetween('tanggal_invoice', [$tanggalMulai, $tanggalAkhir])->get();
+        } else {
+            $invoice = Invoice::get();
+        }
+
+        if (request()->get('export') == 'pdf') {
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.tabel-invoice', ['invoice' => $invoice])->setPaper('a4', 'landscape');
+            return $pdf->stream('Daftar Invoice.pdf');
+        } else if (request()->get('export') == 'pdf-detail') {
             $detail = Invoice::where('id', request()->id)->get()->first();
             Pdf::setOption([
                 'enabled' => true,
@@ -44,8 +64,8 @@ class InvoiceController extends Controller
             ]);
         }
         return view('pages.penerimaan-jasa.invoice', [
-            'invoice' => Invoice::get(),
-            'id_invoice' => isset(Invoice::latest()->get()->first()->id) + 1 ?? 1,
+            'invoice' => $invoice,
+            'id_invoice' => (isset(Invoice::latest()->get()->first()->id)) ? Invoice::latest()->get()->first()->id : 1,
             'dataSertif' => Sertifikat::get(),
             'dataOrder' => DetailOrder::get(),
             'recordsheet' => MetilRecordsheet::get(),
@@ -67,7 +87,7 @@ class InvoiceController extends Controller
     public function store(Request $request)
     {
         // ambil data order berdasarkan id order yang diinput
-        $dataOrder = DataOrder::where('id', $request['id_order'])->get()->first();
+        $dataOrder = DetailOrder::where('id', $request['id_order'])->get()->first();
         // ambil data harga berdasarkan id data standar yang diinput
         $dataHarga = DataHargar::where('id', $request['id_data_standar'])->get()->first();
         // hitung total penjualan
@@ -140,7 +160,7 @@ class InvoiceController extends Controller
         }
 
         // Ambil nama customer 
-        $nama_customer = DataOrder::where('id', $request['id_order'])->get()->first()->dataCustomer->nama_customer;
+        $nama_customer = DetailOrder::where('id', $request['id_order'])->get()->first()->dataOrder->dataCustomer->nama_customer;
         // ambil id invoice terakhir
         $no_JUINV = Invoice::latest()->first()->id + 1;
         // Buat No Jurnal JUINV
@@ -207,7 +227,7 @@ class InvoiceController extends Controller
         // Buat Id Detail Customer JUINV
         $id_detail_customer = 'DCPJ' . str_pad($no_JUINV, 4, 0, STR_PAD_LEFT);
         // Ambil nama customer 
-        $id_customer = DataOrder::where('id', $request['id_order'])->get()->first()->dataCustomer->id;
+        $id_customer = DetailOrder::where('id', $request['id_order'])->get()->first()->dataOrder->dataCustomer->id;
 
         DetailCustomer::create([
             'id_detail_customer' => $id_detail_customer,
@@ -246,7 +266,7 @@ class InvoiceController extends Controller
     public function update(Request $request, string $id)
     {
         // ambil data order berdasarkan id order yang diinput
-        $dataOrder = DataOrder::where('id', $request['id_order'])->get()->first();
+        $dataOrder = DetailOrder::where('id', $request['id_order'])->get()->first();
         // ambil data harga berdasarkan id data standar yang diinput
         $dataHarga = DataHargar::where('id', $request['id_data_standar'])->get()->first();
         // hitung total penjualan
@@ -277,7 +297,7 @@ class InvoiceController extends Controller
         ]);
 
         // Ambil nama customer 
-        $nama_customer = DataOrder::where('id', $request['id_order'])->get()->first()->dataCustomer->nama_customer;
+        $nama_customer = DetailOrder::where('id', $request['id_order'])->get()->first()->dataOrder->dataCustomer->nama_customer;
 
         // Masukkan Data invoice Ke Jurnal Umum
         KeuJurnal::where('no_bukti', $request->id_invoice)->update([
@@ -370,7 +390,7 @@ class InvoiceController extends Controller
                 $kode_akun = $record->kode_akun;
 
                 // dapatkan akun berdasarkan kode akun yang dihapus
-                $akun = KeuAkun::where('kode_akun', $kode_akun)->get()->first();
+                $akun = KeuAkun::where('id', $kode_akun)->get()->first();
                 // ambil saldo debet tiap akun
                 $saldoDebet = $record->debet;
                 // ambil saldo kredit tiap akun

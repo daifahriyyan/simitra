@@ -16,7 +16,12 @@ class RekapHPPStandarController extends Controller
      */
     public function index()
     {
-        $rekapHppStandar = RekapHpp::get();
+        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+            $rekapHppStandar = RekapHpp::whereBetween('tanggal_input', [request()->tanggalMulai, request()->tanggalAkhir])->get();
+        } else {
+            $rekapHppStandar = RekapHpp::get();
+        }
+
         if (request()->get('export') == 'pdf') {
             Pdf::setOption([
                 'enabled' => true,

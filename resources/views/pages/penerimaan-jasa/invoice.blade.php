@@ -299,21 +299,24 @@
                     </div>
                     <!-- Tombol Filter Tanggal dengan Icon -->
                     <div class="input-group">
-                      <input type="date" class="form-control-sm border-1" id="tanggalMulai"
-                        aria-describedby="tanggalMulaiLabel">
-                      <input type="date" class="form-control-sm border-1" id="tanggalAkhir"
-                        aria-describedby="tanggalAkhirLabel">
-                      <button type="button" class="btn btn-secondary btn-sm" style='width: 60px; height: 30px;'
-                        onclick="filterTanggal()">
-                        Filter
-                      </button>
+                      <form action="{{ route('Invoice') }}">
+                        <input type="date" class="form-control-sm border-1" id="tanggalMulai"
+                          value="{{ request()->tanggalMulai }}" name="tanggalMulai"
+                          aria-describedby="tanggalMulaiLabel">
+                        <input type="date" class="form-control-sm border-1" id="tanggalAkhir"
+                          value="{{ request()->tanggalAkhir }}" name="tanggalAkhir"
+                          aria-describedby="tanggalAkhirLabel">
+                        <button type="subnit" class="btn btn-secondary btn-sm" style="width: 60px; height: 30px;">
+                          Filter
+                        </button>
+                      </form>
                     </div>
                     <!-- Tombol Cetak Tabel dengan Icon -->
                     <div>
-                      <button type="button" class="btn btn-sm btn-warning" style='width: 60px; height: 30px;'
-                        onclick="cetakTabel()">
+                      <a href="{{ route('Invoice') }}?export=pdf{{ (request()->tanggalMulai)? '&tanggalMulai='.request()->tanggalMulai : '' }}{{ (request()->tanggalAkhir)? '&tanggalAkhir='.request()->tanggalAkhir : '' }}"
+                        class="btn btn-sm btn-warning">
                         Cetak
-                      </button>
+                      </a>
                     </div>
                   </div>
 

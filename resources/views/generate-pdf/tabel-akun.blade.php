@@ -141,11 +141,12 @@
           <td style="text-align: left;">{{ $record->nama_akun }}</td>
           <td style="text-align: left;">{{ $record->jenis_akun }}</td>
           <td style="text-align: left;">{{ $record->kelompok_akun }}</td>
-          <td style="text-align: right;">{{ number_format($record->saldo_akun, 2, ',', '.') }}</td>
+          <td style="text-align: right;">Rp. {{ number_format($record->saldo_akun, 2, ',', '.') }}</td>
         </tr>
         @endforeach
       </table>
     </div>
+    <br>
     <br>
     <div class="signature" style="text-align: right; margin-left: 400px">
       <table>
@@ -162,6 +163,14 @@
             <br>
             (Sita Permatasari)
           </td>
+        </tr>
+      </table>
+    </div>
+    <div class="request-info">
+      <table>
+        <tr>
+          <th style="font-size: 10px;">Print by</th>
+          <td style="font-size: 10px;">: {{ Auth::user()->username }}</td>
         </tr>
       </table>
     </div>

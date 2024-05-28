@@ -126,17 +126,27 @@
           <th style="width: 15%;">BTK Sesungguhnya</th>
           <th style="width: 15%;">HPP Sesungguhnya</th>
         </tr>
+        @php
+        $total_hpp = 0;
+        @endphp
         @foreach ($hppSesungguhnya as $record)
+        @php
+        $total_hpp += $record->hpp_sesungguhnya;
+        @endphp
         <tr>
           <td>{{ $loop->iteration }}</td>
           <td>{{ $record->id_beban_hpp }}</td>
           <td>{{ $record->tanggal_input }}</td>
-          <td>{{ $record->bbb_sesungguhnya }}</td>
-          <td>{{ $record->btk_sesungguhnya }}</td>
-          <td>{{ $record->bop_sesungguhnya }}</td>
-          <td>{{ $record->hpp_sesungguhnya }}</td>
+          <td>Rp. {{ number_format($record->bbb_sesungguhnya) }}</td>
+          <td>Rp. {{ number_format($record->btk_sesungguhnya) }}</td>
+          <td>Rp. {{ number_format($record->bop_sesungguhnya) }}</td>
+          <td>Rp. {{ number_format($record->hpp_sesungguhnya) }}</td>
         </tr>
         @endforeach
+        <tr>
+          <th colspan="6">Total</th>
+          <th>Rp. {{ number_format($total_hpp) }}</th>
+        </tr>
       </table>
       <br>
       <br>

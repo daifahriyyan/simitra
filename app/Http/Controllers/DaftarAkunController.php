@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\KeuAkun;
+use App\Models\KeuJurnal;
 use Illuminate\Http\Request;
+use App\Models\KeuDetailJurnal;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Http\Controllers\Controller;
 
 class DaftarAkunController extends Controller
 {
@@ -13,7 +16,7 @@ class DaftarAkunController extends Controller
      */
     public function index()
     {
-        $keuAkun = KeuAkun::get();
+        $keuAkun = KeuAkun::orderBy('kode_akun', 'asc')->get();
         if (request()->get('export') == 'pdf') {
             Pdf::setOption([
                 'enabled' => true,
@@ -52,6 +55,38 @@ class DaftarAkunController extends Controller
             'kelompok_akun' => $request['kelompok_akun'],
             'saldo_akun' => $request['saldo_akun']
         ]);
+
+        $id_akun = KeuAkun::where('kode_akun', request()->kode_akun)->get()->first()->id;
+
+        // Buat No Jurnal
+        $no_jurnal = str_pad($id_akun, 4, 0, STR_PAD_LEFT);
+
+        // Masukkan Data Penggajian Ke Jurnal Umum
+        KeuJurnal::create([
+            'no_jurnal' => $no_jurnal,
+            'tanggal_jurnal' => date('Y-m-d'),
+            'uraian_jurnal' => 'Saldo Awal ' . $request['nama_akun'],
+            'no_bukti' => '-',
+        ]);
+
+        $id_jurnal = KeuJurnal::where('no_jurnal', $no_jurnal)->get()->first()->id;
+
+        if (request()->jenis_akun == 'debet') {
+            // Masukkan Data Penggajian Ke Detail Jurnal Umum bagian debet
+            KeuDetailJurnal::create([
+                'no_jurnal' => $id_jurnal,
+                'kode_akun' => $id_akun,
+                'debet' => request()->saldo_akun
+            ]);
+        } else if (request()->jenis_akun == 'kredit') {
+            // Masukkan Data Penggajian Ke Detail Jurnal Umum bagian kredit
+            KeuDetailJurnal::create([
+                'no_jurnal' => $id_jurnal,
+                'kode_akun' => $id_akun,
+                'kredit' => request()->saldo_akun
+            ]);
+        }
+
 
         return redirect()->route('Daftar Akun')->with('success', 'Data Berhasil Ditambahkan');
     }

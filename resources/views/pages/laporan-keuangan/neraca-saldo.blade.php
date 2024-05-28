@@ -78,16 +78,16 @@
                         <label for="bulan" class="mb-0 mr-2">Bulan:</label>
                         <select class="form-control-sm border-1" style="width: 120px; height: 30px;" id="bulan"
                           name="bulan">
-                          <option value="">Pilih Bulan</option>
-                          <option value="01">Januari</option>
-                          <option value="02">Februari</option>
-                          <option value="03">Maret</option>
-                          <option value="04">April</option>
-                          <option value="05">Mei</option>
-                          <option value="06">Juni</option>
-                          <option value="07">Juli</option>
-                          <option value="08">Agustus</option>
-                          <option value="09">September</option>
+                          <option>{{ $bulan[request()->bulan] ?? 'Pilih Bulan' }}</option>
+                          <option value="1">Januari</option>
+                          <option value="2">Februari</option>
+                          <option value="3">Maret</option>
+                          <option value="4">April</option>
+                          <option value="5">Mei</option>
+                          <option value="6">Juni</option>
+                          <option value="7">Juli</option>
+                          <option value="8">Agustus</option>
+                          <option value="9">September</option>
                           <option value="10">Oktober</option>
                           <option value="11">November</option>
                           <option value="12">Desember</option>
@@ -95,7 +95,7 @@
                         <label for="tahun" class="mb-0 mr-2 ml-2">Tahun:</label>
                         <select class="form-control-sm border-1" style="width: 120px; height: 30px;" id="tahun"
                           name="tahun">
-                          <option value="">Pilih Tahun</option>
+                          <option>{{ request()->tahun ?? 'Pilih Tahun' }}</option>
                           <option value="2021">2021</option>
                           <option value="2022">2022</option>
                           <option value="2023">2023</option>
@@ -109,10 +109,10 @@
                     </div>
                     <!-- Tombol Cetak Tabel dengan Icon -->
                     <div>
-                      <button type="button" class="btn btn-sm btn-warning" style="width: 60px; height: 30px;"
-                        onclick="cetakTabel()">
+                      <a href="{{ route('Neraca Saldo') }}?export=pdf{{ (request()->bulan)? '&bulan='.request()->bulan : '' }}{{ (request()->tahun)? '&tahun='.request()->tahun : '' }}"
+                        class="btn btn-sm btn-warning" style='width: 60px; height: 30px;'>
                         Cetak
-                      </button>
+                      </a>
                     </div>
                   </div>
 
@@ -142,11 +142,13 @@
                     <tbody>
                       @php
                       $jenis_akun = '';
+                      $saldoDebet = 0;
+                      $saldoKredit = 0;
+                      $totalDebet = 0;
+                      $totalKredit = 0;
                       @endphp
                       @foreach ($neracaSaldo as $record)
                       @php
-                      $saldoDebet = 0;
-                      $saldoKredit = 0;
                       if(isset(request()->bulan) && isset(request()->tahun)){
                       $debet = App\Models\KeuDetailJurnal::where('kode_akun',
                       $record->id)->whereMonth('created_at', request()->bulan)->whereYear('created_at',
@@ -174,14 +176,22 @@
                       } else if ($record->jenis_akun == 'kredit'){
                       $saldoKredit = $kredit - $debet;
                       }
+
+                      $totalDebet += $saldoDebet;
+                      $totalKredit += $saldoKredit;
                       @endphp
                       <tr>
-                        <th>{{ $record->kode_akun }}</th>
-                        <th>{{ $record->nama_akun }}</th>
-                        <th>Rp. {{ number_format($saldoDebet) }}</th>
-                        <th>Rp. {{ number_format($saldoKredit) }}</th>
+                        <td>{{ $record->kode_akun }}</td>
+                        <td>{{ $record->nama_akun }}</td>
+                        <td>Rp. {{ number_format($saldoDebet) }}</td>
+                        <td>Rp. {{ number_format($saldoKredit) }}</td>
                       </tr>
                       @endforeach
+                      <tr>
+                        <th colspan="2" class="text-right">Total</th>
+                        <th>Rp. {{ number_format($totalDebet) }}</th>
+                        <th>Rp. {{ number_format($totalKredit) }}</th>
+                      </tr>
                     </tbody>
                     <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
                   </table>

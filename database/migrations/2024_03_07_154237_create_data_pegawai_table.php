@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('posisi');
             $table->string('noreg_fumigasi')->nullable();
             $table->decimal('gaji_pokok', 65, 2);
+            $table->string('fax');
+            $table->string('usci');
             $table->timestamps();
         });
     }

@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('id_kegiatan');
             $table->unsignedBigInteger('id_order');
-            $table->time('jam_mulai');
-            $table->time('jam_selesai');
+            $table->dateTime('jam_mulai');
+            $table->dateTime('jam_selesai');
             $table->string('keterangan');
             $table->timestamps();
         });

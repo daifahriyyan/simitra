@@ -79,7 +79,7 @@
                       <select class="form-control form-select-lg" name="id_order" id="id_order" required>
                         <option selected>Pilih ID Order</option>
                         @foreach ($dataOrder as $item)
-                        <option value="{{ $item->id }}">{{ $item->id_order }}</option>
+                        <option value="{{ $item->id }}">{{ $item->id_detailorder }}</option>
                         @endforeach
                       </select>
                     </div>
@@ -171,9 +171,9 @@
                       <label for="id_order" class="form-label">ID Order:</label>
                       {{-- <input type="number" class="form-control" id="id_order" name="id_order" required> --}}
                       <select class="form-control form-select-lg" name="id_order" id="id_order" required>
-                        <option value="{{ $record->id_order }}">{{ $record->dataOrder->id_order }}</option>
+                        <option value="{{ $record->id_order }}">{{ $record->detailOrder->id_detailorder }}</option>
                         @foreach ($dataOrder as $item)
-                        <option value="{{ $item->id }}">{{ $item->id_order }}</option>
+                        <option value="{{ $item->id }}">{{ $item->id_detailorder }}</option>
                         @endforeach
                       </select>
                     </div>
@@ -302,19 +302,22 @@
                     </div>
                     <!-- Tombol Filter Tanggal dengan Icon -->
                     <div class="input-group">
-                      <input type="date" class="form-control-sm border-1" id="tanggalMulai"
-                        aria-describedby="tanggalMulaiLabel">
-                      <input type="date" class="form-control-sm border-1" id="tanggalAkhir"
-                        aria-describedby="tanggalAkhirLabel">
-                      <button type="button" class="btn btn-secondary btn-sm" style='width: 60px; height: 30px;'
-                        onclick="filterTanggal()">
-                        Filter
-                      </button>
+                      <form action="{{ route('Verifikasi Order') }}">
+                        <input type="date" class="form-control-sm border-1" id="tanggalMulai"
+                          value="{{ request()->tanggalMulai }}" name="tanggalMulai"
+                          aria-describedby="tanggalMulaiLabel">
+                        <input type="date" class="form-control-sm border-1" id="tanggalAkhir"
+                          value="{{ request()->tanggalAkhir }}" name="tanggalAkhir"
+                          aria-describedby="tanggalAkhirLabel">
+                        <button type="subnit" class="btn btn-secondary btn-sm" style="width: 60px; height: 30px;">
+                          Filter
+                        </button>
+                      </form>
                     </div>
                     <!-- Tombol Cetak Tabel dengan Icon -->
                     <div>
-                      <a href="{{ route('Verifikasi Order') }}?export=pdf" class="btn btn-sm btn-warning"
-                        style='width: 60px; height: 30px;'>
+                      <a href="{{ route('Verifikasi Order') }}?export=pdf{{ (request()->tanggalMulai)? '&tanggalMulai='.request()->tanggalMulai : '' }}{{ (request()->tanggalAkhir)? '&tanggalAkhir='.request()->tanggalAkhir : '' }}"
+                        class="btn btn-sm btn-warning" style='width: 60px; height: 30px;'>
                         Cetak
                       </a>
                     </div>
@@ -398,9 +401,9 @@
                           <a href="{{ route('Verifikasi Order') }}?verif={{ $record->id_order }}"
                             class='btn btn-info btn-sm' style='width: 30px; height: 30px;'><i
                               class='fas fa-check'></i></a>
-                          <button type='button' class='btn btn-danger btn-sm' style='width: 30px; height: 30px;'
-                            onclick='rejectData(\"".$data[' id_verifikasi']."\")'><i
-                              class='fas fa-times'></i></button>";
+                          <a href="{{ route('Verifikasi Order') }}?reject={{ $record->id_order }}"
+                            class='btn btn-danger btn-sm' style='width: 30px; height: 30px;'><i
+                              class='fas fa-times'></i></a>
                         </td>
                       </tr>
                       @endforeach

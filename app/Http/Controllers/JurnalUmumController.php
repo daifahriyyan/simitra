@@ -19,7 +19,17 @@ class JurnalUmumController extends Controller
      */
     public function index()
     {
-        $jurnalUmum = KeuDetailJurnal::get();
+        $tanggalMulai = request()->tanggalMulai;
+        $tanggalAkhir = request()->tanggalAkhir;
+
+        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+            $jurnalUmum = KeuDetailJurnal::whereHas('jurnal', function ($query) use ($tanggalMulai, $tanggalAkhir) {
+                $query->whereBetween('tanggal_jurnal', [$tanggalMulai, $tanggalAkhir]);
+            })->get();
+        } else {
+            $jurnalUmum = KeuDetailJurnal::get();
+        }
+
         if (request()->get('export') == 'pdf') {
             Pdf::setOption([
                 'enabled' => true,
@@ -35,9 +45,9 @@ class JurnalUmumController extends Controller
         }
         return view('pages.akuntansi.jurnal-umum', [
             // ambil seluruh data Detail Jurnal
-            'jurnalUmum' => KeuDetailJurnal::get(),
+            'jurnalUmum' => $jurnalUmum,
             // ambil id terakhir dari Jurnal
-            'jurnal' => isset(KeuJurnal::latest()->get()->first()->id) + 1 ?? 1,
+            'jurnal' => isset(KeuJurnal::latest()->get()->first()->id) ? KeuJurnal::latest()->get()->first()->id + 1 : 1,
             // ambil seluruh data akun
             'akun' => KeuAkun::latest()->get(),
             // ambil kode akun yang jenisnya debet
@@ -60,20 +70,44 @@ class JurnalUmumController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->tanggal_jurnal);
         $jumlah_debet = count($request->jumlah_debet);
         $jumlah_kredit = count($request->jumlah_kredit);
+        $total_debet = 0;
+        $total_kredit = 0;
+
+        for ($i = 0; $i < $jumlah_debet; $i++) {
+            $total_debet += $request->jumlah_debet[$i];
+        }
+
+        for ($i = 0; $i < $jumlah_kredit; $i++) {
+            $total_kredit += $request->jumlah_kredit[$i];
+        }
+
+        if ($total_debet !== $total_kredit) {
+            return back()->with('error', 'Jumlah debet dan kredit tidak sama, betulkan!');
+        }
+
+        KeuJurnal::create([
+            'no_jurnal' => $request->no_jurnal,
+            'tanggal_jurnal' => $request->tanggal_jurnal,
+            'uraian_jurnal' => $request->uraian_jurnal,
+            'no_bukti' => $request->no_bukti,
+        ]);
+
+        $id_jurnal = KeuJurnal::where('no_jurnal', $request->no_jurnal)->get()->first()->id;
 
         // lakukan penamabahan tiap tiap jurnal debet yang dmasukkan
         for ($i = 0; $i < $jumlah_debet; $i++) {
             KeuDetailJurnal::create([
-                'no_jurnal' => $request->no_jurnal,
+                'no_jurnal' => $id_jurnal,
                 'kode_akun' => $request->no_akun_debet[$i],
                 'debet' => $request->jumlah_debet[$i]
             ]);
 
             // ambil data Akun
-            $akunDebet = KeuAkun::where('kode_akun', $request->no_akun_debet[$i])->get()->first();
-
+            $akunDebet = KeuAkun::where('id', $request->no_akun_debet[$i])->get()->first();
+            // dd($akunDebet->jenis_akun);
             if ($akunDebet->jenis_akun == 'kredit') {
                 // jika jenis akun adalah kredit maka kurangi 
                 $saldo_akun = $akunDebet->saldo_akun - $request->jumlah_debet[$i];
@@ -83,11 +117,10 @@ class JurnalUmumController extends Controller
             }
 
             // ubah sesuai operasi diatas
-            KeuAkun::where('kode_akun', $request->no_akun_debet[$i])->update([
+            KeuAkun::where('id', $request->no_akun_debet[$i])->update([
                 'saldo_akun' => $saldo_akun,
             ]);
         }
-        $id_jurnal = KeuJurnal::where('no_jurnal', $request->no_jurnal)->get()->first()->id;
 
         // lakukan penambahan tiap tiap jurnal kredit yang dimasukkan
         for ($i = 0; $i < $jumlah_kredit; $i++) {
@@ -98,7 +131,7 @@ class JurnalUmumController extends Controller
             ]);
 
             // ambil data akun
-            $akunKredit = KeuAkun::where('kode_akun', $request->no_akun_kredit[$i])->get()->first();
+            $akunKredit = KeuAkun::where('id', $request->no_akun_kredit[$i])->get()->first();
 
             if ($akunKredit->jenis_akun == 'debet') {
                 // jika jenis akun adalah debet maka kurangi
@@ -109,18 +142,10 @@ class JurnalUmumController extends Controller
             }
 
             // Ubah sesuai dengan operasi diatas
-            KeuAkun::where('kode_akun', $request->no_akun_kredit[$i])->update([
+            KeuAkun::where('id', $request->no_akun_kredit[$i])->update([
                 'saldo_akun' => $saldo_akun,
             ]);
         }
-
-        KeuJurnal::create([
-            'no_jurnal' => $request->no_jurnal,
-            'tanggal_jurnal' => $request->tanggal_jurnal,
-            'uraian_jurnal' => $request->uraian_jurnal,
-            'no_bukti' => $request->no_bukti,
-        ]);
-
 
         return redirect()->route('Jurnal Umum')->with('success', 'Jurnal Umum Berhasil Ditambahkan');
     }
@@ -158,7 +183,7 @@ class JurnalUmumController extends Controller
         // ambil seluruh data detail jurnal
         $detail_jurnal = KeuDetailJurnal::where('no_jurnal', $no_jurnal)->get();
 
-        $no_bukti = KeuJurnal::where('no_jurnal', $no_jurnal)->get()->first()->no_bukti;
+        $no_bukti = KeuJurnal::where('id', $no_jurnal)->get()->first();
 
         try {
             // ambil identitas jurnal
@@ -174,7 +199,7 @@ class JurnalUmumController extends Controller
             // hapus record table detail jurnal berdasarkan no jurnal
             KeuDetailJurnal::where('no_jurnal', $no_jurnal)->delete();
             // hapus record table jurnal berdasarkan no jurnal
-            KeuJurnal::where('no_jurnal', $no_jurnal)->delete();
+            KeuJurnal::where('id', $no_jurnal)->delete();
 
             // Validate the value...
         } catch (Throwable $e) {
@@ -187,7 +212,7 @@ class JurnalUmumController extends Controller
             $kode_akun = $record->kode_akun;
 
             // dapatkan akun berdasarkan kode akun yang dihapus
-            $akun = KeuAkun::where('kode_akun', $kode_akun)->get()->first();
+            $akun = KeuAkun::where('id', $kode_akun)->get()->first();
             // ambil saldo debet tiap akun
             $saldoDebet = $record->debet;
             // ambil saldo kredit tiap akun
@@ -195,28 +220,28 @@ class JurnalUmumController extends Controller
 
             // jika jenis akun kredit dan saldo kreditnya berisi maka saldo akun dikurangi saldo kredit dari tiap akun jurnal
             if ($akun->jenis_akun == 'kredit' && !is_null($saldoKredit)) {
-                KeuAkun::where('kode_akun', $kode_akun)->update([
+                KeuAkun::where('id', $kode_akun)->update([
                     'saldo_akun' => $akun->saldo_akun - $saldoKredit
                 ]);
 
                 $keterangan = 'kredit berhasil dikurangi kredit';
                 // jika jenis akun debet dan saldo kredit berisi maka saldo akun ditambahi saldo kredit dari tiap akun jurnal
             } else if ($akun->jenis_akun == 'debet' && !is_null($saldoKredit)) {
-                KeuAkun::where('kode_akun', $kode_akun)->update([
+                KeuAkun::where('id', $kode_akun)->update([
                     'saldo_akun' => $akun->saldo_akun + $saldoKredit
                 ]);
 
                 $keterangan = 'Debet berhasil ditambah Kredit';
                 // jika jenis akun kredit dan saldo debet berisi maka saldo akun ditambahi saldo debet dari tiap akun jurnal
             } else if ($akun->jenis_akun == 'kredit' && !is_null($saldoDebet)) {
-                KeuAkun::where('kode_akun', $kode_akun)->update([
+                KeuAkun::where('id', $kode_akun)->update([
                     'saldo_akun' => $akun->saldo_akun + $saldoDebet
                 ]);
 
                 $keterangan = 'kredit berhasil ditambah debet';
                 // jika jenis akun debet dan saldo debet berisi maka saldo akun dikurangi saldo debet dari tiap akun jurnal
             } else if ($akun->jenis_akun == 'debet' && !is_null($saldoDebet)) {
-                KeuAkun::where('kode_akun', $kode_akun)->update([
+                KeuAkun::where('id', $kode_akun)->update([
                     'saldo_akun' => $akun->saldo_akun - $saldoDebet
                 ]);
 

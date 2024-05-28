@@ -265,21 +265,24 @@
           <h6 class="m-0 font-weight-bold text-primary">Order</h6> <!-- EDIT NAMA -->
           <div class="btn-group" role="group" aria-label="Basic mixed styles example">
             <!-- Tombol Tambah dengan Icon -->
-            <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#addModal">
+            {{-- <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#addModal">
               Tambah
-            </button>
+            </button> --}}
             <!-- Tombol Filter Tanggal dengan Icon -->
             <div class="input-group">
-              <input type="date" class="form-control-sm border-0" id="tanggalMulai"
-                aria-describedby="tanggalMulaiLabel">
-              <input type="date" class="form-control-sm border-0" id="tanggalAkhir"
-                aria-describedby="tanggalAkhirLabel">
-              <button type="button" class="btn btn-secondary btn-sm" onclick="filterTanggal()">
-                Filter
-              </button>
+              <form action="{{ route('Data Order') }}">
+                <input type="date" class="form-control-sm border-1" id="tanggalMulai"
+                  value="{{ request()->tanggalMulai }}" name="tanggalMulai" aria-describedby="tanggalMulaiLabel">
+                <input type="date" class="form-control-sm border-1" id="tanggalAkhir"
+                  value="{{ request()->tanggalAkhir }}" name="tanggalAkhir" aria-describedby="tanggalAkhirLabel">
+                <button type="subnit" class="btn btn-secondary btn-sm" style="width: 60px; height: 30px;">
+                  Filter
+                </button>
+              </form>
             </div>
             <!-- Tombol Cetak Tabel dengan Icon -->
-            <a href="{{ route('Data Order') }}?export=pdf" class="btn btn-sm btn-warning">
+            <a href="{{ route('Data Order') }}?export=pdf{{ (request()->tanggalMulai)? '&tanggalMulai='.request()->tanggalMulai : '' }}{{ (request()->tanggalAkhir)? '&tanggalAkhir='.request()->tanggalAkhir : '' }}"
+              class="btn btn-sm btn-warning">
               Cetak
             </a>
           </div>
@@ -353,7 +356,7 @@
                 <td>{{ $item->dataOrder->dataCustomer->pic }}</td>
                 <td>{{ $item->dataOrder->dataCustomer->phone_pic }}</td>
                 <td>{{ $item->dataOrder->jumlah_order }}</td>
-                <td>{{ $item->id_datastandar }}</td>
+                <td>{{ $item->dataOrder->dataHarga->id_datastandar }}</td>
                 <td>{{ $item->dataOrder->treatment }}</td>
                 <td>{{ $item->dataOrder->volume}}</td>
                 <td>{{ $item->dataOrder->place_fumigation }}</td>
@@ -366,8 +369,9 @@
                 <td>{{ $item->destination }}</td>
                 <td>{{ $item->nama_driver }}</td>
                 <td>{{ $item->telp_driver }}</td>
-                <td>{{ $item->shipment_instruction }}</td>
-                <td>{{ $item->packing_list }}</td>
+                <td><a href='{{ asset("storage/shipment_instruction/$item->shipment_instruction") }}'>{{
+                    $item->shipment_instruction }}</a></td>
+                <td><a href='{{ asset("storage/packing_list/$item->packing_list") }}'>{{ $item->packing_list }}</a></td>
                 <td>
                   <?php
                     if ($item->verifikasi == 0){
@@ -393,46 +397,11 @@
                       class='fas fa-print'></i></a>
                   <a href="{{ route('Data Order') }}?verif={{ $item->id }}" class='btn btn-info btn-sm'
                     style='width: 30px; height: 30px;'><i class='fas fa-check'></i></a>
-                  <button type='button' class='btn btn-danger btn-sm' style='width: 30px; height: 30px;'
-                    onclick='rejectData(\"".$data[' id_order']."\")'><i class='fas fa-times'></i></button>
+                  <a href="{{ route('Data Order') }}?reject={{ $item->id }}" class='btn btn-danger btn-sm'
+                    style='width: 30px; height: 30px;'><i class='fas fa-times'></i></a>
                 </td>
               </tr>
               @endforeach
-              {{--
-              <?php
-                $query = "SELECT * FROM data_order";
-                $result = mysqli_query($conn, $query);
-                while ($data = mysqli_fetch_assoc($result)) {
-                  echo "<tr>";
-                  echo "<td>".$data['id_order']."</td>";
-                  echo "<td>".$data['id_order_container']."</td>";
-                  echo "<td>".$data['tanggal_order']."</td>";
-                  echo "<td>".$data['id_customer']."</td>";
-                  echo "<td>".$data['nama_customer']."</td>";
-                  echo "<td>".$data['telp_customer']."</td>";
-                  echo "<td>".$data['jumlah_order']."</td>";
-                  echo "<td>".$data['treatment']."</td>";
-                  echo "<td>".$data['stuffing_date']."</td>";
-                  echo "<td>".$data['id_datastandar']."</td>";
-                  echo "<td>".$data['volume']."</td>";
-                  echo "<td>".$data['container']."</td>";
-                  echo "<td>".$data['container_volume']."</td>";
-                  echo "<td>".$data['commodity']."</td>";
-                  echo "<td>".$data['vessel']."</td>";
-                  echo "<td>".$data['closing_time']."</td>";
-                  echo "<td>".$data['destination']."</td>";
-                  echo "<td>".$data['place_fumigation']."</td>";
-                  echo "<td>".$data['pic']."</td>";
-                  echo "<td>".$data['phone_pic']."</td>";
-                  echo "<td><span class='badge badge-success'>Delivered</span></td>";
-                  echo "<td>";
-                  echo "<button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal' data-bs-target='#editModal' onclick='openEditModal(\"".$data['id_order_container']."\", \"".$data['tanggal_order']."\", \"".$data['id_customer']."\", \"".$data['nama_customer']."\", \"".$data['telp_customer']."\")'><i class='fas fa-edit'></i></button>";
-                  echo "<button type='button' class='btn btn-danger btn-sm' onclick='deleteData(\"".$data['id_order_container']."\")'><i class='fas fa-trash'></i></button>";
-                  echo "<a href='generate_pdf.php?id_order_container=".htmlspecialchars($data['id_order_container'])."' class='btn btn-primary btn-sm' target='_blank' role='button'><i class='fas fa-print'></i></a>";
-                  echo "</td>";
-                  echo "</tr>"; 
-                  }
-              ?> --}}
             </tbody>
             <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
           </table>

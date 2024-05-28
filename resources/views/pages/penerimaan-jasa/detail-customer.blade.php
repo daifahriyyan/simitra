@@ -192,23 +192,26 @@
           <h6 class="m-0 font-weight-bold text-primary">Detail Customer</h6> <!-- EDIT NAMA -->
           <div class="btn-group" role="group" aria-label="Basic mixed styles example">
             <!-- Tombol Tambah dengan Icon -->
-            <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#addModal">
+            {{-- <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#addModal">
               Tambah
-            </button>
+            </button> --}}
             <!-- Tombol Filter Tanggal dengan Icon -->
             <div class="input-group">
-              <input type="date" class="form-control-sm border-0" id="tanggalMulai"
-                aria-describedby="tanggalMulaiLabel">
-              <input type="date" class="form-control-sm border-0" id="tanggalAkhir"
-                aria-describedby="tanggalAkhirLabel">
-              <button type="button" class="btn btn-secondary btn-sm" onclick="filterTanggal()">
-                Filter
-              </button>
+              <form action="{{ route('Detail Customer') }}">
+                <input type="date" class="form-control-sm border-1" id="tanggalMulai"
+                  value="{{ request()->tanggalMulai }}" name="tanggalMulai" aria-describedby="tanggalMulaiLabel">
+                <input type="date" class="form-control-sm border-1" id="tanggalAkhir"
+                  value="{{ request()->tanggalAkhir }}" name="tanggalAkhir" aria-describedby="tanggalAkhirLabel">
+                <button type="subnit" class="btn btn-secondary btn-sm" style="width: 60px; height: 30px;">
+                  Filter
+                </button>
+              </form>
             </div>
             <!-- Tombol Cetak Tabel dengan Icon -->
-            <button type="button" class="btn btn-sm btn-warning" onclick="cetakTabel()">
+            <a href="{{ route('Detail Customer') }}?export=pdf{{ (request()->tanggalMulai)? '&tanggalMulai='.request()->tanggalMulai : '' }}{{ (request()->tanggalAkhir)? '&tanggalAkhir='.request()->tanggalAkhir : '' }}"
+              class="btn btn-sm btn-warning">
               Cetak
-            </button>
+            </a>
           </div>
 
           <!-- Skrip JavaScript untuk Filter Tanggal dan Cetak Tabel -->
@@ -245,7 +248,7 @@
                 <th>Total Penjualan</th>
                 <th>Total Penerimaan</th>
                 <th>Saldo Akhir</th>
-                <th>Satus</th>
+                <th>Status</th>
                 <th>Aksi</th>
               </tr>
             </thead>

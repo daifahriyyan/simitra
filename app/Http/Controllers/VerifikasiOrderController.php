@@ -16,7 +16,16 @@ class VerifikasiOrderController extends Controller
      */
     public function index()
     {
-        $verifikasi = VerifikasiOrder::get();
+        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+            $tanggalMulai = request()->tanggalMulai;
+            $tanggalAkhir = request()->tanggalAkhir;
+            $verifikasi = VerifikasiOrder::whereHas('dataOrder', function ($query) use ($tanggalMulai, $tanggalAkhir) {
+                $query->whereBetween('tanggal_order', [$tanggalMulai, $tanggalAkhir]);
+            })->get();
+        } else {
+            $verifikasi = VerifikasiOrder::get();
+        }
+
         if (request()->get('export') == 'pdf') {
             Pdf::setOption([
                 'enabled' => true,
@@ -43,13 +52,21 @@ class VerifikasiOrderController extends Controller
             $pdf = Pdf::loadView('generate-pdf.baris_verifikasi_order', ['record' => $record])->setPaper('a4');
             return $pdf->stream('Verifikasi Order.pdf');
         }
+
         if (request()->get('verif') !== null) {
             DetailOrder::where('id', request()->get('verif'))->update([
                 'verifikasi' => 2
             ]);
         }
+        if (request()->get('reject') !== null) {
+            DetailOrder::where('id', request()->get('reject'))->update([
+                'verifikasi' => 2,
+                'is_reject' => '1'
+            ]);
+        }
+
         return view('pages.operasional.verifikasi-order', [
-            'dataOrder' => DataOrder::get(),
+            'dataOrder' => DetailOrder::get(),
             'verifikasi' => $verifikasi,
         ]);
     }

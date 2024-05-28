@@ -188,18 +188,22 @@
                     </div>
                     <!-- Tombol Filter Tanggal dengan Icon -->
                     <div class="input-group">
-                      <input type="date" class="form-control-sm border-1" id="tanggalMulai"
-                        aria-describedby="tanggalMulaiLabel">
-                      <input type="date" class="form-control-sm border-1" id="tanggalAkhir"
-                        aria-describedby="tanggalAkhirLabel">
-                      <button type="button" class="btn btn-secondary btn-sm" style='width: 60px; height: 30px;'
-                        onclick="filterTanggal()">
-                        Filter
-                      </button>
+                      <form action="{{ route('HPP Sesungguhnya') }}">
+                        <input type="date" class="form-control-sm border-1" id="tanggalMulai"
+                          value="{{ request()->tanggalMulai }}" name="tanggalMulai"
+                          aria-describedby="tanggalMulaiLabel">
+                        <input type="date" class="form-control-sm border-1" id="tanggalAkhir"
+                          value="{{ request()->tanggalAkhir }}" name="tanggalAkhir"
+                          aria-describedby="tanggalAkhirLabel">
+                        <button type="subnit" class="btn btn-secondary btn-sm" style="width: 60px; height: 30px;">
+                          Filter
+                        </button>
+                      </form>
                     </div>
                     <!-- Tombol Cetak Tabel dengan Icon -->
                     <div>
-                      <a href="{{ route('HPP Sesungguhnya') }}?export=pdf" class="btn btn-sm btn-warning">
+                      <a href="{{ route('HPP Sesungguhnya') }}?export=pdf{{ (request()->tanggalMulai)? '&tanggalMulai='.request()->tanggalMulai : '' }}{{ (request()->tanggalAkhir)? '&tanggalAkhir='.request()->tanggalAkhir : '' }}"
+                        class="btn btn-sm btn-warning">
                         Cetak
                       </a>
                     </div>
@@ -242,14 +246,20 @@
                       </tr>
                     </thead>
                     <tbody>
+                      @php
+                      $total_hpp = 0;
+                      @endphp
                       @foreach ($hppSesungguhnya as $record)
+                      @php
+                      $total_hpp += $record->hpp_sesungguhnya;
+                      @endphp
                       <tr>
                         <td>{{ $record->id_beban_hpp }}</td>
                         <td>{{ $record->tanggal_input }}</td>
-                        <td>{{ $record->bbb_sesungguhnya }}</td>
-                        <td>{{ $record->btk_sesungguhnya }}</td>
-                        <td>{{ $record->bop_sesungguhnya }}</td>
-                        <td>{{ $record->hpp_sesungguhnya }}</td>
+                        <td>Rp. {{ number_format($record->bbb_sesungguhnya) }}</td>
+                        <td>Rp. {{ number_format($record->btk_sesungguhnya) }}</td>
+                        <td>Rp. {{ number_format($record->bop_sesungguhnya) }}</td>
+                        <td>Rp. {{ number_format($record->hpp_sesungguhnya) }}</td>
                         <td class="d-flex">
                           <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
                             data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
@@ -258,6 +268,10 @@
                         </td>
                       </tr>
                       @endforeach
+                      <tr>
+                        <th colspan="5">Total</th>
+                        <th>Rp. {{ number_format($total_hpp) }}</th>
+                      </tr>
                     </tbody>
                     <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
                   </table>

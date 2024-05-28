@@ -221,19 +221,22 @@
                     </div>
                     <!-- Tombol Filter Tanggal dengan Icon -->
                     <div class="input-group">
-                      <input type="date" class="form-control-sm border-1" id="tanggalMulai"
-                        aria-describedby="tanggalMulaiLabel">
-                      <input type="date" class="form-control-sm border-1" id="tanggalAkhir"
-                        aria-describedby="tanggalAkhirLabel">
-                      <button type="button" class="btn btn-secondary btn-sm" style='width: 60px; height: 30px;'
-                        onclick="filterTanggal()">
-                        Filter
-                      </button>
+                      <form action="{{ route('Penggajian') }}">
+                        <input type="date" class="form-control-sm border-1" id="tanggalMulai"
+                          value="{{ request()->tanggalMulai }}" name="tanggalMulai"
+                          aria-describedby="tanggalMulaiLabel">
+                        <input type="date" class="form-control-sm border-1" id="tanggalAkhir"
+                          value="{{ request()->tanggalAkhir }}" name="tanggalAkhir"
+                          aria-describedby="tanggalAkhirLabel">
+                        <button type="subnit" class="btn btn-secondary btn-sm" style="width: 60px; height: 30px;">
+                          Filter
+                        </button>
+                      </form>
                     </div>
                     <!-- Tombol Cetak Tabel dengan Icon -->
                     <div>
-                      <a href="{{ route('Penggajian') }}?export=pdf" class="btn btn-sm btn-warning"
-                        style='width: 60px; height: 30px;'>
+                      <a href="{{ route('Penggajian') }}?export=pdf{{ (request()->tanggalMulai)? '&tanggalMulai='.request()->tanggalMulai : '' }}{{ (request()->tanggalAkhir)? '&tanggalAkhir='.request()->tanggalAkhir : '' }}"
+                        class="btn btn-sm btn-warning" style='width: 60px; height: 30px;'>
                         Cetak
                       </a>
                     </div>
@@ -295,7 +298,7 @@
                             data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
                           <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
                             data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
-                          <a href='generate_pdf.php?id_penggajian=".htmlspecialchars($data[' id_penggajian'])."'
+                          <a href="{{ route('Penggajian') }}?export=pdf-detail&id={{ $record->id }}"
                             class='btn btn-primary btn-sm' style='width: 30px; height: 30px;' target='_blank'
                             role='button'><i class='fas fa-print'></i></a>
                         </td>

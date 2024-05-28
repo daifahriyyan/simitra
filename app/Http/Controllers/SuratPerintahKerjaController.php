@@ -17,7 +17,14 @@ class SuratPerintahKerjaController extends Controller
      */
     public function index()
     {
-        $spk = SuratPerintahKerja::get();
+        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+            $tanggalMulai = request()->tanggalMulai;
+            $tanggalAkhir = request()->tanggalAkhir;
+            $spk = SuratPerintahKerja::whereBetween('tanggal', [$tanggalMulai, $tanggalAkhir])->get();
+        } else {
+            $spk = SuratPerintahKerja::get();
+        }
+
         if (request()->get('export') == 'pdf') {
             Pdf::setOption([
                 'enabled' => true,

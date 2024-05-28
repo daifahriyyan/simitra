@@ -55,6 +55,8 @@ class PegawaiController extends Controller
             'posisi' => request()->posisi,
             'noreg_fumigasi' => request()->noreg_fumigasi,
             'gaji_pokok' => request()->gaji_pokok,
+            'fax' => request()->fax,
+            'usci' => request()->usci,
         ]);
         return redirect(route('pegawai.index'))->with('add', 'Data Berhasil Ditambahkan');
     }
@@ -88,6 +90,8 @@ class PegawaiController extends Controller
             'posisi' => request()->posisi,
             'noreg_fumigasi' => request()->noreg_fumigasi,
             'gaji_pokok' => request()->gaji_pokok,
+            'fax' => request()->fax,
+            'usci' => request()->usci,
         ]);
         return redirect(route('pegawai.index'))->with('add', 'Data Berhasil Ditambahkan');
     }

@@ -17,7 +17,16 @@ class DataOrderController extends Controller
      */
     public function index()
     {
-        $detailOrder = DetailOrder::get();
+        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+            $tanggalMulai = request()->tanggalMulai;
+            $tanggalAkhir = request()->tanggalAkhir;
+            $detailOrder = DetailOrder::whereHas('dataOrder', function ($query) use ($tanggalMulai, $tanggalAkhir) {
+                $query->whereBetween('tanggal_order', [$tanggalMulai, $tanggalAkhir]);
+            })->get();
+        } else {
+            $detailOrder = DetailOrder::get();
+        }
+
         if (request()->get('export') == 'pdf') {
             Pdf::setOption([
                 'enabled' => true,
@@ -44,9 +53,15 @@ class DataOrderController extends Controller
             $pdf = Pdf::loadView('generate-pdf.request-order', ['detail' => $detail])->setPaper('a4');
             return $pdf->stream('Request Order.pdf');
         }
+
         if (request()->get('verif') !== null) {
             DetailOrder::where('id', request()->get('verif'))->update([
                 'verifikasi' => 1
+            ]);
+        }
+        if (request()->get('reject') !== null) {
+            DetailOrder::where('id', request()->get('reject'))->update([
+                'is_reject' => '1'
             ]);
         }
 

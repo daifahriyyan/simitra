@@ -13,7 +13,12 @@ class HPPSesungguhnyaController extends Controller
      */
     public function index()
     {
-        $hppSesungguhnya = HppSesungguhnya::get();
+        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+            $hppSesungguhnya = HppSesungguhnya::whereBetween('tanggal_input', [request()->tanggalMulai, request()->tanggalAkhir])->get();
+        } else {
+            $hppSesungguhnya = HppSesungguhnya::get();
+        }
+
         if (request()->get('export') == 'pdf') {
             Pdf::setOption([
                 'enabled' => true,

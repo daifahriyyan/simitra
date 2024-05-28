@@ -17,9 +17,9 @@ class BuktiPembayaran extends Model
         'bukti_pembayaran',
     ];
 
-    public function dataOrder()
+    public function detailOrder()
     {
-        return $this->belongsTo(DataOrder::class, 'id_order', 'id');
+        return $this->belongsTo(DetailOrder::class, 'id_order', 'id');
     }
 
     public function invoice()

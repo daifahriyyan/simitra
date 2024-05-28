@@ -74,19 +74,22 @@
                     </div>
                     <!-- Tombol Filter Tanggal dengan Icon -->
                     <div class="input-group">
-                      <input type="date" class="form-control-sm border-1" style='width: 150px; height: 30px;'
-                        id="tanggalMulai" aria-describedby="tanggalMulaiLabel">
-                      <input type="date" class="form-control-sm border-1" style='width: 150px; height: 30px;'
-                        id="tanggalAkhir" aria-describedby="tanggalAkhirLabel">
-                      <button type="button" class="btn btn-secondary btn-sm" style='width: 60px; height: 30px;'
-                        onclick="filterTanggal()">
-                        Filter
-                      </button>
+                      <form action="{{ route('Jurnal Umum') }}">
+                        <input type="date" class="form-control-sm border-1" id="tanggalMulai"
+                          value="{{ request()->tanggalMulai }}" name="tanggalMulai"
+                          aria-describedby="tanggalMulaiLabel">
+                        <input type="date" class="form-control-sm border-1" id="tanggalAkhir"
+                          value="{{ request()->tanggalAkhir }}" name="tanggalAkhir"
+                          aria-describedby="tanggalAkhirLabel">
+                        <button type="subnit" class="btn btn-secondary btn-sm" style="width: 60px; height: 30px;">
+                          Filter
+                        </button>
+                      </form>
                     </div>
                     <!-- Tombol Cetak Tabel dengan Icon -->
                     <div>
-                      <a href="{{ route('Jurnal Umum') }}?export=pdf" class="btn btn-sm btn-warning"
-                        style='width: 60px; height: 30px;'>
+                      <a href="{{ route('Jurnal Umum') }}?export=pdf{{ (request()->tanggalMulai)? '&tanggalMulai='.request()->tanggalMulai : '' }}{{ (request()->tanggalAkhir)? '&tanggalAkhir='.request()->tanggalAkhir : '' }}"
+                        class="btn btn-sm btn-warning" style='width: 60px; height: 30px;'>
                         Cetak
                       </a>
                     </div>
@@ -202,14 +205,14 @@
                         </div>
                       </div>
                       <tr>
-                        <td>{{ $record->no_jurnal}}</td>
+                        <td>{{ $record->jurnal->no_jurnal}}</td>
                         <td>{{ $record->jurnal->tanggal_jurnal }}</td>
                         <td>{{ $record->jurnal->no_bukti }}</td>
                         <td>{{ $record->jurnal->uraian_jurnal }}</td>
                         <td>{{ $record->akun->kode_akun}}</td>
                         <td>{{ $record->akun->nama_akun}}</td>
-                        <td>{{ $record->debet }}</td>
-                        <td>{{ $record->kredit }}</td>
+                        <td>{{ number_format($record->debet) }}</td>
+                        <td>{{ number_format($record->kredit) }}</td>
                         <td>
                           <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
                             data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>

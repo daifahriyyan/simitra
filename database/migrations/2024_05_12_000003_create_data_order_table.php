@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('place_fumigation');
             $table->integer('jumlah_order');
             $table->integer('verifikasi')->nullable();
+            $table->enum('is_reject', ['1', '0'])->default('0');
             $table->timestamps();
         });
 

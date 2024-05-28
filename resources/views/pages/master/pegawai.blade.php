@@ -73,6 +73,14 @@
               <label for="gaji_pokok" class="form-label">Gaji Pokok:</label>
               <input type="number" class="form-control" id="gaji_pokok" name="gaji_pokok" required>
             </div>
+            <div class="mb-3">
+              <label for="fax" class="form-label">FAX:</label>
+              <input type="text" class="form-control" id="fax" name="fax">
+            </div>
+            <div class="mb-3">
+              <label for="usci" class="form-label">USCI:</label>
+              <input type="text" class="form-control" id="usci" name="usci">
+            </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
               <button type="submit" class="btn btn-primary">Simpan</button>
@@ -142,6 +150,14 @@
               <label for="gaji_pokok" class="form-label">Gaji Pokok:</label>
               <input type="number" class="form-control" id="gaji_pokok" value="{{ $record->gaji_pokok }}"
                 name="gaji_pokok" required>
+            </div>
+            <div class="mb-3">
+              <label for="fax" class="form-label">FAX:</label>
+              <input type="text" class="form-control" id="fax" name="fax" value="{{ $record->fax }}">
+            </div>
+            <div class="mb-3">
+              <label for="usci" class="form-label">USCI:</label>
+              <input type="text" class="form-control" id="usci" name="usci" value="{{ $record->usci }}">
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>

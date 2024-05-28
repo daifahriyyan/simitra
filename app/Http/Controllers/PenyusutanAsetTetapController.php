@@ -14,6 +14,12 @@ class PenyusutanAsetTetapController extends Controller
      */
     public function index()
     {
+        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+            $penyusutanAt = KeuPenyusutanAt::whereBetween('tanggal_penyusutan', [request()->tanggalMulai, request()->tanggalAkhir])->get();
+        } else {
+            $penyusutanAt = KeuPenyusutanAt::get();
+        }
+
         if (request()->get('export') == 'pdf') {
             Pdf::setOption([
                 'enabled' => true,
@@ -24,7 +30,7 @@ class PenyusutanAsetTetapController extends Controller
                 'pdfBackend' => 'CPDF',
                 'isHtml5ParserEnabled' => true
             ]);
-            $pdf = Pdf::loadView('generate-pdf.tabel-penyusutan-aset', ['penyusutanAt' => KeuPenyusutanAt::get()])->setPaper('a4');
+            $pdf = Pdf::loadView('generate-pdf.tabel-penyusutan-aset', ['penyusutanAt' => $penyusutanAt])->setPaper('a4');
             return $pdf->stream('Daftar Penyusutan Aset Tetap.pdf');
         } else if (request()->get('export') == 'pdf-detail') {
             $detail = KeuPenyusutanAt::where('id', request()->id)->get()->first();
@@ -41,7 +47,7 @@ class PenyusutanAsetTetapController extends Controller
             return $pdf->stream('Penyusutan Aset Tetap.pdf');
         }
         return view("pages.akuntansi.penyusutan-aset-tetap", [
-            'penyusutanAt' => KeuPenyusutanAt::get(),
+            'penyusutanAt' => $penyusutanAt,
             'id_PAT' => KeuPenyusutanAt::latest()->get()->first()->id ?? 1,
             'asetTetap' => KeuAsetTetap::get()
         ]);
@@ -64,7 +70,7 @@ class PenyusutanAsetTetapController extends Controller
         date_default_timezone_set('Asia/Jakarta');
 
         // pisahkan timezone set 
-        $tgl = explode("-", date('Y-m-d H:i:s'));
+        $tgl = explode("-", $request['tanggal_penyusutan']);
 
         // ambil tahunnya
         $tahun_sekarang = intval($tgl[0]);
@@ -131,7 +137,7 @@ class PenyusutanAsetTetapController extends Controller
         date_default_timezone_set('Asia/Jakarta');
 
         // pisahkan timezone set 
-        $tgl = explode("-", date('Y-m-d H:i:s'));
+        $tgl = explode("-", $request['tanggal_penyusutan']);
 
         // ambil tahunnya
         $tahun_sekarang = intval($tgl[0]);

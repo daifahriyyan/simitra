@@ -6,6 +6,7 @@ use Throwable;
 use App\Models\DataOrder;
 use Illuminate\Http\Request;
 use App\Models\DraftPelayaran;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 
 class DraftPelayaranController extends Controller
@@ -15,8 +16,30 @@ class DraftPelayaranController extends Controller
      */
     public function index()
     {
+        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+            $tanggalMulai = request()->tanggalMulai;
+            $tanggalAkhir = request()->tanggalAkhir;
+            $draftPelayaran = DraftPelayaran::whereBetween('tanggal_order', [$tanggalMulai, $tanggalAkhir])->get();
+        } else {
+            $draftPelayaran = DraftPelayaran::get();
+        }
+
+        if (request()->get('export') == 'pdf') {
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.tabel-draft-pelayaran', ['draftPelayaran' => $draftPelayaran])->setPaper('a4');
+            return $pdf->stream('Daftar Draft Pelayaran.pdf');
+        }
+
         return view('pages.operasional.draft-pelayaran', [
-            'draftPelayaran' => DraftPelayaran::get(),
+            'draftPelayaran' => $draftPelayaran,
             'dataOrder' => DataOrder::get(),
         ]);
     }

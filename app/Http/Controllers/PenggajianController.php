@@ -18,6 +18,12 @@ class PenggajianController extends Controller
      */
     public function index()
     {
+        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+            $penggajian = KeuPenggajian::whereBetween('created_at', [request()->tanggalMulai, request()->tanggalAkhir])->get();
+        } else {
+            $penggajian = KeuPenggajian::get();
+        }
+
         if (request()->get('export') == 'pdf') {
             Pdf::setOption([
                 'enabled' => true,
@@ -28,11 +34,24 @@ class PenggajianController extends Controller
                 'pdfBackend' => 'CPDF',
                 'isHtml5ParserEnabled' => true
             ]);
-            $pdf = Pdf::loadView('generate-pdf.tabel-penggajian', ['penggajian' => KeuPenggajian::get()])->setPaper('a4');
+            $pdf = Pdf::loadView('generate-pdf.tabel-penggajian', ['penggajian' => $penggajian])->setPaper('a4');
             return $pdf->stream('Daftar Penggajian.pdf');
+        } else if (request()->get('export') == 'pdf-detail') {
+            $detail = KeuPenggajian::where('id', request()->id)->get()->first();
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.baris-penggajian', ['detail' => $detail])->setPaper('a4');
+            return $pdf->stream('Detail Penggajian.pdf');
         }
         return view('pages.akuntansi.penggajian', [
-            'penggajian' => KeuPenggajian::get(),
+            'penggajian' => $penggajian,
             'pegawai' => DataPegawai::get()
         ]);
     }
@@ -95,17 +114,17 @@ class PenggajianController extends Controller
         ]);
 
         // jika jenis akun adalah kredit maka kurangi 
-        $beban_gaji = $beban_gaji->saldo_akun + $gaji_bersih;
+        $saldo_beban_gaji = $beban_gaji->saldo_akun + $gaji_bersih;
         // jika jenis akun adalah kredit maka kurangi 
-        $hutang_gaji = $hutang_gaji->saldo_akun + $gaji_bersih;
+        $saldo_hutang_gaji = $hutang_gaji->saldo_akun + $gaji_bersih;
 
         // ubah sesuai operasi diatas
         KeuAkun::where('kode_akun', '5220')->update([
-            'saldo_akun' => $beban_gaji,
+            'saldo_akun' => $saldo_beban_gaji,
         ]);
         // ubah sesuai operasi diatas
         KeuAkun::where('kode_akun', '2130')->update([
-            'saldo_akun' => $hutang_gaji,
+            'saldo_akun' => $saldo_hutang_gaji,
         ]);
 
 
@@ -129,16 +148,15 @@ class PenggajianController extends Controller
         // Masukkan Data Penggajian Ke Detail Jurnal Umum bagian debet
         KeuDetailJurnal::create([
             'no_jurnal' => $id_jurnal,
-            'kode_akun' => '5220',
+            'kode_akun' => $beban_gaji->id,
             'debet' => $gaji_bersih
         ]);
         // Masukkan Data Penggajian Ke Detail Jurnal Umum bagian kredit
         KeuDetailJurnal::create([
             'no_jurnal' => $id_jurnal,
-            'kode_akun' => '2130',
+            'kode_akun' => $hutang_gaji->id,
             'kredit' => $gaji_bersih
         ]);
-
 
         return redirect()->route('Penggajian')->with('success', 'Data Berhasil Ditambahkan');
     }
@@ -166,6 +184,7 @@ class PenggajianController extends Controller
     {
         $gaji_pokok = DataPegawai::where('id', $request['id_pegawai'])->get()->first()->gaji_pokok;
         $gaji_bersih = $gaji_pokok + $request['bonus'] + $request['tunjangan_lembur'] + $request['iuran'];
+        // dd($gaji_bersih);
         KeuPenggajian::where('id', $id)->update([
             'id_penggajian' => $request['id_penggajian'],
             'tanggal_input' => $request['tanggal_input'],
@@ -187,18 +206,23 @@ class PenggajianController extends Controller
         ]);
 
         // ambil data no jurnal dimana no bukti berdasarkan data penggajian yang ingin dirubah
-        $no_jurnal = KeuJurnal::where('no_bukti', $request->id_penggajian)->get()->first()->no_jurnal;
+        $no_jurnal = KeuJurnal::where('no_bukti', $request->id_penggajian)->get()->first()->id;
+
+        // ambil data beban gaji dengan kode 5220 dari table keu_akun
+        $beban_gaji = KeuAkun::where('kode_akun', '5220')->get()->first();
+        // ambil data hutang gaji dengan kode2130 dari table keu_akun
+        $hutang_gaji = KeuAkun::where('kode_akun', '2130')->get()->first();
 
         // Ubah Data Detail Jurnal bagian debet berdasarkan no jurnal yang dirubah dan kode akun
-        KeuDetailJurnal::where('no_jurnal', $no_jurnal)->where('kode_akun', '5220')->update([
+        KeuDetailJurnal::where('no_jurnal', $no_jurnal)->where('kode_akun', $beban_gaji->id)->update([
             'no_jurnal' => $no_jurnal,
-            'kode_akun' => '5220',
+            'kode_akun' => $beban_gaji->id,
             'debet' => $gaji_bersih
         ]);
         // Ubah Data Detail Jurnal bagian kredit berdasarkan no jurnal yang dirubah dan kode akun
-        KeuDetailJurnal::where('no_jurnal', $no_jurnal)->where('kode_akun', '2130')->update([
+        KeuDetailJurnal::where('no_jurnal', $no_jurnal)->where('kode_akun', $hutang_gaji->id)->update([
             'no_jurnal' => $no_jurnal,
-            'kode_akun' => '2130',
+            'kode_akun' => $hutang_gaji->id,
             'kredit' => $gaji_bersih
         ]);
 
@@ -214,7 +238,7 @@ class PenggajianController extends Controller
         // Ambil id_penggajian dari table Penggajian dimana id sesuai dengan id yang dikirimkan
         $id_penggajian = KeuPenggajian::where('id', $id)->get()->first()->id_penggajian;
         // Ambil no jurnal dari table jurnal umum dimana no bukti sesuai dengan id penggajian
-        $no_jurnal = KeuJurnal::where('no_bukti', $id_penggajian)->get()->first()->no_jurnal ?? null;
+        $no_jurnal = KeuJurnal::where('no_bukti', $id_penggajian)->get()->first()->id ?? null;
 
         if (isset($no_jurnal)) {
             // ambil seluruh data detail jurnal
@@ -224,7 +248,7 @@ class PenggajianController extends Controller
                 // hapus record table detail jurnal berdasarkan no jurnal
                 KeuDetailJurnal::where('no_jurnal', $no_jurnal)->delete();
                 // hapus record table jurnal berdasarkan no jurnal
-                KeuJurnal::where('no_jurnal', $no_jurnal)->delete();
+                KeuJurnal::where('id', $no_jurnal)->delete();
 
                 KeuPenggajian::where('id', $id)->delete();
                 // Validate the value...

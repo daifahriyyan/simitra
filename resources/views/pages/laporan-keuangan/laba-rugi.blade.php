@@ -75,10 +75,14 @@
                   <div class="btn-group ml-auto" role="group" aria-label="Basic mixed styles example">
                     <!-- Tombol Tambah dengan Icon -->
                     <div>
-                      <button type="button" class="btn btn-sm btn-primary" style='width: 70px; height: 30px;'
-                        data-bs-toggle="modal" data-bs-target="#addModal">
-                        Posting
-                      </button>
+                      <form action="{{ route('Posting Laba Rugi') }}" method="POST" id="posting">
+                        @csrf
+                        <input type="hidden" name="bulan" value="{{ request()->bulan }}">
+                        <input type="hidden" name="tahun" value="{{ request()->tahun }}">
+                        <button type="submit" class="btn btn-sm btn-primary" style='width: 70px; height: 30px;'>
+                          Posting
+                        </button>
+                      </form>
                     </div>
                     <!-- Tombol Filter Pilih BUlan dan Tahun dengan Icon -->
                     <div class="input-group">
@@ -87,15 +91,15 @@
                         <select class="form-control-sm border-1" style="width: 120px; height: 30px;" id="bulan"
                           name="bulan" onchange="filterData()">
                           <option value="">Pilih Bulan</option>
-                          <option value="01">Januari</option>
-                          <option value="02">Februari</option>
-                          <option value="03">Maret</option>
-                          <option value="04">April</option>
-                          <option value="05">Mei</option>
-                          <option value="06">Juni</option>
-                          <option value="07">Juli</option>
-                          <option value="08">Agustus</option>
-                          <option value="09">September</option>
+                          <option value="1">Januari</option>
+                          <option value="2">Februari</option>
+                          <option value="3">Maret</option>
+                          <option value="4">April</option>
+                          <option value="5">Mei</option>
+                          <option value="6">Juni</option>
+                          <option value="7">Juli</option>
+                          <option value="8">Agustus</option>
+                          <option value="9">September</option>
                           <option value="10">Oktober</option>
                           <option value="11">November</option>
                           <option value="12">Desember</option>
@@ -117,10 +121,10 @@
                     </div>
                     <!-- Tombol Cetak Tabel dengan Icon -->
                     <div>
-                      <button type="button" class="btn btn-sm btn-warning" style="width: 60px; height: 30px;"
-                        onclick="cetakTabel()">
+                      <a href="{{ route('Laporan Laba Rugi') }}?export=pdf{{ (request()->bulan)? '&bulan='.request()->bulan : '' }}{{ (request()->tahun)? '&tahun='.request()->tahun : '' }}"
+                        class="btn btn-sm btn-warning" style='width: 60px; height: 30px;'>
                         Cetak
-                      </button>
+                      </a>
                     </div>
                   </div>
 
@@ -245,6 +249,9 @@
                         <th></th>
                         <th>Rp. {{ number_format($jumlah_pendapatan - ($total_hpp_sesungguhnya ?? 0) - $jumlah_beban) }}
                         </th>
+                        <input type="hidden" name="jumlah_laba_rugi"
+                          value="{{ $jumlah_pendapatan - ($total_hpp_sesungguhnya ?? 0) - $jumlah_beban }}"
+                          form="posting">
                       </tr>
                       @else
                       <tr>

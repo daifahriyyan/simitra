@@ -16,7 +16,16 @@ class RekapPenjualanController extends Controller
      */
     public function index()
     {
-        $rekapPenjualan = RekapPenjualan::get();
+        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+            $tanggalMulai = request()->tanggalMulai;
+            $tanggalAkhir = request()->tanggalAkhir;
+            $rekapPenjualan = RekapPenjualan::whereHas('invoice', function ($query) use ($tanggalMulai, $tanggalAkhir) {
+                $query->whereBetween('tanggal_invoice', [$tanggalMulai, $tanggalAkhir]);
+            })->get();
+        } else {
+            $rekapPenjualan = RekapPenjualan::get();
+        }
+
         if (request()->get('export') == 'pdf') {
             Pdf::setOption([
                 'enabled' => true,

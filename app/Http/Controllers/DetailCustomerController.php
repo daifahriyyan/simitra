@@ -15,8 +15,30 @@ class DetailCustomerController extends Controller
    */
   public function index()
   {
-    $detailCustomer = DetailCustomer::with('dataCustomer')->where('id', request()->get('id_customer'))->get()->first();
+    if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+      $tanggalMulai = request()->tanggalMulai;
+      $tanggalAkhir = request()->tanggalAkhir;
+      $detailCustomer = DetailCustomer::whereBetween('tanggal_input', [$tanggalMulai, $tanggalAkhir])->get();
+    } else {
+      $detailCustomer = DetailCustomer::get();
+    }
+
     if (request()->get('export') == 'pdf') {
+      Pdf::setOption([
+        'enabled' => true,
+        'isRemoteEnabled' => true,
+        'chroot' => realpath(''),
+        'isPhpEnabled' => true,
+        'isFontSubsettingEnabled' => true,
+        'pdfBackend' => 'CPDF',
+        'isHtml5ParserEnabled' => true
+      ]);
+      $pdf = Pdf::loadView('generate-pdf.tabel-detail-customer', ['detailCustomer' => $detailCustomer])->setPaper('a4');
+      return $pdf->stream('Daftar Detail Customer.pdf');
+    }
+
+    if (request()->get('export') == 'pdf') {
+      $detailCustomer = DetailCustomer::with('dataCustomer')->where('id', request()->get('id_customer'))->get()->first();
       Pdf::setOption([
         'enabled' => true,
         'isRemoteEnabled' => true,
@@ -37,9 +59,10 @@ class DetailCustomerController extends Controller
 
       return redirect()->route('Detail Customer');
     }
+
     return view('pages.penerimaan-jasa.detail-customer', [
       'title' => 'Detail Customer',
-      'records' => DetailCustomer::with('dataCustomer')->get(),
+      'records' => $detailCustomer,
       'id_detail_customer' => DetailCustomer::latest()->get()->first()->id ?? 1,
       'customers' => DataCustomer::all()
     ]);

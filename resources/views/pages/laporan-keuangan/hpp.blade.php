@@ -82,44 +82,45 @@
                     </div>
                     <!-- Tombol Filter Pilih BUlan dan Tahun dengan Icon -->
                     <div class="input-group">
-                      <label for="bulan" class="mb-0 mr-2">Bulan:</label>
-                      <select class="form-control-sm border-1" style="width: 120px; height: 30px;" id="bulan"
-                        onchange="filterData()">
-                        <option value="">Pilih Bulan</option>
-                        <option value="01">Januari</option>
-                        <option value="02">Februari</option>
-                        <option value="03">Maret</option>
-                        <option value="04">April</option>
-                        <option value="05">Mei</option>
-                        <option value="06">Juni</option>
-                        <option value="07">Juli</option>
-                        <option value="08">Agustus</option>
-                        <option value="09">September</option>
-                        <option value="10">Oktober</option>
-                        <option value="11">November</option>
-                        <option value="12">Desember</option>
-                      </select>
-                      <label for="tahun" class="mb-0 mr-2 ml-2">Tahun:</label>
-                      <select class="form-control-sm border-1" style="width: 120px; height: 30px;" id="tahun"
-                        onchange="filterData()">
-                        <option value="">Pilih Tahun</option>
-                        <option value="2021">2021</option>
-                        <option value="2022">2022</option>
-                        <option value="2023">2023</option>
-                        <option value="2024">2024</option>
-                        <option value="2025">2025</option>
-                      </select>
-                      <button type="button" class="btn btn-secondary btn-sm" style="width: 60px; height: 30px;"
-                        onclick="filterData()">
-                        Filter
-                      </button>
+                      <form action="{{ route('Harga Pokok Penjualan') }}">
+                        <label for="bulan" class="mb-0 mr-2">Bulan:</label>
+                        <select class="form-control-sm border-1" style="width: 120px; height: 30px;" id="bulan"
+                          name="bulan">
+                          <option>{{ $bulan[request()->bulan] ?? 'Pilih Bulan' }}</option>
+                          <option value="1">Januari</option>
+                          <option value="2">Februari</option>
+                          <option value="3">Maret</option>
+                          <option value="4">April</option>
+                          <option value="5">Mei</option>
+                          <option value="6">Juni</option>
+                          <option value="7">Juli</option>
+                          <option value="8">Agustus</option>
+                          <option value="9">September</option>
+                          <option value="10">Oktober</option>
+                          <option value="11">November</option>
+                          <option value="12">Desember</option>
+                        </select>
+                        <label for="tahun" class="mb-0 mr-2 ml-2">Tahun:</label>
+                        <select class="form-control-sm border-1" style="width: 120px; height: 30px;" id="tahun"
+                          name="tahun">
+                          <option>{{ request()->tahun ?? 'Pilih Tahun' }}</option>
+                          <option value="2021">2021</option>
+                          <option value="2022">2022</option>
+                          <option value="2023">2023</option>
+                          <option value="2024">2024</option>
+                          <option value="2025">2025</option>
+                        </select>
+                        <button type="submit" class="btn btn-secondary btn-sm" style="width: 60px; height: 30px;">
+                          Filter
+                        </button>
+                      </form>
                     </div>
                     <!-- Tombol Cetak Tabel dengan Icon -->
                     <div>
-                      <button type="button" class="btn btn-sm btn-warning" style="width: 60px; height: 30px;"
-                        onclick="cetakTabel()">
+                      <a href="{{ route('Harga Pokok Penjualan') }}?export=pdf{{ (request()->bulan)? '&bulan='.request()->bulan : '' }}{{ (request()->tahun)? '&tahun='.request()->tahun : '' }}"
+                        class="btn btn-sm btn-warning" style='width: 60px; height: 30px;'>
                         Cetak
-                      </button>
+                      </a>
                     </div>
                   </div>
 
@@ -171,25 +172,26 @@
                     <tbody>
                       @php
                       $total_hpp_sesungguhnya = 0;
-                      $total_hpp_sesungguhnya = $hpp->sum('bbb_standar') + $hpp->sum('btk_standar') +
-                      $hpp->sum('bop_standar');
+                      $total_hpp_sesungguhnya = $hppSesungguhnya->sum('bbb_sesungguhnya') +
+                      $hppSesungguhnya->sum('btk_sesungguhnya') +
+                      $hppSesungguhnya->sum('bop_sesungguhnya');
                       @endphp
                       <tr>
                         <th colspan="3">HPP SESUNGGUHNYA</th>
                       </tr>
                       <tr>
                         <td>Biaya Bahan Baku</td>
-                        <td>Rp. {{ number_format($hpp->sum('bbb_standar')) }}</td>
+                        <td>Rp. {{ number_format($hppSesungguhnya->sum('bbb_sesungguhnya')) }}</td>
                         <td></td>
                       </tr>
                       <tr>
                         <td>Biaya Tenaga Kerja</td>
-                        <td>Rp. {{ number_format($hpp->sum('btk_standar')) }}</td>
+                        <td>Rp. {{ number_format($hppSesungguhnya->sum('btk_sesungguhnya')) }}</td>
                         <td></td>
                       </tr>
                       <tr>
                         <td>Biaya Overhead Pabrik</td>
-                        <td>Rp. {{ number_format($hpp->sum('bop_standar')) }}</td>
+                        <td>Rp. {{ number_format($hppSesungguhnya->sum('bop_sesungguhnya')) }}</td>
                         <td></td>
                       </tr>
                       <tr>

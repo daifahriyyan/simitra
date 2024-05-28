@@ -60,7 +60,7 @@
                     </div>
                     <div class="mb-3">
                       <label for="jenis_at" class="form-label">Jenis Aset Tetap:</label>
-                      <select class="form-select" id="jenis_at" name="jenis_at" required>
+                      <select class="custom-select" id="jenis_at" name="jenis_at" required>
                         <option value="">Pilih Jenis Aset Tetap</option>
                         <option value="Tanah">Tanah</option>
                         <option value="Bangunan">Bangunan</option>
@@ -79,7 +79,7 @@
                     </div>
                     <div class="mb-3">
                       <label for="keberadaan_at" class="form-label">Keberadaan:</label>
-                      <select class="form-select" id="keberadaan_at" name="keberadaan_at" required>
+                      <select class="custom-select" id="keberadaan_at" name="keberadaan_at" required>
                         <option value="">Pilih Keberadaan Aset Tetap</option>
                         <option value="Kantor">Kantor</option>
                         <option value="Depo">Depo</option>
@@ -130,7 +130,7 @@
                     </div>
                     <div class="mb-3">
                       <label for="jenis_at" class="form-label">Jenis Aset Tetap:</label>
-                      <select class="form-select" id="jenis_at" name="jenis_at" required>
+                      <select class="custom-select" id="jenis_at" name="jenis_at" required>
                         <option value="{{ $record->jenis_at }}">{{ $record->jenis_at }}
                         <option value="Tanah">Tanah</option>
                         <option value="Bangunan">Bangunan</option>
@@ -151,7 +151,7 @@
                     </div>
                     <div class="mb-3">
                       <label for="keberadaan_at" class="form-label">Keberadaan:</label>
-                      <select class="form-select" id="keberadaan_at" name="keberadaan_at" required>
+                      <select class="custom-select" id="keberadaan_at" name="keberadaan_at" required>
                         <option value="{{ $record->keberadaan_at }}">{{ $record->keberadaan_at }}
                         <option value="Kantor">Kantor</option>
                         <option value="Depo">Depo</option>
@@ -231,24 +231,13 @@
             <div class="col-lg-12">
               <div class="card mb-4">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">Penggajian</h6> <!-- EDIT NAMA -->
+                  <h6 class="m-0 font-weight-bold text-primary">Aset Tetap</h6> <!-- EDIT NAMA -->
                   <div class="btn-group" role="group" aria-label="Basic mixed styles example">
                     <!-- Tombol Tambah dengan Icon -->
                     <div>
                       <button type="button" class="btn btn-sm btn-info" style='width: 70px; height: 30px;'
                         data-bs-toggle="modal" data-bs-target="#addModal">
                         Tambah
-                      </button>
-                    </div>
-                    <!-- Tombol Filter Tanggal dengan Icon -->
-                    <div class="input-group">
-                      <input type="date" class="form-control-sm border-1" id="tanggalMulai"
-                        aria-describedby="tanggalMulaiLabel">
-                      <input type="date" class="form-control-sm border-1" id="tanggalAkhir"
-                        aria-describedby="tanggalAkhirLabel">
-                      <button type="button" class="btn btn-secondary btn-sm" style='width: 60px; height: 30px;'
-                        onclick="filterTanggal()">
-                        Filter
                       </button>
                     </div>
                     <!-- Tombol Cetak Tabel dengan Icon -->
@@ -319,9 +308,9 @@
                           $tgl = explode( "-", date('Y-m-d H:i:s'));
                           $sisa_umur_ekonomis = ($record->tahun_perolehan + $record->umur_ekonomis) - intval($tgl[0])
                           @endphp
-                          @if ($sisa_umur_ekonomis <= 0) <span class='badge badge-success'>Tidak Aktif</span>
+                          @if ($sisa_umur_ekonomis <= 0) <span class='badge badge-danger'>Tidak Aktif</span>
                             @elseif($sisa_umur_ekonomis > 0)
-                            <span class='badge badge-danger'>Aktif</span>
+                            <span class='badge badge-success'>Aktif</span>
                             @endif
                         </td>
                         <td>

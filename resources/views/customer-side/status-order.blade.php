@@ -42,7 +42,19 @@
             "Less Container Load" }} ({{ $record->dataOrder->dataHarga->treatment }})
           </p>
           <p>Rp {{ number_format($record->dataOrder->dataHarga->harga_jual ) }}</p>
-          @if ($record->verifikasi == 2)
+          @if ($record->verifikasi == 1 && $record->is_reject == '1')
+          <form method="POST" action="{{ route('Update Order') }}" enctype="multipart/form-data">
+            @csrf
+            <label for="shipment_instruction" style="margin: -10px -10px" class="upload-btn"><a class="upload-btn"><i
+                  class="fas fa-cloud-upload-alt"></i>Shipment Instruction</a></label>
+            <input type="hidden" name="id_order" id="id_order" value="{{ $record->id }}">
+            <input type="file" name="shipment_instruction" id="shipment_instruction" required>
+            <label for="packing_list" style="margin: -10px -10px" class="upload-btn"><a class="upload-btn"><i
+                  class="fas fa-cloud-upload-alt"></i>Packing List</a></label>
+            <input type="file" name="packing_list" id="packing_list" required>
+            <button class="btn btn-primary" type="submit">Upload</button>
+          </form>
+          @elseif ($record->verifikasi == 2 && $record->is_reject != '1')
           <form method="POST" action="{{ route('Tambah Draft Pelayaran') }}" enctype="multipart/form-data">
             @csrf
             <label for="draft_pelayaran" class="upload-btn"><a class="upload-btn"><i
@@ -52,15 +64,15 @@
             <button class="btn btn-primary" type="submit">Upload</button>
           </form>
           @endif
-          @if ($record->verifikasi >= 4)
+          @if ($record->verifikasi >= 4 && $record->is_reject != '1')
           <a href="{{ route('Sertifikat') }}?export=pdf-detail&id={{ $record->sertif->id }}" target="_blank"
             class="download-btn"><i class="fas fa-cloud-download-alt"></i> Sertifikat</a>
           @endif
-          @if ($record->verifikasi >= 5)
+          @if ($record->verifikasi >= 5 && $record->is_reject != '1')
           <a href="{{ route('Invoice') }}?export=pdf-detail&id={{ $record->invoicee->id }}" target="_blank"
             class="download-btn"><i class="fas fa-cloud-download-alt"></i> Invoice</a>
           @endif
-          @if ($record->verifikasi == 5)
+          @if ($record->verifikasi == 5 && $record->is_reject != '1')
           <form method="POST" action="{{ route('Tambah Bukti Pembayaran') }}" enctype="multipart/form-data">
             @csrf
             <label for="bukti_pembayaran" class="upload-btn"><a class="upload-btn"><i
@@ -71,13 +83,27 @@
             <input type="file" name="bukti_pembayaran" id="bukti_pembayaran" required>
             <button class="btn btn-primary" type="submit">Upload</button>
           </form>
+          @elseif ($record->verifikasi == 6 && $record->is_reject == '1')
+          <form method="POST" action="{{ route('Tambah Bukti Pembayaran') }}" enctype="multipart/form-data">
+            @csrf
+            <label for="bukti_pembayaran" class="upload-btn"><a class="upload-btn"><i
+                  class="fas fa-cloud-upload-alt"></i>Bukti Pembayaran</a></label>
+            <input type="hidden" name="reject" id="reject" value="{{ $record->id }}">
+            <input type="hidden" name="tanggal_pembayaran" id="tanggal_pembayaran" value="{{ date('Y-m-d') }}">
+            <input type="file" name="bukti_pembayaran" id="bukti_pembayaran" required>
+            <button class="btn btn-primary" type="submit">Upload</button>
+          </form>
           @endif
         </div>
       </div>
       <div class="col-md-4">
         <div class="step-wrapper">
           <div class="step">
-            @if ($record->verifikasi >= 1)
+            @if ($record->verifikasi == 1 && $record->is_reject == '1')
+            ❌
+            @elseif ($record->verifikasi == 2 && $record->is_reject == '1')
+            ❌
+            @elseif($record->verifikasi >= 1)
             ✅
             @else
             <button class="step-btn">1</button>
@@ -85,7 +111,11 @@
             <p>Verifikasi dokumen order</p>
           </div>
           <div class="step">
-            @if ($record->verifikasi >= 1)
+            @if ($record->verifikasi == 1 && $record->is_reject == '1')
+            <button class="step-btn">2</button>
+            @elseif ($record->verifikasi == 2 && $record->is_reject == '1')
+            ❌
+            @elseif ($record->verifikasi >= 1)
             ✅
             @else
             <button class="step-btn">2</button>
@@ -93,7 +123,9 @@
             <p>Menunggu kedatangan kontainer</p>
           </div>
           <div class="step">
-            @if ($record->verifikasi >= 2)
+            @if ($record->verifikasi == 2 && $record->is_reject == '1')
+            ❌
+            @elseif ($record->verifikasi >= 2)
             ✅
             @else
             <button class="step-btn">3</button>
@@ -101,7 +133,9 @@
             <p>Verifikasi kelayakan kontainer</p>
           </div>
           <div class="step">
-            @if ($record->verifikasi >= 3)
+            @if ($record->verifikasi == 2 && $record->is_reject == '1')
+            ❌
+            @elseif ($record->verifikasi >= 3)
             ✅
             @else
             <button class="step-btn">4</button>
@@ -109,7 +143,9 @@
             <p>Proses fumigasi</p>
           </div>
           <div class="step">
-            @if ($record->verifikasi >= 3)
+            @if ($record->verifikasi == 2 && $record->is_reject == '1')
+            ❌
+            @elseif ($record->verifikasi >= 3)
             ✅
             @else
             <button class="step-btn">5</button>
@@ -117,7 +153,9 @@
             <p>Fumigasi selesai</p>
           </div>
           <div class="step">
-            @if ($record->verifikasi >= 3)
+            @if ($record->verifikasi == 2 && $record->is_reject == '1')
+            ❌
+            @elseif ($record->verifikasi >= 3)
             ✅
             @else
             <button class="step-btn">6</button>
@@ -125,7 +163,9 @@
             <p>Upload draft pelayaran</p>
           </div>
           <div class="step">
-            @if ($record->verifikasi >= 4)
+            @if ($record->verifikasi == 2 && $record->is_reject == '1')
+            ❌
+            @elseif ($record->verifikasi >= 4)
             ✅
             @else
             <button class="step-btn">7</button>
@@ -133,7 +173,9 @@
             <p>Sertifikat</p>
           </div>
           <div class="step">
-            @if ($record->verifikasi >= 5)
+            @if ($record->verifikasi == 2 && $record->is_reject == '1')
+            ❌
+            @elseif ($record->verifikasi >= 5)
             ✅
             @else
             <button class="step-btn">8</button>
@@ -141,7 +183,9 @@
             <p>Invoice</p>
           </div>
           <div class="step">
-            @if ($record->verifikasi >= 6)
+            @if ($record->verifikasi == 2 && $record->is_reject == '1')
+            ❌
+            @elseif ($record->verifikasi >= 6)
             ✅
             @else
             <button class="step-btn">9</button>
@@ -149,7 +193,11 @@
             <p>Bukti pembayaran</p>
           </div>
           <div class="step">
-            @if ($record->verifikasi >= 6)
+            @if ($record->verifikasi == 2 && $record->is_reject == '1')
+            ❌
+            @elseif ($record->verifikasi == 6 && $record->is_reject == '1')
+            ❌
+            @elseif ($record->verifikasi >= 6)
             ✅
             @else
             <button class="step-btn">10</button>
@@ -164,12 +212,18 @@
         <?php
         if ($record->verifikasi == 0){
           echo 'Sedang Diverifikasi';
+        } else if($record->verifikasi == 1 && $record->is_reject == '1'){
+          echo 'Lengkapi Dokumen';
         } else if($record->verifikasi == 1){
           echo 'Menunggu Kedatangan Kontainer';
+        }else if($record->verifikasi == 2 && $record->is_reject == '1'){
+          echo 'Proses Tidak Dapat Dilanjutkan';
         }else if($record->verifikasi == 2){
           echo 'Kontainer Telah Diverifikasi';
         }else if($record->verifikasi >= 3 && $record->verifikasi < 6){ 
           echo 'Proses Fumigasi Selesai' ; 
+        }else if($record->verifikasi == 6 && $record->is_reject == '1'){
+          echo 'Bukti Pembayaran Tidak Valid';
         }else if($record->verifikasi >= 6){
           echo 'Proses Selesai, Terima Kasih';
         }

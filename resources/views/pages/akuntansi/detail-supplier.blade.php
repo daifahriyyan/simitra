@@ -232,26 +232,23 @@
                       </button>
                     </div>
                     <!-- Tombol Filter Id Supplier dan Tanggal dengan Icon -->
-                    {{-- <div class="input-group">
-                      <label for="id_supplier" class="mb-0 mr-2">Id Supplier:</label>
-                      <select class="form-control-sm border-1" style="width: 100px; height: 30px;" id="id_supplier"
-                        onchange="filterData()">
-                        <option value="">Supplier</option>
-                        <?php echo $id_supplier_options; ?>
-                      </select>
-                      <input type="date" class="form-control-sm border-1" id="tanggalMulai"
-                        aria-describedby="tanggalMulaiLabel">
-                      <input type="date" class="form-control-sm border-1" id="tanggalAkhir"
-                        aria-describedby="tanggalAkhirLabel">
-                      <button type="button" class="btn btn-secondary btn-sm" style="width: 60px; height: 30px;"
-                        onclick="filterData()">
-                        Filter
-                      </button>
-                    </div> --}}
+                    <div class="input-group">
+                      <form action="{{ route('Detail Supplier') }}">
+                        <input type="date" class="form-control-sm border-1" id="tanggalMulai"
+                          value="{{ request()->tanggalMulai }}" name="tanggalMulai"
+                          aria-describedby="tanggalMulaiLabel">
+                        <input type="date" class="form-control-sm border-1" id="tanggalAkhir"
+                          value="{{ request()->tanggalAkhir }}" name="tanggalAkhir"
+                          aria-describedby="tanggalAkhirLabel">
+                        <button type="subnit" class="btn btn-secondary btn-sm" style="width: 60px; height: 30px;">
+                          Filter
+                        </button>
+                      </form>
+                    </div>
                     <!-- Tombol Cetak Tabel dengan Icon -->
                     <div>
-                      <a href="{{ route('Detail Supplier') }}?export=pdf" class="btn btn-sm btn-warning"
-                        style='width: 60px; height: 30px;'>
+                      <a href="{{ route('Detail Supplier') }}?export=pdf{{ (request()->tanggalMulai)? '&tanggalMulai='.request()->tanggalMulai : '' }}{{ (request()->tanggalAkhir)? '&tanggalAkhir='.request()->tanggalAkhir : '' }}"
+                        class="btn btn-sm btn-warning" style='width: 60px; height: 30px;'>
                         Cetak
                       </a>
                     </div>

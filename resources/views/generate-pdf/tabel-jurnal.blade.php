@@ -140,7 +140,7 @@
         </tr>
         @foreach ($jurnalUmum as $record)
         <tr>
-          <td>{{ $record->no_jurnal}}</td>
+          <td>{{ $record->jurnal->no_jurnal}}</td>
           <td>{{ $record->jurnal->tanggal_jurnal }}</td>
           <td>{{ $record->jurnal->no_bukti }}</td>
           <td>{{ $record->jurnal->uraian_jurnal }}</td>

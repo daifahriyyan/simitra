@@ -68,6 +68,7 @@ Route::middleware('auth')->group(function () {
 Route::get('/home', [HomeController::class, 'index'])->name('Home');
 Route::get('/contact', [HomeController::class, 'contact']);
 Route::post('/order', [HomeController::class, 'order'])->name('Order');
+Route::post('/update-order', [HomeController::class, 'updateOrder'])->name('Update Order');
 Route::get('/daftar-order', [HomeController::class, 'daftarOrder'])->name('Daftar Order');
 Route::get('/status-order/{id}', [HomeController::class, 'statusOrder'])->name('Status Order');
 
@@ -274,6 +275,8 @@ Route::get('/dashboard/laporan-keuangan/neraca-saldo', [LapKeuController::class,
 Route::get('/dashboard/laporan-keuangan/hpp', [LapKeuController::class, 'hpp'])->name('Harga Pokok Penjualan');
 Route::get('/dashboard/laporan-keuangan/laba-rugi', [LapKeuController::class, 'labaRugi'])->name('Laporan Laba Rugi');
 Route::get('/dashboard/laporan-keuangan/posisi-keuangan', [LapKeuController::class, 'posKeu'])->name('Posisi Keuangan');
+
+Route::post('/dashboard/laporan-keuangan/posting-laba-rugi', [LapKeuController::class, 'postingLabaRugi'])->name('Posting Laba Rugi');
 
 
 // Route::post('/dashboard/ajax-order', [DataOrderController::class, 'ajaxOrder'])->name('ajax-order');

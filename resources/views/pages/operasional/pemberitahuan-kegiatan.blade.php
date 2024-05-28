@@ -85,11 +85,11 @@
                     </div>
                     <div class="mb-3">
                       <label for="jam_mulai" class="form-label">Jam Mulai:</label>
-                      <input type="time" class="form-control" id="jam_mulai" name="jam_mulai" required>
+                      <input type="datetime" class="form-control" id="jam_mulai" name="jam_mulai" required>
                     </div>
                     <div class="mb-3">
                       <label for="jam_selesai" class="form-label">Jam Selesai:</label>
-                      <input type="time" class="form-control" id="jam_selesai" name="jam_selesai" required>
+                      <input type="datetime" class="form-control" id="jam_selesai" name="jam_selesai" required>
                     </div>
                     <div class="mb-3">
                       <label for="keterangan" class="form-label">Keterangan:</label>
@@ -133,12 +133,12 @@
                     </div>
                     <div class="mb-3">
                       <label for="jam_mulai" class="form-label">Jam Mulai:</label>
-                      <input type="time" class="form-control" id="jam_mulai" name="jam_mulai"
+                      <input type="datetime" class="form-control" id="jam_mulai" name="jam_mulai"
                         value="{{ $record->jam_mulai }}" required>
                     </div>
                     <div class="mb-3">
                       <label for="jam_selesai" class="form-label">Jam Selesai:</label>
-                      <input type="time" class="form-control" id="jam_selesai" name="jam_selesai"
+                      <input type="datetime" class="form-control" id="jam_selesai" name="jam_selesai"
                         value="{{ $record->jam_selesai }}" required>
                     </div>
                     <div class="mb-3">

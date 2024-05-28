@@ -77,7 +77,7 @@
               <label for="id_order" class="form-label">ID Order:</label>
               {{-- <input type="number" class="form-control" id="id_order" name="id_order" required> --}}
               <select class="form-control form-select-lg" name="id_order" id="id_order">
-                <option value="{{ $record->id_order }}">{{ $record->dataOrder->id_order }}</option>
+                <option value="{{ $record->id_order }}">{{ $record->detailOrder->id_order }}</option>
                 @foreach ($dataOrder as $item)
                 <option value="{{ $item->id }}">{{ $item->id_order }}</option>
                 @endforeach
@@ -148,18 +148,21 @@
             </button>
             <!-- Tombol Filter Tanggal dengan Icon -->
             <div class="input-group">
-              <input type="date" class="form-control-sm border-0" id="tanggalMulai"
-                aria-describedby="tanggalMulaiLabel">
-              <input type="date" class="form-control-sm border-0" id="tanggalAkhir"
-                aria-describedby="tanggalAkhirLabel">
-              <button type="button" class="btn btn-secondary btn-sm" onclick="filterTanggal()">
-                Filter
-              </button>
+              <form action="{{ route('Bukti Pembayaran') }}">
+                <input type="date" class="form-control-sm border-1" id="tanggalMulai"
+                  value="{{ request()->tanggalMulai }}" name="tanggalMulai" aria-describedby="tanggalMulaiLabel">
+                <input type="date" class="form-control-sm border-1" id="tanggalAkhir"
+                  value="{{ request()->tanggalAkhir }}" name="tanggalAkhir" aria-describedby="tanggalAkhirLabel">
+                <button type="subnit" class="btn btn-secondary btn-sm" style="width: 60px; height: 30px;">
+                  Filter
+                </button>
+              </form>
             </div>
             <!-- Tombol Cetak Tabel dengan Icon -->
-            <button type="button" class="btn btn-sm btn-warning" onclick="cetakTabel()">
+            <a href="{{ route('Bukti Pembayaran') }}?export=pdf{{ (request()->tanggalMulai)? '&tanggalMulai='.request()->tanggalMulai : '' }}{{ (request()->tanggalAkhir)? '&tanggalAkhir='.request()->tanggalAkhir : '' }}"
+              class="btn btn-sm btn-warning">
               Cetak
-            </button>
+            </a>
           </div>
 
           <!-- Skrip JavaScript untuk Filter Tanggal dan Cetak Tabel -->
@@ -199,10 +202,21 @@
             <tbody>
               @foreach ($records as $record)
               <tr>
-                <td>{{ $record->dataOrder->id_order }}</td>
+                <td>{{ $record->detailOrder->dataOrder->id_order }}</td>
                 <td>{{ $record->tanggal_pembayaran }}</td>
-                <td>{{ $record->bukti_pembayaran }}</td>
-                <td><span class='badge badge-danger'>Process</span></td>
+                <td>
+                  <a href='{{ asset("storage/bukti_pembayaran/$record->bukti_pembayaran") }}' target="_blank">{{
+                    $record->bukti_pembayaran }}</a>
+                </td>
+                <td>
+                  <?php
+                    if($record->detailOrder->verifikasi < 6){ 
+                      echo '<span class="badge-pill badge-info">Process' ; 
+                    }else if($record->detailOrder->verifikasi >= 6){
+                      echo '<span class="badge-pill badge-success">Done';
+                    }
+                    ?>
+                </td>
                 <td>
                   {{-- <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
                     data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>

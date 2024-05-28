@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use Throwable;
 use App\Models\DataOrder;
+use App\Models\DetailOrder;
 use Illuminate\Http\Request;
 use App\Models\CeklistFumigasi;
-use App\Models\DetailOrder;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 
 class CeklistFumigasiController extends Controller
@@ -16,9 +17,31 @@ class CeklistFumigasiController extends Controller
      */
     public function index()
     {
+        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+            $tanggalMulai = request()->tanggalMulai;
+            $tanggalAkhir = request()->tanggalAkhir;
+            $ceklistFumigasi = CeklistFumigasi::whereBetween('tanggal_order', [$tanggalMulai, $tanggalAkhir])->get();
+        } else {
+            $ceklistFumigasi = CeklistFumigasi::get();
+        }
+
+        if (request()->get('export') == 'pdf') {
+            Pdf::setOption([
+                'enabled' => true,
+                'isRemoteEnabled' => true,
+                'chroot' => realpath(''),
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'pdfBackend' => 'CPDF',
+                'isHtml5ParserEnabled' => true
+            ]);
+            $pdf = Pdf::loadView('generate-pdf.tabel-ceklist-fumigasi', ['ceklistFumigasi' => $ceklistFumigasi])->setPaper('a4');
+            return $pdf->stream('Daftar Ceklist Fumigasi.pdf');
+        }
+
         return view('pages.operasional.ceklist-fumigasi', [
             'title' => 'Ceklist Fumigasi',
-            'ceklist' => CeklistFumigasi::get(),
+            'ceklist' => $ceklistFumigasi,
             'dataOrder' => DetailOrder::get()
         ]);
     }
