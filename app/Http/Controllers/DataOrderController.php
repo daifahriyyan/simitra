@@ -9,6 +9,7 @@ use App\Models\DetailOrder;
 use App\Models\DataCustomer;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 
 class DataOrderController extends Controller
 {
@@ -17,61 +18,69 @@ class DataOrderController extends Controller
      */
     public function index()
     {
-        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
-            $tanggalMulai = request()->tanggalMulai;
-            $tanggalAkhir = request()->tanggalAkhir;
-            $detailOrder = DetailOrder::whereHas('dataOrder', function ($query) use ($tanggalMulai, $tanggalAkhir) {
-                $query->whereBetween('tanggal_order', [$tanggalMulai, $tanggalAkhir]);
-            })->get();
+        if (Auth::user()->posisi == null) {
+          return redirect()->route('Home');
+
+        } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Administrasi') {
+            if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+                $tanggalMulai = request()->tanggalMulai;
+                $tanggalAkhir = request()->tanggalAkhir;
+                $detailOrder = DetailOrder::whereHas('dataOrder', function ($query) use ($tanggalMulai, $tanggalAkhir) {
+                    $query->whereBetween('tanggal_order', [$tanggalMulai, $tanggalAkhir]);
+                })->get();
+            } else {
+                $detailOrder = DetailOrder::get();
+            }
+    
+            if (request()->get('export') == 'pdf') {
+                Pdf::setOption([
+                    'enabled' => true,
+                    'isRemoteEnabled' => true,
+                    'chroot' => realpath(''),
+                    'isPhpEnabled' => true,
+                    'isFontSubsettingEnabled' => true,
+                    'pdfBackend' => 'CPDF',
+                    'isHtml5ParserEnabled' => true
+                ]);
+                $pdf = Pdf::loadView('generate-pdf.tabel-order', ['detailOrder' => $detailOrder])->setPaper('a4');
+                return $pdf->stream('Daftar Order.pdf');
+            } else if (request()->get('export') == 'pdf-detail') {
+                $detail = DetailOrder::where('id_detailorder', request()->id_detailorder)->get()->first();
+                Pdf::setOption([
+                    'enabled' => true,
+                    'isRemoteEnabled' => true,
+                    'chroot' => realpath(''),
+                    'isPhpEnabled' => true,
+                    'isFontSubsettingEnabled' => true,
+                    'pdfBackend' => 'CPDF',
+                    'isHtml5ParserEnabled' => true
+                ]);
+                $pdf = Pdf::loadView('generate-pdf.request-order', ['detail' => $detail])->setPaper('a4');
+                return $pdf->stream('Request Order.pdf');
+            }
+    
+            if (request()->get('verif') !== null) {
+                DetailOrder::where('id', request()->get('verif'))->update([
+                    'verifikasi' => 1
+                ]);
+            }
+            if (request()->get('reject') !== null) {
+                DetailOrder::where('id', request()->get('reject'))->update([
+                    'is_reject' => '1'
+                ]);
+            }
+    
+            return view('pages.penerimaan-jasa.order', [
+                'title' => 'Data Order',
+                'dataCustomers' => DataCustomer::all(),
+                'hargaJasa' => DataHargar::all(),
+                'dataOrder' => DataOrder::with('dataCustomer')->get(),
+                'detailOrder' => $detailOrder
+            ]);
+
         } else {
-            $detailOrder = DetailOrder::get();
+            return redirect()->route('Dashboard');
         }
-
-        if (request()->get('export') == 'pdf') {
-            Pdf::setOption([
-                'enabled' => true,
-                'isRemoteEnabled' => true,
-                'chroot' => realpath(''),
-                'isPhpEnabled' => true,
-                'isFontSubsettingEnabled' => true,
-                'pdfBackend' => 'CPDF',
-                'isHtml5ParserEnabled' => true
-            ]);
-            $pdf = Pdf::loadView('generate-pdf.tabel-order', ['detailOrder' => $detailOrder])->setPaper('a4');
-            return $pdf->stream('Daftar Order.pdf');
-        } else if (request()->get('export') == 'pdf-detail') {
-            $detail = DetailOrder::where('id_detailorder', request()->id_detailorder)->get()->first();
-            Pdf::setOption([
-                'enabled' => true,
-                'isRemoteEnabled' => true,
-                'chroot' => realpath(''),
-                'isPhpEnabled' => true,
-                'isFontSubsettingEnabled' => true,
-                'pdfBackend' => 'CPDF',
-                'isHtml5ParserEnabled' => true
-            ]);
-            $pdf = Pdf::loadView('generate-pdf.request-order', ['detail' => $detail])->setPaper('a4');
-            return $pdf->stream('Request Order.pdf');
-        }
-
-        if (request()->get('verif') !== null) {
-            DetailOrder::where('id', request()->get('verif'))->update([
-                'verifikasi' => 1
-            ]);
-        }
-        if (request()->get('reject') !== null) {
-            DetailOrder::where('id', request()->get('reject'))->update([
-                'is_reject' => '1'
-            ]);
-        }
-
-        return view('pages.penerimaan-jasa.order', [
-            'title' => 'Data Order',
-            'dataCustomers' => DataCustomer::all(),
-            'hargaJasa' => DataHargar::all(),
-            'dataOrder' => DataOrder::with('dataCustomer')->get(),
-            'detailOrder' => $detailOrder
-        ]);
     }
 
     /**

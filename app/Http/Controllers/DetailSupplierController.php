@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Models\DetailSupplier;
 use App\Models\KeuDetailJurnal;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 
 class DetailSupplierController extends Controller
 {
@@ -18,53 +19,60 @@ class DetailSupplierController extends Controller
      */
     public function index()
     {
+        if (Auth::user()->posisi == null) {
+          return redirect()->route('Home');
+          
+        } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Keuangan') {
+            if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+                $detailSupplier = DetailSupplier::whereBetween('tanggal_input', [request()->tanggalMulai, request()->tanggalAkhir])->get();
+            } else {
+                $detailSupplier = DetailSupplier::get();
+            }
+    
+            if (request()->get('export') == 'pdf') {
+                Pdf::setOption([
+                    'enabled' => true,
+                    'isRemoteEnabled' => true,
+                    'chroot' => realpath(''),
+                    'isPhpEnabled' => true,
+                    'isFontSubsettingEnabled' => true,
+                    'pdfBackend' => 'CPDF',
+                    'isHtml5ParserEnabled' => true
+                ]);
+                $pdf = Pdf::loadView('generate-pdf.tabel-detail-supplier', ['detailSupplier' => $detailSupplier])->setPaper('a4');
+                return $pdf->stream('Daftar Detail Supplier.pdf');
+            } else if (request()->get('export') == 'pdf-detail') {
+                $detail = DetailSupplier::where('id', request()->id)->get()->first();
+                Pdf::setOption([
+                    'enabled' => true,
+                    'isRemoteEnabled' => true,
+                    'chroot' => realpath(''),
+                    'isPhpEnabled' => true,
+                    'isFontSubsettingEnabled' => true,
+                    'pdfBackend' => 'CPDF',
+                    'isHtml5ParserEnabled' => true
+                ]);
+                $pdf = Pdf::loadView('generate-pdf.baris-detail-supplier', ['detail' => $detail])->setPaper('a4');
+                return $pdf->stream('Detail Supplier.pdf');
+            }
+            if (request()->get('status') == 'Lunas') {
+                DetailSupplier::where('id', request()->get('id'))->update([
+                    'status' => request()->get('status')
+                ]);
+    
+                return redirect()->route('Detail Supplier');
+            }
+            $tgl = date("Y-m-d");
+            // dd(date('Y-m-d', strtotime('+6 days', strtotime($tgl))));
+            return view('pages.akuntansi.detail-supplier', [
+                'detailSupplier' => $detailSupplier,
+                'id_DS' => DetailSupplier::latest()->get()->first()->id ?? 1,
+                'keuSupplier' => KeuSupplier::get()
+            ]);
 
-        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
-            $detailSupplier = DetailSupplier::whereBetween('tanggal_input', [request()->tanggalMulai, request()->tanggalAkhir])->get();
         } else {
-            $detailSupplier = DetailSupplier::get();
+          return redirect()->route('Dashboard');
         }
-
-        if (request()->get('export') == 'pdf') {
-            Pdf::setOption([
-                'enabled' => true,
-                'isRemoteEnabled' => true,
-                'chroot' => realpath(''),
-                'isPhpEnabled' => true,
-                'isFontSubsettingEnabled' => true,
-                'pdfBackend' => 'CPDF',
-                'isHtml5ParserEnabled' => true
-            ]);
-            $pdf = Pdf::loadView('generate-pdf.tabel-detail-supplier', ['detailSupplier' => $detailSupplier])->setPaper('a4');
-            return $pdf->stream('Daftar Detail Supplier.pdf');
-        } else if (request()->get('export') == 'pdf-detail') {
-            $detail = DetailSupplier::where('id', request()->id)->get()->first();
-            Pdf::setOption([
-                'enabled' => true,
-                'isRemoteEnabled' => true,
-                'chroot' => realpath(''),
-                'isPhpEnabled' => true,
-                'isFontSubsettingEnabled' => true,
-                'pdfBackend' => 'CPDF',
-                'isHtml5ParserEnabled' => true
-            ]);
-            $pdf = Pdf::loadView('generate-pdf.baris-detail-supplier', ['detail' => $detail])->setPaper('a4');
-            return $pdf->stream('Detail Supplier.pdf');
-        }
-        if (request()->get('status') == 'Lunas') {
-            DetailSupplier::where('id', request()->get('id'))->update([
-                'status' => request()->get('status')
-            ]);
-
-            return redirect()->route('Detail Supplier');
-        }
-        $tgl = date("Y-m-d");
-        // dd(date('Y-m-d', strtotime('+6 days', strtotime($tgl))));
-        return view('pages.akuntansi.detail-supplier', [
-            'detailSupplier' => $detailSupplier,
-            'id_DS' => DetailSupplier::latest()->get()->first()->id ?? 1,
-            'keuSupplier' => KeuSupplier::get()
-        ]);
     }
 
     /**

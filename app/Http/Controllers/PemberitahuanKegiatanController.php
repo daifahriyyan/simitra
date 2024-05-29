@@ -8,6 +8,7 @@ use App\Models\DetailOrder;
 use Illuminate\Http\Request;
 use App\Models\Pemberitahuan;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 
 class PemberitahuanKegiatanController extends Controller
 {
@@ -16,50 +17,57 @@ class PemberitahuanKegiatanController extends Controller
      */
     public function index()
     {
+        if (Auth::user()->posisi == null) {
+          return redirect()->route('Home');
+          
+        } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Operasional') {
+            if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+                $pemberitahuanKegiatan = Pemberitahuan::whereBetween('jam_mulai', [request()->tanggalMulai, request()->tanggalAkhir])->orWhereBetween('jam_selesai', [request()->tanggalMulai, request()->tanggalAkhir])->get();
+            } else {
+                $pemberitahuanKegiatan = Pemberitahuan::get();
+            }
+    
+            if (request()->get('export') == 'pdf') {
+                Pdf::setOption([
+                    'enabled' => true,
+                    'isRemoteEnabled' => true,
+                    'chroot' => realpath(''),
+                    'isPhpEnabled' => true,
+                    'isFontSubsettingEnabled' => true,
+                    'pdfBackend' => 'CPDF',
+                    'isHtml5ParserEnabled' => true
+                ]);
+                $pdf = Pdf::loadView('generate-pdf.tabel_pemberitahuan_kegiatan', ['pemberitahuanKegiatan' => $pemberitahuanKegiatan])->setPaper('a4');
+                return $pdf->stream('Daftar Pemberitahuan Kegiatan.pdf');
+            } else if (request()->get('export') == 'pdf-detail') {
+                $formPemberitahuan = Pemberitahuan::where('id', request()->id)->get()->first();
+                Pdf::setOption([
+                    'enabled' => true,
+                    'isRemoteEnabled' => true,
+                    'chroot' => realpath(''),
+                    'isPhpEnabled' => true,
+                    'isFontSubsettingEnabled' => true,
+                    'pdfBackend' => 'CPDF',
+                    'isHtml5ParserEnabled' => true
+                ]);
+                $pdf = Pdf::loadView('generate-pdf.baris_pemberitahuan_kegiatan', ['formPemberitahuan' => $formPemberitahuan])->setPaper('a4');
+                return $pdf->stream('Formulir Pemberitahuan.pdf');
+            }
+    
+            if (request()->get('verif') !== null) {
+                DetailOrder::where('id', request()->get('verif'))->update([
+                    'verifikasi' => 3
+                ]);
+            }
+    
+            return view('pages.operasional.pemberitahuan-kegiatan', [
+                'pemberitahuanKegiatan' => $pemberitahuanKegiatan,
+                'dataOrder' => DetailOrder::get(),
+            ]);
 
-        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
-            $pemberitahuanKegiatan = Pemberitahuan::whereBetween('jam_mulai', [request()->tanggalMulai, request()->tanggalAkhir])->orWhereBetween('jam_selesai', [request()->tanggalMulai, request()->tanggalAkhir])->get();
         } else {
-            $pemberitahuanKegiatan = Pemberitahuan::get();
+          return redirect()->route('Dashboard');
         }
-
-        if (request()->get('export') == 'pdf') {
-            Pdf::setOption([
-                'enabled' => true,
-                'isRemoteEnabled' => true,
-                'chroot' => realpath(''),
-                'isPhpEnabled' => true,
-                'isFontSubsettingEnabled' => true,
-                'pdfBackend' => 'CPDF',
-                'isHtml5ParserEnabled' => true
-            ]);
-            $pdf = Pdf::loadView('generate-pdf.tabel_pemberitahuan_kegiatan', ['pemberitahuanKegiatan' => $pemberitahuanKegiatan])->setPaper('a4');
-            return $pdf->stream('Daftar Pemberitahuan Kegiatan.pdf');
-        } else if (request()->get('export') == 'pdf-detail') {
-            $formPemberitahuan = Pemberitahuan::where('id', request()->id)->get()->first();
-            Pdf::setOption([
-                'enabled' => true,
-                'isRemoteEnabled' => true,
-                'chroot' => realpath(''),
-                'isPhpEnabled' => true,
-                'isFontSubsettingEnabled' => true,
-                'pdfBackend' => 'CPDF',
-                'isHtml5ParserEnabled' => true
-            ]);
-            $pdf = Pdf::loadView('generate-pdf.baris_pemberitahuan_kegiatan', ['formPemberitahuan' => $formPemberitahuan])->setPaper('a4');
-            return $pdf->stream('Formulir Pemberitahuan.pdf');
-        }
-
-        if (request()->get('verif') !== null) {
-            DetailOrder::where('id', request()->get('verif'))->update([
-                'verifikasi' => 3
-            ]);
-        }
-
-        return view('pages.operasional.pemberitahuan-kegiatan', [
-            'pemberitahuanKegiatan' => $pemberitahuanKegiatan,
-            'dataOrder' => DetailOrder::get(),
-        ]);
     }
 
     /**

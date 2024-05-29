@@ -30,6 +30,7 @@
       </div>
     </div>
   </li>
+  @if (Auth::user()->posisi == 'Administrasi' || Auth::user()->posisi == 'Direktur')
   <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseForm" aria-expanded="true"
       aria-controls="collapseForm">
@@ -52,6 +53,8 @@
       </div>
     </div>
   </li>
+  @endif
+  @if (Auth::user()->posisi == 'Operasional' || Auth::user()->posisi == 'Direktur')
   <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOperasional"
       aria-expanded="true" aria-controls="collapseOperasional">
@@ -75,6 +78,8 @@
       </div>
     </div>
   </li>
+  @endif
+  @if (Auth::user()->posisi == 'Keuangan' || Auth::user()->posisi == 'Direktur')
   <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMoney" aria-expanded="true"
       aria-controls="collapseMoney">
@@ -115,7 +120,9 @@
       </div>
     </div>
   </li>
+  @endif
   <hr class="sidebar-divider">
+  @if (Auth::user()->posisi == 'Direktur')
   <li class="nav-item">
     <a class="nav-link" href="{{ route('Daftar User') }}">
       <i class="fas fa-user-plus"></i>
@@ -128,6 +135,7 @@
       <span>User Logs</span>
     </a>
   </li>
+  @endif
   <li class="nav-item">
     <a class="nav-link" href="javascript:void(0);" data-toggle="modal" data-target="#logoutModal">
       <i class="fas fa-sign-out-alt"></i>
@@ -135,3 +143,27 @@
     </a>
   </li>
 </ul>
+
+<!-- Modal Konfirmasi Logout -->
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="logoutModalLabel">Konfirmasi Logout</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Apakah Anda Yakin Ingin Keluar dari Sistem?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <form action="{{ route('Logout') }}" method="post">
+          @csrf
+          <button type="submit" class="btn btn-primary"><a>Logout</a></button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

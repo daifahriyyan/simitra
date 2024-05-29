@@ -6,6 +6,7 @@ use Throwable;
 use App\Models\PemakaianMb;
 use Illuminate\Http\Request;
 use App\Models\DataPersediaan;
+use Illuminate\Support\Facades\Auth;
 
 class PemakaianMethylController extends Controller
 {
@@ -14,10 +15,18 @@ class PemakaianMethylController extends Controller
      */
     public function index()
     {
-        return view('pages.operasional.pemakaian-methyl', [
-            'pemakaianMethyl' => PemakaianMb::get(),
-            'dataPersediaan' => DataPersediaan::get(),
-        ]);
+        if (Auth::user()->posisi == null) {
+          return redirect()->route('Home');
+          
+        } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Operasional') {
+            return view('pages.operasional.pemakaian-methyl', [
+                'pemakaianMethyl' => PemakaianMb::get(),
+                'dataPersediaan' => DataPersediaan::get(),
+            ]);
+
+        } else {
+          return redirect()->route('Dashboard');
+        }
     }
 
     /**

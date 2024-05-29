@@ -17,13 +17,17 @@
 						<ul>
 							<li><a href="/home">Home</a></li>
 							<li><a href="/contact">Contact</a></li>
+							@auth
 							<li><a href="/daftar-order">Order</a></li>
+							@endauth
 							<li>
 								<div class="header-icons">
 							<li><a class="account" href="{{ route('Profile') }}"><i class="fas fa-user"></i></a>
 								<ul class="sub-menu">
+									@guest
 									<li><a href="{{ route('Register') }}">Register</a></li>
 									<li><a href="{{ route('Login') }}">Login</a></li>
+									@endguest
 									<form action="{{ route('Logout') }}" method="post">
 										@csrf
 										<li><button type="submit" class="bg-transparent border-0 p-0"><a>Logout</a></button></li>

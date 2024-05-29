@@ -10,6 +10,7 @@ use App\Models\DataImporter;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\MetilRecordsheet;
+use Illuminate\Support\Facades\Auth;
 
 class SertifikatController extends Controller
 {
@@ -18,52 +19,60 @@ class SertifikatController extends Controller
    */
   public function index()
   {
-    if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
-      $tanggalMulai = request()->tanggalMulai;
-      $tanggalAkhir = request()->tanggalAkhir;
-      $sertifikat = Sertifikat::whereBetween('tanggal_sertif', [$tanggalMulai, $tanggalAkhir])->get();
+    if (Auth::user()->posisi == null) {
+      return redirect()->route('Home');
+      
+    } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Administrasi') {
+      if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+        $tanggalMulai = request()->tanggalMulai;
+        $tanggalAkhir = request()->tanggalAkhir;
+        $sertifikat = Sertifikat::whereBetween('tanggal_sertif', [$tanggalMulai, $tanggalAkhir])->get();
+      } else {
+        $sertifikat = Sertifikat::get();
+      }
+  
+      if (request()->get('export') == 'pdf') {
+        Pdf::setOption([
+          'enabled' => true,
+          'isRemoteEnabled' => true,
+          'chroot' => realpath(''),
+          'isPhpEnabled' => true,
+          'isFontSubsettingEnabled' => true,
+          'pdfBackend' => 'CPDF',
+          'isHtml5ParserEnabled' => true
+        ]);
+        $pdf = Pdf::loadView('generate-pdf.tabel-sertifikat', ['sertifikat' => $sertifikat])->setPaper('a4', 'landscape');
+        return $pdf->stream('Daftar Sertifikat.pdf');
+      } else if (request()->get('export') == 'pdf-detail') {
+        $detail = DetailOrder::where('id_detailorder', request()->id_detailorder)->get()->first();
+        Pdf::setOption([
+          'enabled' => true,
+          'isRemoteEnabled' => true,
+          'chroot' => realpath(''),
+          'isPhpEnabled' => true,
+          'isFontSubsettingEnabled' => true,
+          'pdfBackend' => 'CPDF',
+          'isHtml5ParserEnabled' => true
+        ]);
+        $pdf = Pdf::loadView('generate-pdf.request-order', ['detail' => $detail])->setPaper('a4');
+        return $pdf->stream('Request Order.pdf');
+      }
+  
+      if (request()->get('verif') !== null) {
+        DetailOrder::where('id', request()->get('verif'))->update([
+          'verifikasi' => 4
+        ]);
+      }
+      return view('pages.penerimaan-jasa.sertifikat', [
+        'sertifikat' => $sertifikat,
+        'dataOrder' => DetailOrder::get(),
+        'dataImporter' => DataImporter::get(),
+        'metilRecordsheet' => MetilRecordsheet::get(),
+      ]);
+
     } else {
-      $sertifikat = Sertifikat::get();
+      return redirect()->route('Dashboard');
     }
-
-    if (request()->get('export') == 'pdf') {
-      Pdf::setOption([
-        'enabled' => true,
-        'isRemoteEnabled' => true,
-        'chroot' => realpath(''),
-        'isPhpEnabled' => true,
-        'isFontSubsettingEnabled' => true,
-        'pdfBackend' => 'CPDF',
-        'isHtml5ParserEnabled' => true
-      ]);
-      $pdf = Pdf::loadView('generate-pdf.tabel-sertifikat', ['sertifikat' => $sertifikat])->setPaper('a4', 'landscape');
-      return $pdf->stream('Daftar Sertifikat.pdf');
-    } else if (request()->get('export') == 'pdf-detail') {
-      $detail = DetailOrder::where('id_detailorder', request()->id_detailorder)->get()->first();
-      Pdf::setOption([
-        'enabled' => true,
-        'isRemoteEnabled' => true,
-        'chroot' => realpath(''),
-        'isPhpEnabled' => true,
-        'isFontSubsettingEnabled' => true,
-        'pdfBackend' => 'CPDF',
-        'isHtml5ParserEnabled' => true
-      ]);
-      $pdf = Pdf::loadView('generate-pdf.request-order', ['detail' => $detail])->setPaper('a4');
-      return $pdf->stream('Request Order.pdf');
-    }
-
-    if (request()->get('verif') !== null) {
-      DetailOrder::where('id', request()->get('verif'))->update([
-        'verifikasi' => 4
-      ]);
-    }
-    return view('pages.penerimaan-jasa.sertifikat', [
-      'sertifikat' => $sertifikat,
-      'dataOrder' => DetailOrder::get(),
-      'dataImporter' => DataImporter::get(),
-      'metilRecordsheet' => MetilRecordsheet::get(),
-    ]);
   }
 
   /**

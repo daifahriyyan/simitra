@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DataPegawai;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 
 class PegawaiController extends Controller
 {
@@ -13,25 +14,29 @@ class PegawaiController extends Controller
      */
     public function index()
     {
-        $dataPegawai = DataPegawai::get();
-        if (request()->get('export') == 'pdf') {
-            Pdf::setOption([
-                'enabled' => true,
-                'isRemoteEnabled' => true,
-                'chroot' => realpath(''),
-                'isPhpEnabled' => true,
-                'isFontSubsettingEnabled' => true,
-                'pdfBackend' => 'CPDF',
-                'isHtml5ParserEnabled' => true
+        if (Auth::user()->posisi == null) {
+            return redirect()->route('Home');
+        } else {
+            $dataPegawai = DataPegawai::get();
+            if (request()->get('export') == 'pdf') {
+                Pdf::setOption([
+                    'enabled' => true,
+                    'isRemoteEnabled' => true,
+                    'chroot' => realpath(''),
+                    'isPhpEnabled' => true,
+                    'isFontSubsettingEnabled' => true,
+                    'pdfBackend' => 'CPDF',
+                    'isHtml5ParserEnabled' => true
+                ]);
+                $pdf = Pdf::loadView('generate-pdf.tabel-pegawai', ['dataPegawai' => $dataPegawai])->setPaper('a4');
+                return $pdf->stream('Daftar Pegawai.pdf');
+            }
+    
+            return view('pages.master.pegawai', [
+                'title' => 'Data Pegawai',
+                'records' => $dataPegawai
             ]);
-            $pdf = Pdf::loadView('generate-pdf.tabel-pegawai', ['dataPegawai' => $dataPegawai])->setPaper('a4');
-            return $pdf->stream('Daftar Pegawai.pdf');
         }
-
-        return view('pages.master.pegawai', [
-            'title' => 'Data Pegawai',
-            'records' => $dataPegawai
-        ]);
     }
 
     /**

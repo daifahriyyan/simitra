@@ -6,6 +6,7 @@ use App\Models\DataOrder;
 use App\Models\DetailOrder;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 use App\Models\DataCustomer as ModelsDataCustomer;
 
 class DataCustomerController extends Controller
@@ -15,27 +16,36 @@ class DataCustomerController extends Controller
    */
   public function index()
   {
-    $dataCustomer = ModelsDataCustomer::all();
-    $detailOrder = DetailOrder::get();
+    
+    if (Auth::user()->posisi == null) {
+      return redirect()->route('Home');
 
-    if (request()->get('export') == 'pdf') {
-      Pdf::setOption([
-        'enabled' => true,
-        'isRemoteEnabled' => true,
-        'chroot' => realpath(''),
-        'isPhpEnabled' => true,
-        'isFontSubsettingEnabled' => true,
-        'pdfBackend' => 'CPDF',
-        'isHtml5ParserEnabled' => true
+    } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Administrasi') {
+      $dataCustomer = ModelsDataCustomer::all();
+      $detailOrder = DetailOrder::get();
+  
+      if (request()->get('export') == 'pdf') {
+        Pdf::setOption([
+          'enabled' => true,
+          'isRemoteEnabled' => true,
+          'chroot' => realpath(''),
+          'isPhpEnabled' => true,
+          'isFontSubsettingEnabled' => true,
+          'pdfBackend' => 'CPDF',
+          'isHtml5ParserEnabled' => true
+        ]);
+        $pdf = Pdf::loadView('generate-pdf.tabel-customer', ['records' => $dataCustomer])->setPaper('a4');
+        return $pdf->stream('Daftar CUstomer.pdf');
+      }
+  
+      return view('pages.penerimaan-jasa.customer', [
+        'title' => 'Data Customer',
+        'records' => $dataCustomer
       ]);
-      $pdf = Pdf::loadView('generate-pdf.tabel-customer', ['records' => $dataCustomer])->setPaper('a4');
-      return $pdf->stream('Daftar CUstomer.pdf');
+      
+    } else {
+      return redirect()->route('Dashboard');
     }
-
-    return view('pages.penerimaan-jasa.customer', [
-      'title' => 'Data Customer',
-      'records' => $dataCustomer
-    ]);
   }
 
   /**

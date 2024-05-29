@@ -8,6 +8,7 @@ use App\Models\DataOrder;
 use Illuminate\Http\Request;
 use App\Models\RekapPenjualan;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 
 class RekapPenjualanController extends Controller
 {
@@ -16,37 +17,45 @@ class RekapPenjualanController extends Controller
      */
     public function index()
     {
-        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
-            $tanggalMulai = request()->tanggalMulai;
-            $tanggalAkhir = request()->tanggalAkhir;
-            $rekapPenjualan = RekapPenjualan::whereHas('invoice', function ($query) use ($tanggalMulai, $tanggalAkhir) {
-                $query->whereBetween('tanggal_invoice', [$tanggalMulai, $tanggalAkhir]);
-            })->get();
-        } else {
-            $rekapPenjualan = RekapPenjualan::get();
-        }
-
-        if (request()->get('export') == 'pdf') {
-            Pdf::setOption([
-                'enabled' => true,
-                'isRemoteEnabled' => true,
-                'chroot' => realpath(''),
-                'isPhpEnabled' => true,
-                'isFontSubsettingEnabled' => true,
-                'pdfBackend' => 'CPDF',
-                'isHtml5ParserEnabled' => true
+        if (Auth::user()->posisi == null) {
+          return redirect()->route('Home');
+          
+        } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Administrasi') {
+            if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+                $tanggalMulai = request()->tanggalMulai;
+                $tanggalAkhir = request()->tanggalAkhir;
+                $rekapPenjualan = RekapPenjualan::whereHas('invoice', function ($query) use ($tanggalMulai, $tanggalAkhir) {
+                    $query->whereBetween('tanggal_invoice', [$tanggalMulai, $tanggalAkhir]);
+                })->get();
+            } else {
+                $rekapPenjualan = RekapPenjualan::get();
+            }
+    
+            if (request()->get('export') == 'pdf') {
+                Pdf::setOption([
+                    'enabled' => true,
+                    'isRemoteEnabled' => true,
+                    'chroot' => realpath(''),
+                    'isPhpEnabled' => true,
+                    'isFontSubsettingEnabled' => true,
+                    'pdfBackend' => 'CPDF',
+                    'isHtml5ParserEnabled' => true
+                ]);
+                $pdf = Pdf::loadView('generate-pdf.Rekap-Penjualan', ['rekapPenjualan' => $rekapPenjualan])->setPaper('a4');
+                return $pdf->stream('Daftar Pegawai.pdf');
+            }
+    
+            return view('pages.penerimaan-jasa.rekap-penjualan', [
+                'rekapPenjualan' => $rekapPenjualan,
+                'id_rekapPenjualan' => RekapPenjualan::latest()->get()->first()->id ?? 1,
+                'invoice' => Invoice::get(),
+                'dataOrder' => DataOrder::get(),
+                'jumlahTotalPenjualan' => 0
             ]);
-            $pdf = Pdf::loadView('generate-pdf.Rekap-Penjualan', ['rekapPenjualan' => $rekapPenjualan])->setPaper('a4');
-            return $pdf->stream('Daftar Pegawai.pdf');
-        }
 
-        return view('pages.penerimaan-jasa.rekap-penjualan', [
-            'rekapPenjualan' => $rekapPenjualan,
-            'id_rekapPenjualan' => RekapPenjualan::latest()->get()->first()->id ?? 1,
-            'invoice' => Invoice::get(),
-            'dataOrder' => DataOrder::get(),
-            'jumlahTotalPenjualan' => 0
-        ]);
+        } else {
+          return redirect()->route('Dashboard');
+        }
     }
 
     /**

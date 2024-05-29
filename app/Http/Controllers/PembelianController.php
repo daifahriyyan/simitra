@@ -12,6 +12,7 @@ use App\Models\DetailSupplier;
 use App\Models\KartuPersediaan;
 use App\Models\KeuDetailJurnal;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class PembelianController extends Controller
 {
@@ -20,11 +21,19 @@ class PembelianController extends Controller
      */
     public function index()
     {
-        return view('pages.akuntansi.pembelian', [
-            'id_pembelian' => isset(KeuPembelian::latest()->get()->first()->id) + 1,
-            'keuSupplier' => KeuSupplier::get(),
-            'dataPersediaan' => DataPersediaan::get(),
-        ]);
+        if (Auth::user()->posisi == null) {
+          return redirect()->route('Home');
+          
+        } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Keuangan') {
+            return view('pages.akuntansi.pembelian', [
+                'id_pembelian' => isset(KeuPembelian::latest()->get()->first()->id) + 1,
+                'keuSupplier' => KeuSupplier::get(),
+                'dataPersediaan' => DataPersediaan::get(),
+            ]);
+
+        } else {
+          return redirect()->route('Dashboard');
+        }
     }
 
     /**

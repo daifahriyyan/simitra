@@ -82,7 +82,11 @@ class UserController extends Controller
 
     public function profile()
     {
-        return view('customer-side.auth.profile');
+        if (Auth::user()->posisi == null) {
+            return view('customer-side.auth.profile');
+        } else {
+          return redirect()->route('Dashboard');
+        }
     }
 
     public function update()
@@ -107,9 +111,17 @@ class UserController extends Controller
 
     public function daftarUser()
     {
-        return view('customer-side.auth.account', [
-            'dataUsers' => User::where('posisi', '!=', null)->get()
-        ]);
+        if (Auth::user()->posisi == null) {
+          return redirect()->route('Home');
+
+        } else if (Auth::user()->posisi == 'Direktur') {
+            return view('customer-side.auth.account', [
+                'dataUsers' => User::where('posisi', '!=', null)->get()
+            ]);
+
+        } else {
+          return redirect()->route('Dashboard');
+        }
     }
     public function tambahUser()
     {
@@ -202,7 +214,11 @@ class UserController extends Controller
 
     public function profilePegawai()
     {
-        return view('auth.profile');
+        if(Auth::user()->posisi != null){
+            return view('auth.profile');
+        } else {
+            return redirect()->route('Home');
+        }
     }
 
     public function updatePegawai()

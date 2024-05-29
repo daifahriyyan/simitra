@@ -6,6 +6,7 @@ use App\Models\KeuAsetTetap;
 use Illuminate\Http\Request;
 use App\Models\KeuPenyusutanAt;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 
 class PenyusutanAsetTetapController extends Controller
 {
@@ -14,43 +15,51 @@ class PenyusutanAsetTetapController extends Controller
      */
     public function index()
     {
-        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
-            $penyusutanAt = KeuPenyusutanAt::whereBetween('tanggal_penyusutan', [request()->tanggalMulai, request()->tanggalAkhir])->get();
-        } else {
-            $penyusutanAt = KeuPenyusutanAt::get();
-        }
+        if (Auth::user()->posisi == null) {
+          return redirect()->route('Home');
+          
+        } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Keuangan') {
+            if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+                $penyusutanAt = KeuPenyusutanAt::whereBetween('tanggal_penyusutan', [request()->tanggalMulai, request()->tanggalAkhir])->get();
+            } else {
+                $penyusutanAt = KeuPenyusutanAt::get();
+            }
+    
+            if (request()->get('export') == 'pdf') {
+                Pdf::setOption([
+                    'enabled' => true,
+                    'isRemoteEnabled' => true,
+                    'chroot' => realpath(''),
+                    'isPhpEnabled' => true,
+                    'isFontSubsettingEnabled' => true,
+                    'pdfBackend' => 'CPDF',
+                    'isHtml5ParserEnabled' => true
+                ]);
+                $pdf = Pdf::loadView('generate-pdf.tabel-penyusutan-aset', ['penyusutanAt' => $penyusutanAt])->setPaper('a4');
+                return $pdf->stream('Daftar Penyusutan Aset Tetap.pdf');
+            } else if (request()->get('export') == 'pdf-detail') {
+                $detail = KeuPenyusutanAt::where('id', request()->id)->get()->first();
+                Pdf::setOption([
+                    'enabled' => true,
+                    'isRemoteEnabled' => true,
+                    'chroot' => realpath(''),
+                    'isPhpEnabled' => true,
+                    'isFontSubsettingEnabled' => true,
+                    'pdfBackend' => 'CPDF',
+                    'isHtml5ParserEnabled' => true
+                ]);
+                $pdf = Pdf::loadView('generate-pdf.baris-penyusutan-aset', ['detail' => $detail])->setPaper('a4');
+                return $pdf->stream('Penyusutan Aset Tetap.pdf');
+            }
+            return view("pages.akuntansi.penyusutan-aset-tetap", [
+                'penyusutanAt' => $penyusutanAt,
+                'id_PAT' => KeuPenyusutanAt::latest()->get()->first()->id ?? 1,
+                'asetTetap' => KeuAsetTetap::get()
+            ]);
 
-        if (request()->get('export') == 'pdf') {
-            Pdf::setOption([
-                'enabled' => true,
-                'isRemoteEnabled' => true,
-                'chroot' => realpath(''),
-                'isPhpEnabled' => true,
-                'isFontSubsettingEnabled' => true,
-                'pdfBackend' => 'CPDF',
-                'isHtml5ParserEnabled' => true
-            ]);
-            $pdf = Pdf::loadView('generate-pdf.tabel-penyusutan-aset', ['penyusutanAt' => $penyusutanAt])->setPaper('a4');
-            return $pdf->stream('Daftar Penyusutan Aset Tetap.pdf');
-        } else if (request()->get('export') == 'pdf-detail') {
-            $detail = KeuPenyusutanAt::where('id', request()->id)->get()->first();
-            Pdf::setOption([
-                'enabled' => true,
-                'isRemoteEnabled' => true,
-                'chroot' => realpath(''),
-                'isPhpEnabled' => true,
-                'isFontSubsettingEnabled' => true,
-                'pdfBackend' => 'CPDF',
-                'isHtml5ParserEnabled' => true
-            ]);
-            $pdf = Pdf::loadView('generate-pdf.baris-penyusutan-aset', ['detail' => $detail])->setPaper('a4');
-            return $pdf->stream('Penyusutan Aset Tetap.pdf');
+        } else {
+          return redirect()->route('Dashboard');
         }
-        return view("pages.akuntansi.penyusutan-aset-tetap", [
-            'penyusutanAt' => $penyusutanAt,
-            'id_PAT' => KeuPenyusutanAt::latest()->get()->first()->id ?? 1,
-            'asetTetap' => KeuAsetTetap::get()
-        ]);
     }
 
     /**

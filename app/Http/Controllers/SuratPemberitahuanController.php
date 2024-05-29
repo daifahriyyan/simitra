@@ -8,6 +8,7 @@ use App\Models\DetailOrder;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\SuratPemberitahuan;
+use Illuminate\Support\Facades\Auth;
 
 class SuratPemberitahuanController extends Controller
 {
@@ -16,45 +17,53 @@ class SuratPemberitahuanController extends Controller
      */
     public function index()
     {
-        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
-            $tanggalMulai = request()->tanggalMulai;
-            $tanggalAkhir = request()->tanggalAkhir;
-            $sp = SuratPemberitahuan::whereBetween('tanggal', [$tanggalMulai, $tanggalAkhir])->orWhereBetween('tanggal_selesai', [$tanggalMulai, $tanggalAkhir])->get();
-        } else {
-            $sp = SuratPemberitahuan::get();
-        }
+        if (Auth::user()->posisi == null) {
+          return redirect()->route('Home');
+          
+        } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Operasional') {
+            if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+                $tanggalMulai = request()->tanggalMulai;
+                $tanggalAkhir = request()->tanggalAkhir;
+                $sp = SuratPemberitahuan::whereBetween('tanggal', [$tanggalMulai, $tanggalAkhir])->orWhereBetween('tanggal_selesai', [$tanggalMulai, $tanggalAkhir])->get();
+            } else {
+                $sp = SuratPemberitahuan::get();
+            }
+    
+            if (request()->get('export') == 'pdf') {
+                Pdf::setOption([
+                    'enabled' => true,
+                    'isRemoteEnabled' => true,
+                    'chroot' => realpath(''),
+                    'isPhpEnabled' => true,
+                    'isFontSubsettingEnabled' => true,
+                    'pdfBackend' => 'CPDF',
+                    'isHtml5ParserEnabled' => true
+                ]);
+                $pdf = Pdf::loadView('generate-pdf.tabel_surat_pemberitahuan', ['sp' => $sp])->setPaper('a4');
+                return $pdf->stream('Daftar Surat Pemberitahuan.pdf');
+            } else if (request()->get('export') == 'pdf-detail') {
+                $record = SuratPemberitahuan::where('id', request()->id)->get()->first();
+                Pdf::setOption([
+                    'enabled' => true,
+                    'isRemoteEnabled' => true,
+                    'chroot' => realpath(''),
+                    'isPhpEnabled' => true,
+                    'isFontSubsettingEnabled' => true,
+                    'pdfBackend' => 'CPDF',
+                    'isHtml5ParserEnabled' => true
+                ]);
+                $pdf = Pdf::loadView('generate-pdf.baris_surat_pemberitahuan', ['record' => $record])->setPaper('a4');
+                return $pdf->stream('Surat Pemberitahuan.pdf');
+            }
+            return view('pages.operasional.surat-pemberitahuan', [
+                'title' => 'Surat Pemberitahuan',
+                'detailOrder' => DetailOrder::get(),
+                'sp' => $sp
+            ]);
 
-        if (request()->get('export') == 'pdf') {
-            Pdf::setOption([
-                'enabled' => true,
-                'isRemoteEnabled' => true,
-                'chroot' => realpath(''),
-                'isPhpEnabled' => true,
-                'isFontSubsettingEnabled' => true,
-                'pdfBackend' => 'CPDF',
-                'isHtml5ParserEnabled' => true
-            ]);
-            $pdf = Pdf::loadView('generate-pdf.tabel_surat_pemberitahuan', ['sp' => $sp])->setPaper('a4');
-            return $pdf->stream('Daftar Surat Pemberitahuan.pdf');
-        } else if (request()->get('export') == 'pdf-detail') {
-            $record = SuratPemberitahuan::where('id', request()->id)->get()->first();
-            Pdf::setOption([
-                'enabled' => true,
-                'isRemoteEnabled' => true,
-                'chroot' => realpath(''),
-                'isPhpEnabled' => true,
-                'isFontSubsettingEnabled' => true,
-                'pdfBackend' => 'CPDF',
-                'isHtml5ParserEnabled' => true
-            ]);
-            $pdf = Pdf::loadView('generate-pdf.baris_surat_pemberitahuan', ['record' => $record])->setPaper('a4');
-            return $pdf->stream('Surat Pemberitahuan.pdf');
+        } else {
+          return redirect()->route('Dashboard');
         }
-        return view('pages.operasional.surat-pemberitahuan', [
-            'title' => 'Surat Pemberitahuan',
-            'detailOrder' => DetailOrder::get(),
-            'sp' => $sp
-        ]);
     }
 
     /**

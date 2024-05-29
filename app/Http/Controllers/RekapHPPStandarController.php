@@ -8,6 +8,7 @@ use App\Models\DataHargar;
 use Illuminate\Http\Request;
 use App\Models\RekapPenjualan;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 
 class RekapHPPStandarController extends Controller
 {
@@ -16,31 +17,39 @@ class RekapHPPStandarController extends Controller
      */
     public function index()
     {
-        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
-            $rekapHppStandar = RekapHpp::whereBetween('tanggal_input', [request()->tanggalMulai, request()->tanggalAkhir])->get();
-        } else {
-            $rekapHppStandar = RekapHpp::get();
-        }
-
-        if (request()->get('export') == 'pdf') {
-            Pdf::setOption([
-                'enabled' => true,
-                'isRemoteEnabled' => true,
-                'chroot' => realpath(''),
-                'isPhpEnabled' => true,
-                'isFontSubsettingEnabled' => true,
-                'pdfBackend' => 'CPDF',
-                'isHtml5ParserEnabled' => true
+        if (Auth::user()->posisi == null) {
+          return redirect()->route('Home');
+          
+        } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Keuangan') {
+            if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+                $rekapHppStandar = RekapHpp::whereBetween('tanggal_input', [request()->tanggalMulai, request()->tanggalAkhir])->get();
+            } else {
+                $rekapHppStandar = RekapHpp::get();
+            }
+    
+            if (request()->get('export') == 'pdf') {
+                Pdf::setOption([
+                    'enabled' => true,
+                    'isRemoteEnabled' => true,
+                    'chroot' => realpath(''),
+                    'isPhpEnabled' => true,
+                    'isFontSubsettingEnabled' => true,
+                    'pdfBackend' => 'CPDF',
+                    'isHtml5ParserEnabled' => true
+                ]);
+                $pdf = Pdf::loadView('generate-pdf.tabel_rekap_hpp_standar', ['rekapHppStandar' => $rekapHppStandar, 'JumlahTotalHPP' => 0])->setPaper('a4');
+                return $pdf->stream('Rekap Hpp Standar.pdf');
+            }
+            return view("pages.akuntansi.rekap-hpp-standar", [
+                'rekapHPPStandar' => $rekapHppStandar,
+                'dataHarga' => DataHargar::get(),
+                'rekapPenjualan' => RekapPenjualan::get(),
+                'JumlahTotalHPP' => 0
             ]);
-            $pdf = Pdf::loadView('generate-pdf.tabel_rekap_hpp_standar', ['rekapHppStandar' => $rekapHppStandar, 'JumlahTotalHPP' => 0])->setPaper('a4');
-            return $pdf->stream('Rekap Hpp Standar.pdf');
+
+        } else {
+          return redirect()->route('Dashboard');
         }
-        return view("pages.akuntansi.rekap-hpp-standar", [
-            'rekapHPPStandar' => $rekapHppStandar,
-            'dataHarga' => DataHargar::get(),
-            'rekapPenjualan' => RekapPenjualan::get(),
-            'JumlahTotalHPP' => 0
-        ]);
     }
 
     /**

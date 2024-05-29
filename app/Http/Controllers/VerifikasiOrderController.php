@@ -8,6 +8,7 @@ use App\Models\DetailOrder;
 use Illuminate\Http\Request;
 use App\Models\VerifikasiOrder;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 
 class VerifikasiOrderController extends Controller
 {
@@ -16,59 +17,67 @@ class VerifikasiOrderController extends Controller
      */
     public function index()
     {
-        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
-            $tanggalMulai = request()->tanggalMulai;
-            $tanggalAkhir = request()->tanggalAkhir;
-            $verifikasi = VerifikasiOrder::whereHas('dataOrder', function ($query) use ($tanggalMulai, $tanggalAkhir) {
-                $query->whereBetween('tanggal_order', [$tanggalMulai, $tanggalAkhir]);
-            })->get();
+        if (Auth::user()->posisi == null) {
+          return redirect()->route('Home');
+          
+        } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Operasional') {
+            if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+                $tanggalMulai = request()->tanggalMulai;
+                $tanggalAkhir = request()->tanggalAkhir;
+                $verifikasi = VerifikasiOrder::whereHas('dataOrder', function ($query) use ($tanggalMulai, $tanggalAkhir) {
+                    $query->whereBetween('tanggal_order', [$tanggalMulai, $tanggalAkhir]);
+                })->get();
+            } else {
+                $verifikasi = VerifikasiOrder::get();
+            }
+    
+            if (request()->get('export') == 'pdf') {
+                Pdf::setOption([
+                    'enabled' => true,
+                    'isRemoteEnabled' => true,
+                    'chroot' => realpath(''),
+                    'isPhpEnabled' => true,
+                    'isFontSubsettingEnabled' => true,
+                    'pdfBackend' => 'CPDF',
+                    'isHtml5ParserEnabled' => true
+                ]);
+                $pdf = Pdf::loadView('generate-pdf.tabel_verifikasi_order', ['verifikasi' => $verifikasi])->setPaper('a4');
+                return $pdf->stream('Daftar Verifikasi Order.pdf');
+            } else if (request()->get('export') == 'pdf-detail') {
+                $record = VerifikasiOrder::where('id', request()->id)->get()->first();
+                Pdf::setOption([
+                    'enabled' => true,
+                    'isRemoteEnabled' => true,
+                    'chroot' => realpath(''),
+                    'isPhpEnabled' => true,
+                    'isFontSubsettingEnabled' => true,
+                    'pdfBackend' => 'CPDF',
+                    'isHtml5ParserEnabled' => true
+                ]);
+                $pdf = Pdf::loadView('generate-pdf.baris_verifikasi_order', ['record' => $record])->setPaper('a4');
+                return $pdf->stream('Verifikasi Order.pdf');
+            }
+    
+            if (request()->get('verif') !== null) {
+                DetailOrder::where('id', request()->get('verif'))->update([
+                    'verifikasi' => 2
+                ]);
+            }
+            if (request()->get('reject') !== null) {
+                DetailOrder::where('id', request()->get('reject'))->update([
+                    'verifikasi' => 2,
+                    'is_reject' => '1'
+                ]);
+            }
+    
+            return view('pages.operasional.verifikasi-order', [
+                'dataOrder' => DetailOrder::get(),
+                'verifikasi' => $verifikasi,
+            ]);
+            
         } else {
-            $verifikasi = VerifikasiOrder::get();
+          return redirect()->route('Dashboard');
         }
-
-        if (request()->get('export') == 'pdf') {
-            Pdf::setOption([
-                'enabled' => true,
-                'isRemoteEnabled' => true,
-                'chroot' => realpath(''),
-                'isPhpEnabled' => true,
-                'isFontSubsettingEnabled' => true,
-                'pdfBackend' => 'CPDF',
-                'isHtml5ParserEnabled' => true
-            ]);
-            $pdf = Pdf::loadView('generate-pdf.tabel_verifikasi_order', ['verifikasi' => $verifikasi])->setPaper('a4');
-            return $pdf->stream('Daftar Verifikasi Order.pdf');
-        } else if (request()->get('export') == 'pdf-detail') {
-            $record = VerifikasiOrder::where('id', request()->id)->get()->first();
-            Pdf::setOption([
-                'enabled' => true,
-                'isRemoteEnabled' => true,
-                'chroot' => realpath(''),
-                'isPhpEnabled' => true,
-                'isFontSubsettingEnabled' => true,
-                'pdfBackend' => 'CPDF',
-                'isHtml5ParserEnabled' => true
-            ]);
-            $pdf = Pdf::loadView('generate-pdf.baris_verifikasi_order', ['record' => $record])->setPaper('a4');
-            return $pdf->stream('Verifikasi Order.pdf');
-        }
-
-        if (request()->get('verif') !== null) {
-            DetailOrder::where('id', request()->get('verif'))->update([
-                'verifikasi' => 2
-            ]);
-        }
-        if (request()->get('reject') !== null) {
-            DetailOrder::where('id', request()->get('reject'))->update([
-                'verifikasi' => 2,
-                'is_reject' => '1'
-            ]);
-        }
-
-        return view('pages.operasional.verifikasi-order', [
-            'dataOrder' => DetailOrder::get(),
-            'verifikasi' => $verifikasi,
-        ]);
     }
 
     /**

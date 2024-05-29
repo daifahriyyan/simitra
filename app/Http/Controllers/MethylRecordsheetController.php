@@ -8,6 +8,7 @@ use App\Models\DetailOrder;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\MetilRecordsheet;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class MethylRecordsheetController extends Controller
@@ -17,32 +18,40 @@ class MethylRecordsheetController extends Controller
      */
     public function index()
     {
-        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
-            $tanggalMulai = request()->tanggalMulai;
-            $tanggalAkhir = request()->tanggalAkhir;
-            $metilRecordsheet = MetilRecordsheet::whereBetween('tanggal_selesai', [$tanggalMulai, $tanggalAkhir])->get();
-        } else {
-            $metilRecordsheet = MetilRecordsheet::get();
-        }
-
-        if (request()->get('export') == 'pdf') {
-            Pdf::setOption([
-                'enabled' => true,
-                'isRemoteEnabled' => true,
-                'chroot' => realpath(''),
-                'isPhpEnabled' => true,
-                'isFontSubsettingEnabled' => true,
-                'pdfBackend' => 'CPDF',
-                'isHtml5ParserEnabled' => true
+        if (Auth::user()->posisi == null) {
+          return redirect()->route('Home');
+          
+        } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Operasional') {
+            if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+                $tanggalMulai = request()->tanggalMulai;
+                $tanggalAkhir = request()->tanggalAkhir;
+                $metilRecordsheet = MetilRecordsheet::whereBetween('tanggal_selesai', [$tanggalMulai, $tanggalAkhir])->get();
+            } else {
+                $metilRecordsheet = MetilRecordsheet::get();
+            }
+    
+            if (request()->get('export') == 'pdf') {
+                Pdf::setOption([
+                    'enabled' => true,
+                    'isRemoteEnabled' => true,
+                    'chroot' => realpath(''),
+                    'isPhpEnabled' => true,
+                    'isFontSubsettingEnabled' => true,
+                    'pdfBackend' => 'CPDF',
+                    'isHtml5ParserEnabled' => true
+                ]);
+                $pdf = Pdf::loadView('generate-pdf.tabel-methyl-recordsheet', ['metilRecordsheet' => $metilRecordsheet])->setPaper('a4');
+                return $pdf->stream('Daftar Methyl Recordsheet.pdf');
+            }
+    
+            return view('pages.operasional.methyl-recordsheet', [
+                'dataOrder' => DetailOrder::get(),
+                'dataRecordsheet' => $metilRecordsheet
             ]);
-            $pdf = Pdf::loadView('generate-pdf.tabel-methyl-recordsheet', ['metilRecordsheet' => $metilRecordsheet])->setPaper('a4');
-            return $pdf->stream('Daftar Methyl Recordsheet.pdf');
-        }
 
-        return view('pages.operasional.methyl-recordsheet', [
-            'dataOrder' => DetailOrder::get(),
-            'dataRecordsheet' => $metilRecordsheet
-        ]);
+        } else {
+          return redirect()->route('Dashboard');
+        }
     }
 
     /**

@@ -7,6 +7,7 @@ use App\Models\DataCustomer;
 use Illuminate\Http\Request;
 use App\Models\DetailCustomer;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 
 class DetailCustomerController extends Controller
 {
@@ -15,57 +16,65 @@ class DetailCustomerController extends Controller
    */
   public function index()
   {
-    if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
-      $tanggalMulai = request()->tanggalMulai;
-      $tanggalAkhir = request()->tanggalAkhir;
-      $detailCustomer = DetailCustomer::whereBetween('tanggal_input', [$tanggalMulai, $tanggalAkhir])->get();
+    if (Auth::user()->posisi == null) {
+      return redirect()->route('Home');
+      
+    } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Administrasi') {
+      if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+        $tanggalMulai = request()->tanggalMulai;
+        $tanggalAkhir = request()->tanggalAkhir;
+        $detailCustomer = DetailCustomer::whereBetween('tanggal_input', [$tanggalMulai, $tanggalAkhir])->get();
+      } else {
+        $detailCustomer = DetailCustomer::get();
+      }
+  
+      if (request()->get('export') == 'pdf') {
+        Pdf::setOption([
+          'enabled' => true,
+          'isRemoteEnabled' => true,
+          'chroot' => realpath(''),
+          'isPhpEnabled' => true,
+          'isFontSubsettingEnabled' => true,
+          'pdfBackend' => 'CPDF',
+          'isHtml5ParserEnabled' => true
+        ]);
+        $pdf = Pdf::loadView('generate-pdf.tabel-detail-customer', ['detailCustomer' => $detailCustomer])->setPaper('a4');
+        return $pdf->stream('Daftar Detail Customer.pdf');
+      }
+  
+      if (request()->get('export') == 'pdf') {
+        $detailCustomer = DetailCustomer::with('dataCustomer')->where('id', request()->get('id_customer'))->get()->first();
+        Pdf::setOption([
+          'enabled' => true,
+          'isRemoteEnabled' => true,
+          'chroot' => realpath(''),
+          'isPhpEnabled' => true,
+          'isFontSubsettingEnabled' => true,
+          'pdfBackend' => 'CPDF',
+          'isHtml5ParserEnabled' => true
+        ]);
+        $pdf = Pdf::loadView('generate-pdf.detail-customer', ['detailCustomer' => $detailCustomer])->setPaper('a4');
+        return $pdf->stream('Detail Customer.pdf');
+      }
+  
+      if (request()->get('status') == 'Lunas') {
+        DetailCustomer::where('id', request()->get('id'))->update([
+          'status' => request()->get('status')
+        ]);
+  
+        return redirect()->route('Detail Customer');
+      }
+  
+      return view('pages.penerimaan-jasa.detail-customer', [
+        'title' => 'Detail Customer',
+        'records' => $detailCustomer,
+        'id_detail_customer' => DetailCustomer::latest()->get()->first()->id ?? 1,
+        'customers' => DataCustomer::all()
+      ]);
+
     } else {
-      $detailCustomer = DetailCustomer::get();
+      return redirect()->route('Dashboard');
     }
-
-    if (request()->get('export') == 'pdf') {
-      Pdf::setOption([
-        'enabled' => true,
-        'isRemoteEnabled' => true,
-        'chroot' => realpath(''),
-        'isPhpEnabled' => true,
-        'isFontSubsettingEnabled' => true,
-        'pdfBackend' => 'CPDF',
-        'isHtml5ParserEnabled' => true
-      ]);
-      $pdf = Pdf::loadView('generate-pdf.tabel-detail-customer', ['detailCustomer' => $detailCustomer])->setPaper('a4');
-      return $pdf->stream('Daftar Detail Customer.pdf');
-    }
-
-    if (request()->get('export') == 'pdf') {
-      $detailCustomer = DetailCustomer::with('dataCustomer')->where('id', request()->get('id_customer'))->get()->first();
-      Pdf::setOption([
-        'enabled' => true,
-        'isRemoteEnabled' => true,
-        'chroot' => realpath(''),
-        'isPhpEnabled' => true,
-        'isFontSubsettingEnabled' => true,
-        'pdfBackend' => 'CPDF',
-        'isHtml5ParserEnabled' => true
-      ]);
-      $pdf = Pdf::loadView('generate-pdf.detail-customer', ['detailCustomer' => $detailCustomer])->setPaper('a4');
-      return $pdf->stream('Detail Customer.pdf');
-    }
-
-    if (request()->get('status') == 'Lunas') {
-      DetailCustomer::where('id', request()->get('id'))->update([
-        'status' => request()->get('status')
-      ]);
-
-      return redirect()->route('Detail Customer');
-    }
-
-    return view('pages.penerimaan-jasa.detail-customer', [
-      'title' => 'Detail Customer',
-      'records' => $detailCustomer,
-      'id_detail_customer' => DetailCustomer::latest()->get()->first()->id ?? 1,
-      'customers' => DataCustomer::all()
-    ]);
   }
 
   /**

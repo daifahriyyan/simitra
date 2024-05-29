@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Models\KeuPenggajian;
 use App\Models\KeuDetailJurnal;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 
 class PenggajianController extends Controller
 {
@@ -18,42 +19,50 @@ class PenggajianController extends Controller
      */
     public function index()
     {
-        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
-            $penggajian = KeuPenggajian::whereBetween('created_at', [request()->tanggalMulai, request()->tanggalAkhir])->get();
-        } else {
-            $penggajian = KeuPenggajian::get();
-        }
+        if (Auth::user()->posisi == null) {
+          return redirect()->route('Home');
+          
+        } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Keuangan') {
+            if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+                $penggajian = KeuPenggajian::whereBetween('created_at', [request()->tanggalMulai, request()->tanggalAkhir])->get();
+            } else {
+                $penggajian = KeuPenggajian::get();
+            }
+    
+            if (request()->get('export') == 'pdf') {
+                Pdf::setOption([
+                    'enabled' => true,
+                    'isRemoteEnabled' => true,
+                    'chroot' => realpath(''),
+                    'isPhpEnabled' => true,
+                    'isFontSubsettingEnabled' => true,
+                    'pdfBackend' => 'CPDF',
+                    'isHtml5ParserEnabled' => true
+                ]);
+                $pdf = Pdf::loadView('generate-pdf.tabel-penggajian', ['penggajian' => $penggajian])->setPaper('a4');
+                return $pdf->stream('Daftar Penggajian.pdf');
+            } else if (request()->get('export') == 'pdf-detail') {
+                $detail = KeuPenggajian::where('id', request()->id)->get()->first();
+                Pdf::setOption([
+                    'enabled' => true,
+                    'isRemoteEnabled' => true,
+                    'chroot' => realpath(''),
+                    'isPhpEnabled' => true,
+                    'isFontSubsettingEnabled' => true,
+                    'pdfBackend' => 'CPDF',
+                    'isHtml5ParserEnabled' => true
+                ]);
+                $pdf = Pdf::loadView('generate-pdf.baris-penggajian', ['detail' => $detail])->setPaper('a4');
+                return $pdf->stream('Detail Penggajian.pdf');
+            }
+            return view('pages.akuntansi.penggajian', [
+                'penggajian' => $penggajian,
+                'pegawai' => DataPegawai::get()
+            ]);
 
-        if (request()->get('export') == 'pdf') {
-            Pdf::setOption([
-                'enabled' => true,
-                'isRemoteEnabled' => true,
-                'chroot' => realpath(''),
-                'isPhpEnabled' => true,
-                'isFontSubsettingEnabled' => true,
-                'pdfBackend' => 'CPDF',
-                'isHtml5ParserEnabled' => true
-            ]);
-            $pdf = Pdf::loadView('generate-pdf.tabel-penggajian', ['penggajian' => $penggajian])->setPaper('a4');
-            return $pdf->stream('Daftar Penggajian.pdf');
-        } else if (request()->get('export') == 'pdf-detail') {
-            $detail = KeuPenggajian::where('id', request()->id)->get()->first();
-            Pdf::setOption([
-                'enabled' => true,
-                'isRemoteEnabled' => true,
-                'chroot' => realpath(''),
-                'isPhpEnabled' => true,
-                'isFontSubsettingEnabled' => true,
-                'pdfBackend' => 'CPDF',
-                'isHtml5ParserEnabled' => true
-            ]);
-            $pdf = Pdf::loadView('generate-pdf.baris-penggajian', ['detail' => $detail])->setPaper('a4');
-            return $pdf->stream('Detail Penggajian.pdf');
+        } else {
+          return redirect()->route('Dashboard');
         }
-        return view('pages.akuntansi.penggajian', [
-            'penggajian' => $penggajian,
-            'pegawai' => DataPegawai::get()
-        ]);
     }
 
     /**

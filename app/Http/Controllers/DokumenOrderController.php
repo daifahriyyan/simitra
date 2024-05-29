@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DataPersyaratan;
 use Illuminate\Http\Request;
+use App\Models\DataPersyaratan;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class DokumenOrderController extends Controller
@@ -13,10 +14,18 @@ class DokumenOrderController extends Controller
      */
     public function index()
     {
-        return view('pages.penerimaan-jasa.dokumen-order', [
-            'title' => 'Dokumen Order',
-            'records' => DataPersyaratan::get()
-        ]);
+        if (Auth::user()->posisi == null) {
+          return redirect()->route('Home');
+
+        } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Administrasi') {
+            return view('pages.penerimaan-jasa.dokumen-order', [
+                'title' => 'Dokumen Order',
+                'records' => DataPersyaratan::get()
+            ]);
+            
+        } else {
+            return redirect()->route('Dashboard');
+        }
     }
 
     /**

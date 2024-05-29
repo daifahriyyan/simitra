@@ -6,6 +6,7 @@ use App\Models\DataPegawai;
 use App\Models\KeuAsetTetap;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 
 class AsetTetapController extends Controller
 {
@@ -14,24 +15,32 @@ class AsetTetapController extends Controller
      */
     public function index()
     {
-        $asetTetap = KeuAsetTetap::get();
-        if (request()->get('export') == 'pdf') {
-            Pdf::setOption([
-                'enabled' => true,
-                'isRemoteEnabled' => true,
-                'chroot' => realpath(''),
-                'isPhpEnabled' => true,
-                'isFontSubsettingEnabled' => true,
-                'pdfBackend' => 'CPDF',
-                'isHtml5ParserEnabled' => true
+        if (Auth::user()->posisi == null) {
+          return redirect()->route('Home');
+          
+        } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Keuangan') {
+            $asetTetap = KeuAsetTetap::get();
+            if (request()->get('export') == 'pdf') {
+                Pdf::setOption([
+                    'enabled' => true,
+                    'isRemoteEnabled' => true,
+                    'chroot' => realpath(''),
+                    'isPhpEnabled' => true,
+                    'isFontSubsettingEnabled' => true,
+                    'pdfBackend' => 'CPDF',
+                    'isHtml5ParserEnabled' => true
+                ]);
+                $pdf = Pdf::loadView('generate-pdf.tabel-aset', ['asetTetap' => $asetTetap])->setPaper('a4');
+                return $pdf->stream('Daftar Aset Tetap.pdf');
+            }
+            return view('pages.akuntansi.aset-tetap', [
+                'asetTetap' => $asetTetap,
+                'pegawai' => DataPegawai::get()
             ]);
-            $pdf = Pdf::loadView('generate-pdf.tabel-aset', ['asetTetap' => $asetTetap])->setPaper('a4');
-            return $pdf->stream('Daftar Aset Tetap.pdf');
+
+        } else {
+          return redirect()->route('Dashboard');
         }
-        return view('pages.akuntansi.aset-tetap', [
-            'asetTetap' => $asetTetap,
-            'pegawai' => DataPegawai::get()
-        ]);
     }
 
     /**

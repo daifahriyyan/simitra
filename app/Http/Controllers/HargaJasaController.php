@@ -16,32 +16,28 @@ class HargaJasaController extends Controller
      */
     public function index()
     {
-        $dataHarga = DataHargar::get();
-        if (request()->get('export') == 'pdf') {
-            Pdf::setOption([
-                'enabled' => true,
-                'isRemoteEnabled' => true,
-                'chroot' => realpath(''),
-                'isPhpEnabled' => true,
-                'isFontSubsettingEnabled' => true,
-                'pdfBackend' => 'CPDF',
-                'isHtml5ParserEnabled' => true
-            ]);
-            $pdf = Pdf::loadView('generate-pdf.tabel_harga_jasa', ['dataHarga' => $dataHarga])->setPaper('a4');
-            return $pdf->stream('Daftar Harga Jasa.pdf');
-        }
-        return view('pages.master.harga-jasa', [
-            'title' => 'Harga Jasa',
-            'records' => DataHargar::get(),
-            'datahppfeet' => DataHppFeet::with('standarHPP')->get()
-        ]);
         if (Auth::user()->posisi == null) {
-        } else if (Auth::user()->posisi == 'Direktur') {
-        } else if (Auth::user()->posisi == 'Manajer') {
-        } else if (Auth::user()->posisi == 'Admin') {
-        } else if (Auth::user()->posisi == 'Operasional') {
-        } else if (Auth::user()->posisi == 'Fumigator') {
-        } else if (Auth::user()->posisi == 'Staff Lainnya') {
+            return redirect()->route('Home');
+        } else {
+            $dataHarga = DataHargar::get();
+            if (request()->get('export') == 'pdf') {
+                Pdf::setOption([
+                    'enabled' => true,
+                    'isRemoteEnabled' => true,
+                    'chroot' => realpath(''),
+                    'isPhpEnabled' => true,
+                    'isFontSubsettingEnabled' => true,
+                    'pdfBackend' => 'CPDF',
+                    'isHtml5ParserEnabled' => true
+                ]);
+                $pdf = Pdf::loadView('generate-pdf.tabel_harga_jasa', ['dataHarga' => $dataHarga])->setPaper('a4');
+                return $pdf->stream('Daftar Harga Jasa.pdf');
+            }
+            return view('pages.master.harga-jasa', [
+                'title' => 'Harga Jasa',
+                'records' => DataHargar::get(),
+                'datahppfeet' => DataHppFeet::with('standarHPP')->get()
+            ]);
         }
     }
 

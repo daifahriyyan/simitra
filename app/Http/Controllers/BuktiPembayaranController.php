@@ -13,6 +13,7 @@ use App\Models\BuktiPembayaran;
 use App\Models\KeuDetailJurnal;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class BuktiPembayaranController extends Controller
@@ -22,45 +23,53 @@ class BuktiPembayaranController extends Controller
      */
     public function index()
     {
-        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
-            $tanggalMulai = request()->tanggalMulai;
-            $tanggalAkhir = request()->tanggalAkhir;
-            $buktiPembayaran = BuktiPembayaran::whereBetween('tanggal_pembayaran', [$tanggalMulai, $tanggalAkhir])->get();
+        if (Auth::user()->posisi == null) {
+          return redirect()->route('Home');
+          
+        } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Administrasi') {
+            if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+                $tanggalMulai = request()->tanggalMulai;
+                $tanggalAkhir = request()->tanggalAkhir;
+                $buktiPembayaran = BuktiPembayaran::whereBetween('tanggal_pembayaran', [$tanggalMulai, $tanggalAkhir])->get();
+            } else {
+                $buktiPembayaran = BuktiPembayaran::get();
+            }
+    
+            if (request()->get('export') == 'pdf') {
+                Pdf::setOption([
+                    'enabled' => true,
+                    'isRemoteEnabled' => true,
+                    'chroot' => realpath(''),
+                    'isPhpEnabled' => true,
+                    'isFontSubsettingEnabled' => true,
+                    'pdfBackend' => 'CPDF',
+                    'isHtml5ParserEnabled' => true
+                ]);
+                $pdf = Pdf::loadView('generate-pdf.tabel-bukti-pembayaran', ['buktiPembayaran' => $buktiPembayaran])->setPaper('a4');
+                return $pdf->stream('Daftar Bukti Pembayaran.pdf');
+            }
+    
+            if (request()->get('verif') !== null) {
+                DetailOrder::where('id', request()->get('verif'))->update([
+                    'verifikasi' => 6
+                ]);
+            }
+            if (request()->get('reject') !== null) {
+                DetailOrder::where('id', request()->get('reject'))->update([
+                    'verifikasi' => 6,
+                    'is_reject' => '1'
+                ]);
+            }
+            return view('pages.penerimaan-jasa.bukti-pembayaran', [
+                'title' => 'Bukti Pembayaran',
+                'records' => $buktiPembayaran,
+                'invoice' => Invoice::get(),
+                'dataOrder' => DataOrder::get(),
+            ]);
+
         } else {
-            $buktiPembayaran = BuktiPembayaran::get();
+          return redirect()->route('Dashboard');
         }
-
-        if (request()->get('export') == 'pdf') {
-            Pdf::setOption([
-                'enabled' => true,
-                'isRemoteEnabled' => true,
-                'chroot' => realpath(''),
-                'isPhpEnabled' => true,
-                'isFontSubsettingEnabled' => true,
-                'pdfBackend' => 'CPDF',
-                'isHtml5ParserEnabled' => true
-            ]);
-            $pdf = Pdf::loadView('generate-pdf.tabel-bukti-pembayaran', ['buktiPembayaran' => $buktiPembayaran])->setPaper('a4');
-            return $pdf->stream('Daftar Bukti Pembayaran.pdf');
-        }
-
-        if (request()->get('verif') !== null) {
-            DetailOrder::where('id', request()->get('verif'))->update([
-                'verifikasi' => 6
-            ]);
-        }
-        if (request()->get('reject') !== null) {
-            DetailOrder::where('id', request()->get('reject'))->update([
-                'verifikasi' => 6,
-                'is_reject' => '1'
-            ]);
-        }
-        return view('pages.penerimaan-jasa.bukti-pembayaran', [
-            'title' => 'Bukti Pembayaran',
-            'records' => $buktiPembayaran,
-            'invoice' => Invoice::get(),
-            'dataOrder' => DataOrder::get(),
-        ]);
     }
 
     /**

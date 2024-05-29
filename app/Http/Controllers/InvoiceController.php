@@ -16,6 +16,7 @@ use App\Models\DetailCustomer;
 use App\Models\KeuDetailJurnal;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\MetilRecordsheet;
+use Illuminate\Support\Facades\Auth;
 
 class InvoiceController extends Controller
 {
@@ -24,53 +25,61 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
-            $tanggalMulai = request()->tanggalMulai;
-            $tanggalAkhir = request()->tanggalAkhir;
-            $invoice = Invoice::whereBetween('tanggal_invoice', [$tanggalMulai, $tanggalAkhir])->get();
-        } else {
-            $invoice = Invoice::get();
-        }
+        if (Auth::user()->posisi == null) {
+          return redirect()->route('Home');
+          
+        } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Administrasi') {
+            if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+                $tanggalMulai = request()->tanggalMulai;
+                $tanggalAkhir = request()->tanggalAkhir;
+                $invoice = Invoice::whereBetween('tanggal_invoice', [$tanggalMulai, $tanggalAkhir])->get();
+            } else {
+                $invoice = Invoice::get();
+            }
+    
+            if (request()->get('export') == 'pdf') {
+                Pdf::setOption([
+                    'enabled' => true,
+                    'isRemoteEnabled' => true,
+                    'chroot' => realpath(''),
+                    'isPhpEnabled' => true,
+                    'isFontSubsettingEnabled' => true,
+                    'pdfBackend' => 'CPDF',
+                    'isHtml5ParserEnabled' => true
+                ]);
+                $pdf = Pdf::loadView('generate-pdf.tabel-invoice', ['invoice' => $invoice])->setPaper('a4', 'landscape');
+                return $pdf->stream('Daftar Invoice.pdf');
+            } else if (request()->get('export') == 'pdf-detail') {
+                $detail = Invoice::where('id', request()->id)->get()->first();
+                Pdf::setOption([
+                    'enabled' => true,
+                    'isRemoteEnabled' => true,
+                    'chroot' => realpath(''),
+                    'isPhpEnabled' => true,
+                    'isFontSubsettingEnabled' => true,
+                    'pdfBackend' => 'CPDF',
+                    'isHtml5ParserEnabled' => true
+                ]);
+                $pdf = Pdf::loadView('generate-pdf.invoice', ['detail' => $detail])->setPaper('a4');
+                return $pdf->stream('Invoice.pdf');
+            }
+            if (request()->get('verif') !== null) {
+                DetailOrder::where('id', request()->get('verif'))->update([
+                    'verifikasi' => 5
+                ]);
+            }
+            return view('pages.penerimaan-jasa.invoice', [
+                'invoice' => $invoice,
+                'id_invoice' => (isset(Invoice::latest()->get()->first()->id)) ? Invoice::latest()->get()->first()->id : 1,
+                'dataSertif' => Sertifikat::get(),
+                'dataOrder' => DetailOrder::get(),
+                'recordsheet' => MetilRecordsheet::get(),
+                'dataHarga' => DataHargar::get(),
+            ]);
 
-        if (request()->get('export') == 'pdf') {
-            Pdf::setOption([
-                'enabled' => true,
-                'isRemoteEnabled' => true,
-                'chroot' => realpath(''),
-                'isPhpEnabled' => true,
-                'isFontSubsettingEnabled' => true,
-                'pdfBackend' => 'CPDF',
-                'isHtml5ParserEnabled' => true
-            ]);
-            $pdf = Pdf::loadView('generate-pdf.tabel-invoice', ['invoice' => $invoice])->setPaper('a4', 'landscape');
-            return $pdf->stream('Daftar Invoice.pdf');
-        } else if (request()->get('export') == 'pdf-detail') {
-            $detail = Invoice::where('id', request()->id)->get()->first();
-            Pdf::setOption([
-                'enabled' => true,
-                'isRemoteEnabled' => true,
-                'chroot' => realpath(''),
-                'isPhpEnabled' => true,
-                'isFontSubsettingEnabled' => true,
-                'pdfBackend' => 'CPDF',
-                'isHtml5ParserEnabled' => true
-            ]);
-            $pdf = Pdf::loadView('generate-pdf.invoice', ['detail' => $detail])->setPaper('a4');
-            return $pdf->stream('Invoice.pdf');
+        } else {
+          return redirect()->route('Dashboard');
         }
-        if (request()->get('verif') !== null) {
-            DetailOrder::where('id', request()->get('verif'))->update([
-                'verifikasi' => 5
-            ]);
-        }
-        return view('pages.penerimaan-jasa.invoice', [
-            'invoice' => $invoice,
-            'id_invoice' => (isset(Invoice::latest()->get()->first()->id)) ? Invoice::latest()->get()->first()->id : 1,
-            'dataSertif' => Sertifikat::get(),
-            'dataOrder' => DetailOrder::get(),
-            'recordsheet' => MetilRecordsheet::get(),
-            'dataHarga' => DataHargar::get(),
-        ]);
     }
 
     /**

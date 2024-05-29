@@ -11,6 +11,7 @@ use App\Models\KeuPenggajian;
 use App\Models\DetailSupplier;
 use App\Models\KeuDetailJurnal;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 
 class JurnalUmumController extends Controller
 {
@@ -19,42 +20,50 @@ class JurnalUmumController extends Controller
      */
     public function index()
     {
-        $tanggalMulai = request()->tanggalMulai;
-        $tanggalAkhir = request()->tanggalAkhir;
-
-        if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
-            $jurnalUmum = KeuDetailJurnal::whereHas('jurnal', function ($query) use ($tanggalMulai, $tanggalAkhir) {
-                $query->whereBetween('tanggal_jurnal', [$tanggalMulai, $tanggalAkhir]);
-            })->get();
-        } else {
-            $jurnalUmum = KeuDetailJurnal::get();
-        }
-
-        if (request()->get('export') == 'pdf') {
-            Pdf::setOption([
-                'enabled' => true,
-                'isRemoteEnabled' => true,
-                'chroot' => realpath(''),
-                'isPhpEnabled' => true,
-                'isFontSubsettingEnabled' => true,
-                'pdfBackend' => 'CPDF',
-                'isHtml5ParserEnabled' => true
+        if (Auth::user()->posisi == null) {
+          return redirect()->route('Home');
+          
+        } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Keuangan') {
+            $tanggalMulai = request()->tanggalMulai;
+            $tanggalAkhir = request()->tanggalAkhir;
+    
+            if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+                $jurnalUmum = KeuDetailJurnal::whereHas('jurnal', function ($query) use ($tanggalMulai, $tanggalAkhir) {
+                    $query->whereBetween('tanggal_jurnal', [$tanggalMulai, $tanggalAkhir]);
+                })->get();
+            } else {
+                $jurnalUmum = KeuDetailJurnal::get();
+            }
+    
+            if (request()->get('export') == 'pdf') {
+                Pdf::setOption([
+                    'enabled' => true,
+                    'isRemoteEnabled' => true,
+                    'chroot' => realpath(''),
+                    'isPhpEnabled' => true,
+                    'isFontSubsettingEnabled' => true,
+                    'pdfBackend' => 'CPDF',
+                    'isHtml5ParserEnabled' => true
+                ]);
+                $pdf = Pdf::loadView('generate-pdf.tabel-jurnal', ['jurnalUmum' => $jurnalUmum])->setPaper('a4');
+                return $pdf->stream('Jurnal Umum.pdf');
+            }
+            return view('pages.akuntansi.jurnal-umum', [
+                // ambil seluruh data Detail Jurnal
+                'jurnalUmum' => $jurnalUmum,
+                // ambil id terakhir dari Jurnal
+                'jurnal' => isset(KeuJurnal::latest()->get()->first()->id) ? KeuJurnal::latest()->get()->first()->id + 1 : 1,
+                // ambil seluruh data akun
+                'akun' => KeuAkun::latest()->get(),
+                // ambil kode akun yang jenisnya debet
+                'kodeAkunDebet' => KeuAkun::where('jenis_akun', 'debet')->get(),
+                // ambil kode akun yang jenisnya kredit
+                'kodeAkunKredit' => KeuAkun::where('jenis_akun', 'kredit')->get(),
             ]);
-            $pdf = Pdf::loadView('generate-pdf.tabel-jurnal', ['jurnalUmum' => $jurnalUmum])->setPaper('a4');
-            return $pdf->stream('Jurnal Umum.pdf');
+
+        } else {
+          return redirect()->route('Dashboard');
         }
-        return view('pages.akuntansi.jurnal-umum', [
-            // ambil seluruh data Detail Jurnal
-            'jurnalUmum' => $jurnalUmum,
-            // ambil id terakhir dari Jurnal
-            'jurnal' => isset(KeuJurnal::latest()->get()->first()->id) ? KeuJurnal::latest()->get()->first()->id + 1 : 1,
-            // ambil seluruh data akun
-            'akun' => KeuAkun::latest()->get(),
-            // ambil kode akun yang jenisnya debet
-            'kodeAkunDebet' => KeuAkun::where('jenis_akun', 'debet')->get(),
-            // ambil kode akun yang jenisnya kredit
-            'kodeAkunKredit' => KeuAkun::where('jenis_akun', 'kredit')->get(),
-        ]);
     }
 
     /**

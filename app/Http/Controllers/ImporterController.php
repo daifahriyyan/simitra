@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DataImporter;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 
 class ImporterController extends Controller
 {
@@ -13,24 +14,28 @@ class ImporterController extends Controller
      */
     public function index()
     {
-        $dataImporter = DataImporter::get();
-        if (request()->get('export') == 'pdf') {
-            Pdf::setOption([
-                'enabled' => true,
-                'isRemoteEnabled' => true,
-                'chroot' => realpath(''),
-                'isPhpEnabled' => true,
-                'isFontSubsettingEnabled' => true,
-                'pdfBackend' => 'CPDF',
-                'isHtml5ParserEnabled' => true
+        if (Auth::user()->posisi == null) {
+            return redirect()->route('Home');
+        } else {
+            $dataImporter = DataImporter::get();
+            if (request()->get('export') == 'pdf') {
+                Pdf::setOption([
+                    'enabled' => true,
+                    'isRemoteEnabled' => true,
+                    'chroot' => realpath(''),
+                    'isPhpEnabled' => true,
+                    'isFontSubsettingEnabled' => true,
+                    'pdfBackend' => 'CPDF',
+                    'isHtml5ParserEnabled' => true
+                ]);
+                $pdf = Pdf::loadView('generate-pdf.tabel-importer', ['dataImporter' => $dataImporter])->setPaper('a4');
+                return $pdf->stream('Daftar Importer.pdf');
+            }
+            return view('pages.master.importer', [
+                'title' => 'Importer',
+                'records' => $dataImporter,
             ]);
-            $pdf = Pdf::loadView('generate-pdf.tabel-importer', ['dataImporter' => $dataImporter])->setPaper('a4');
-            return $pdf->stream('Daftar Importer.pdf');
         }
-        return view('pages.master.importer', [
-            'title' => 'Importer',
-            'records' => $dataImporter,
-        ]);
     }
 
     /**
