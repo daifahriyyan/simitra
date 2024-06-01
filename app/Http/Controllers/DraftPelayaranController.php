@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Throwable;
 use App\Models\DataOrder;
+use App\Models\Notifikasi;
 use Illuminate\Http\Request;
 use App\Models\DraftPelayaran;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -81,6 +82,12 @@ class DraftPelayaranController extends Controller
             'id_order' => $request['id_order'],
             'tanggal_order' => $request['tanggal_order'] ?? date('Y-m-d'),
             'draft_pelayaran' => $fileDP
+        ]);
+
+        Notifikasi::create([
+            'keterangan' => 'Telah diupload Draft Pelayaran, cek draft dan buat invoice',
+            'is_read' => 'N',
+            'posisi' => 'Administrasi',
         ]);
 
         return redirect(route('Draft Pelayaran'))->with('success', 'Draft Pelayaran Berhasil Ditambahkan');

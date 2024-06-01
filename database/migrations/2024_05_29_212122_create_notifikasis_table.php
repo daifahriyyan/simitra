@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('keu_akun', function (Blueprint $table) {
+        Schema::create('notifikasi', function (Blueprint $table) {
             $table->id();
-            $table->string('kode_akun')->unique();
-            $table->string('nama_akun');
-            $table->string('jenis_akun');
-            $table->string('kelompok_akun');
-            $table->decimal('saldo_akun', 65, 2);
+            $table->text('keterangan');
+            $table->enum('is_read', ['Y', 'N']);
+            $table->string('posisi');
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('keu_akun');
+        Schema::dropIfExists('notifikasi');
     }
 };

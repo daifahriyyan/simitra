@@ -85,11 +85,11 @@
                     </div>
                     <div class="mb-3">
                       <label for="jam_mulai" class="form-label">Jam Mulai:</label>
-                      <input type="datetime" class="form-control" id="jam_mulai" name="jam_mulai" required>
+                      <input type="datetime-local" class="form-control" id="jam_mulai" name="jam_mulai" required>
                     </div>
                     <div class="mb-3">
                       <label for="jam_selesai" class="form-label">Jam Selesai:</label>
-                      <input type="datetime" class="form-control" id="jam_selesai" name="jam_selesai" required>
+                      <input type="datetime-local" class="form-control" id="jam_selesai" name="jam_selesai" required>
                     </div>
                     <div class="mb-3">
                       <label for="keterangan" class="form-label">Keterangan:</label>
@@ -125,7 +125,7 @@
                     <div class="mb-3">
                       <label for="id_order" class="form-label">ID Order:</label>
                       <select class="form-control form-select-lg" name="id_order" id="id_order" required>
-                        <option value="{{ $record->id_order }}">{{ $record->dataOrder->id_order }}</option>
+                        <option value="{{ $record->id_order }}">{{ $record->detailOrder->id_detailorder }}</option>
                         @foreach ($dataOrder as $item)
                         <option value="{{ $item->id }}">{{ $item->id_detailorder }}</option>
                         @endforeach
@@ -133,12 +133,12 @@
                     </div>
                     <div class="mb-3">
                       <label for="jam_mulai" class="form-label">Jam Mulai:</label>
-                      <input type="datetime" class="form-control" id="jam_mulai" name="jam_mulai"
+                      <input type="datetime-local" class="form-control" id="jam_mulai" name="jam_mulai"
                         value="{{ $record->jam_mulai }}" required>
                     </div>
                     <div class="mb-3">
                       <label for="jam_selesai" class="form-label">Jam Selesai:</label>
-                      <input type="datetime" class="form-control" id="jam_selesai" name="jam_selesai"
+                      <input type="datetime-local" class="form-control" id="jam_selesai" name="jam_selesai"
                         value="{{ $record->jam_selesai }}" required>
                     </div>
                     <div class="mb-3">
@@ -286,8 +286,6 @@
                         <td>
                           <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
                             data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
-                          <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
-                            data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
                           <a href="{{ route('Pemberitahuan Kegiatan') }}?export=pdf-detail&id={{ $record->id }}"
                             class='btn btn-primary btn-sm' style='width: 30px; height: 30px;' target='_blank'
                             role='button'><i class='fas fa-print'></i></a>

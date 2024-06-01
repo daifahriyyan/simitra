@@ -74,7 +74,7 @@
                     <div class="mb-3">
                       <label for="id_ceklist" class="form-label">ID Ceklis:</label>
                       <input type="text" class="form-control" id="id_ceklist" name="id_ceklist"
-                        value="L00{{ $ceklist->count() + 1 }}" required>
+                        value="L00{{ $ceklist->count() + 1 }}" required readonly>
                     </div>
                     <div class="mb-3">
                       <label for="id_order" class="form-label">ID Order:</label>
@@ -86,10 +86,10 @@
                         @endforeach
                       </select>
                     </div>
-                    <div class="mb-3">
+                    {{-- <div class="mb-3">
                       <label for="tanggal_order" class="form-label">Tanggal Order:</label>
                       <input type="date" class="form-control" id="tanggal_order" name="tanggal_order" required>
-                    </div>
+                    </div> --}}
                     <div class="mb-3">
                       <label for="ceklist_fumigasi" class="form-label">Ceklist Fumigasi:</label>
                       <input type="file" class="form-control" id="ceklist_fumigasi" name="ceklist_fumigasi"
@@ -121,24 +121,24 @@
                     @method('put')@csrf
                     <div class="mb-3">
                       <label for="id_ceklist" class="form-label">ID Ceklis:</label>
-                      <input type="text" class="form-control" id="id_ceklist" name="id_ceklist" readonly
-                        value="{{ $record->id_ceklist }}" required>
+                      <input type="text" class="form-control" id="id_ceklist" name="id_ceklist"
+                        value="{{ $record->id_ceklist }}" required readonly>
                     </div>
                     <div class="mb-3">
                       <label for="id_order" class="form-label">ID Order:</label>
                       {{-- <input type="number" class="form-control" id="id_order" name="id_order" required> --}}
                       <select class="form-control form-select-lg" name="id_order" id="id_order" required>
-                        <option value="{{ $record->id_order }}">{{ $record->dataOrder->id_order }}</option>
+                        <option value="{{ $record->id_order }}">{{ $record->detailOrder->id_detailorder }}</option>
                         @foreach ($dataOrder as $item)
                         <option value="{{ $item->id }}">{{ $item->id_detailorder }}</option>
                         @endforeach
                       </select>
                     </div>
-                    <div class="mb-3">
+                    {{-- <div class="mb-3">
                       <label for="tanggal_order" class="form-label">Tanggal Order:</label>
                       <input type="date" class="form-control" id="tanggal_order" name="tanggal_order"
                         value="{{ $record->tanggal_order }}" required>
-                    </div>
+                    </div> --}}
                     <div class="mb-3">
                       <label for="ceklist_fumigasi" class="form-label">Ceklist Fumigasi:</label>
                       <input type="file" class="form-control" id="ceklist_fumigasi" name="ceklist_fumigasi"
@@ -287,7 +287,7 @@
                           <a href='{{ asset("storage/ceklist_fumigasi/$record->ceklist_fumigasi") }}' target="_blank">{{
                             $record->ceklist_fumigasi }}</a>
                         </td>
-                        <td>{{ $record->tanggal_order }}</td>
+                        <td>{{ $record->detailOrder->dataOrder->tanggal_order }}</td>
                         <td>
                           <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
                             data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
@@ -303,37 +303,38 @@
               </div>
             </div>
           </div>
-          <footer>
-            <p id="tanggalJam"
-              style="font-size: 12px; margin: 0; justify-content: flex-end; display: flex; background-color: #f8f9fa;">
-            </p>
-          </footer>
         </div>
       </div>
+      <footer>
+        <p id="tanggalJam"
+          style="font-size: 12px; margin: 0; justify-content: flex-end; display: flex; background-color: #f8f9fa;">
+        </p>
+      </footer>
     </div>
+  </div>
 
-    <!-- Scroll to top -->
-    <a class="scroll-to-top rounded" href="#page-top">
-      <i class="fas fa-angle-up"></i>
-    </a>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/js/bootstrap.bundle.min.js"></script>
-    <script src="//cdn.datatables.net/2.0.3/js/dataTables.min.js"></script>
-    <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js')}}"></script>
-    <script src="{{ asset('js/simitra.min.js') }}"></script>
-    <script src="{{ asset('vendor/chart.js/Chart.min.js') }}"></script>
-    <script src="{{ asset('js/demo/chart-area-demo.js') }}"></script>
-    <!-- Page level plugins -->
-    <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+  <!-- Scroll to top -->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/js/bootstrap.bundle.min.js"></script>
+  <script src="//cdn.datatables.net/2.0.3/js/dataTables.min.js"></script>
+  <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+  <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js')}}"></script>
+  <script src="{{ asset('js/simitra.min.js') }}"></script>
+  <script src="{{ asset('vendor/chart.js/Chart.min.js') }}"></script>
+  <script src="{{ asset('js/demo/chart-area-demo.js') }}"></script>
+  <!-- Page level plugins -->
+  <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
+  <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
 
-    <!-- Script Tanggal -->
-    <script>
-      $(document).ready(function() {
+  <!-- Script Tanggal -->
+  <script>
+    $(document).ready(function() {
         $('#dataTableHover').DataTable();
       });
 
@@ -374,8 +375,8 @@
       // Hapus elemen <a> setelah proses download selesai
       document.body.removeChild(a);
     }
-    </script>
-    <!-- Script Tanggal -->
+  </script>
+  <!-- Script Tanggal -->
 </body>
 
 </html>

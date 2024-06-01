@@ -302,6 +302,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/laporan-keuangan/posisi-keuangan', [LapKeuController::class, 'posKeu'])->name('Posisi Keuangan');
 
     Route::post('/dashboard/laporan-keuangan/posting-laba-rugi', [LapKeuController::class, 'postingLabaRugi'])->name('Posting Laba Rugi');
+    Route::post('/dashboard/laporan-keuangan/posting-hpp', [LapKeuController::class, 'postingHPP'])->name('Posting HPP');
 
 
     /////////////                Users                  //////////////

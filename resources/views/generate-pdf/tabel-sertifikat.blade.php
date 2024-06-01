@@ -107,73 +107,73 @@
       <table>
         <tr>
           <th>Id Sertifikat</th>
-          <th>Id Reg</th>
+          {{-- <th>Id Reg</th> --}}
           <th>Target of Fumigation</th>
           <th>Commodity</th>
           <th>Consignment</th>
           <th>Country</th>
-          <th>Port of Loading</th>
+          {{-- <th>Port of Loading</th> --}}
           <th>Destination</th>
           <th>Id Order</th>
           <th>Id Detail Order</th>
           <th>Nama Customer</th>
-          <th>Telp Customer</th>
+          {{-- <th>Telp Customer</th> --}}
           <th>ATTN</th>
           <th>TIN</th>
           <th>Id Importer</th>
-          <th>Nama Importer</th>
+          {{-- <th>Nama Importer</th>
           <th>Alamat Importer</th>
-          <th>Telp Importer</th>
-          <th>Fax Importer</th>
+          <th>Telp Importer</th> --}}
+          {{-- <th>Fax Importer</th>
           <th>USCI Importer</th>
-          <th>PIC Importer</th>
-          <th>Id Recordsheet</th>
+          <th>PIC Importer</th> --}}
+          {{-- <th>Id Recordsheet</th>
           <th>Tanggal Selesai</th>
           <th>Daff Prescribed Doses Rate</th>
           <th>Forecast Minimum Temperature</th>
           <th>Exposure Period</th>
           <th>Applied Dose Rate</th>
           <th>Fumigation Conducted</th>
-          <th>Container</th>
+          <th>Container</th> --}}
           <th>Wrapping</th>
           <th>Tanggal Sertif</th>
-          <th>No Reg</th>
+          {{-- <th>No Reg</th> --}}
           <th>Status</th>
         </tr>
         @foreach ($sertifikat as $record)
         <tr>
           <td>{{ $record->id_sertif }}</td>
-          <td>{{ $record->id_reg }}</td>
+          {{-- <td>{{ $record->id_reg }}</td> --}}
           <td>{{ $record->target }}</td>
           <td>{{ $record->detailOrder->commodity }}</td>
           <td>{{ $record->consignment }}</td>
           <td>{{ $record->country }}</td>
-          <td>{{ $record->pol }}</td>
+          {{-- <td>{{ $record->pol }}</td> --}}
           <td>{{ $record->detailOrder->destination }}</td>
           <td>{{ $record->detailOrder->dataOrder->id_order }}</td>
           <td>{{ $record->detailOrder->id_detailorder }}</td>
           <td>{{ $record->detailOrder->dataOrder->dataCustomer->nama_customer }}</td>
-          <td>{{ $record->detailOrder->dataOrder->dataCustomer->telepon_customer }}</td>
+          {{-- <td>{{ $record->detailOrder->dataOrder->dataCustomer->telepon_customer }}</td> --}}
           <td>{{ $record->attn }}</td>
           <td>{{ $record->tin }}</td>
           <td>{{ $record->dataImporter->id_importer }}</td>
-          <td>{{ $record->dataImporter->nama_importer }}</td>
+          {{-- <td>{{ $record->dataImporter->nama_importer }}</td>
           <td>{{ $record->dataImporter->alamat_importer }}</td>
-          <td>{{ $record->dataImporter->telp_importer }}</td>
-          <td>{{ $record->dataImporter->fax }}</td>
+          <td>{{ $record->dataImporter->telp_importer }}</td> --}}
+          {{-- <td>{{ $record->dataImporter->fax }}</td>
           <td>{{ $record->dataImporter->usci }}</td>
-          <td>{{ $record->dataImporter->pic }}</td>
-          <td>{{ $record->dataRecordsheet->id_recordsheet }}</td>
+          <td>{{ $record->dataImporter->pic }}</td> --}}
+          {{-- <td>{{ $record->dataRecordsheet->id_recordsheet }}</td>
           <td>{{ $record->dataRecordsheet->tanggal_selesai }}</td>
           <td>{{ $record->dataRecordsheet->daff_prescribed_doses_rate }}</td>
           <td>{{ $record->dataRecordsheet->forecast_minimum_temperature }}</td>
           <td>{{ $record->dataRecordsheet->exposure_period }}</td>
           <td>{{ $record->dataRecordsheet->applied_dose_rate }}</td>
           <td>{{ $record->dataRecordsheet->dokumen_metil_recordsheet }}</td>
-          <td>{{ $record->detailOrder->container }}</td>
+          <td>{{ $record->detailOrder->container }}</td> --}}
           <td>{{ $record->wrapping }}</td>
           <td>{{ $record->tanggal_sertif }}</td>
-          <td>{{ $record->no_reg }}</td>
+          {{-- <td>{{ $record->no_reg }}</td> --}}
           <td>
             <?php
               if($record->detailOrder->verifikasi <= 3){ 
@@ -188,7 +188,7 @@
       </table>
     </div>
     <br>
-    <div class="signature" style="text-align: right; margin-left: 400px">
+    <div class="signature" style="text-align: right; margin-left: 700px">
       <table>
         <tr>
           <th>Semarang, {{ date('d M Y') }}</th>

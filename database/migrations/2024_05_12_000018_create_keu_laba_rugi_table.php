@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('keu_laba_rugi', function (Blueprint $table) {
             $table->id();
             $table->float('jumlah_laba_rugi', 65, 2);
-            $table->date('tanggal_laporan');
+            $table->float('beban_pajak_penghasilan', 65, 2);
+            $table->string('bulan');
+            $table->string('tahun');
             $table->date('tanggal_posting');
             $table->timestamps();
         });
@@ -25,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('keu_laba_rugis');
+        Schema::dropIfExists('keu_laba_rugi');
     }
 };

@@ -50,6 +50,6 @@ class User extends Authenticatable
 
     public function dataCustomer()
     {
-        return $this->belongsTo(DataCustomer::class, 'id', 'id');
+        return $this->belongsTo(DataCustomer::class, 'id_customer', 'id_customer');
     }
 }

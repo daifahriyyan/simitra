@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Throwable;
 use App\Models\DataOrder;
 use App\Models\DataHargar;
+use App\Models\Notifikasi;
 use App\Models\DetailOrder;
 use App\Models\DataCustomer;
 use Illuminate\Http\Request;
@@ -63,6 +64,14 @@ class DataOrderController extends Controller
                 DetailOrder::where('id', request()->get('verif'))->update([
                     'verifikasi' => 1
                 ]);
+                
+                // Menambahkan Notifikasi
+                Notifikasi::create([
+                    'keterangan' => "Terdapat Order no.".request()->id_detailorder."untuk dicek kelayakan kontainernya",
+                    'is_read' => 'N',
+                    'posisi' => 'Operasional',
+                ]);
+        
             }
             if (request()->get('reject') !== null) {
                 DetailOrder::where('id', request()->get('reject'))->update([

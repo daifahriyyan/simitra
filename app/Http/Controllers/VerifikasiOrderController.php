@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Throwable;
 use App\Models\DataOrder;
+use App\Models\Notifikasi;
 use App\Models\DetailOrder;
 use Illuminate\Http\Request;
 use App\Models\VerifikasiOrder;
@@ -62,6 +63,15 @@ class VerifikasiOrderController extends Controller
                 DetailOrder::where('id', request()->get('verif'))->update([
                     'verifikasi' => 2
                 ]);
+
+                $id_detailorder = DetailOrder::where('id', request()->get('verif'))->get()->first()->id_detailorder;
+                
+                // Menambahkan Notifikasi
+                Notifikasi::create([
+                    'keterangan' => "Order no.".$id_detailorder." telah diverifikasi",
+                    'is_read' => 'N',
+                    'posisi' => 'Administrasi',
+                ]);
             }
             if (request()->get('reject') !== null) {
                 DetailOrder::where('id', request()->get('reject'))->update([
@@ -98,7 +108,6 @@ class VerifikasiOrderController extends Controller
             'id_order' => $request['id_order'],
             'waktu' => $request['waktu'],
             'tujuan' => $request['tujuan'],
-            'destination' => $request['destination'],
             'packing' => $request['packing'],
             'kondisi_status' => $request['kondisi_status'],
             'place_fumigation' => $request['place_fumigation'],
@@ -134,7 +143,6 @@ class VerifikasiOrderController extends Controller
             'id_order' => $request['id_order'],
             'waktu' => $request['waktu'],
             'tujuan' => $request['tujuan'],
-            'destination' => $request['destination'],
             'packing' => $request['packing'],
             'kondisi_status' => $request['kondisi_status'],
             'place_fumigation' => $request['place_fumigation'],

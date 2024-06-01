@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DataHargar;
 use Throwable;
 use App\Models\Invoice;
 use App\Models\DataOrder;
@@ -21,14 +22,24 @@ class RekapPenjualanController extends Controller
           return redirect()->route('Home');
           
         } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Administrasi') {
-            if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+            if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir) && isset(request()->volume)) {
                 $tanggalMulai = request()->tanggalMulai;
                 $tanggalAkhir = request()->tanggalAkhir;
-                $rekapPenjualan = RekapPenjualan::whereHas('invoice', function ($query) use ($tanggalMulai, $tanggalAkhir) {
-                    $query->whereBetween('tanggal_invoice', [$tanggalMulai, $tanggalAkhir]);
+                $volume = request()->volume;
+                $rekapPenjualan = Invoice::whereHas('dataHarga', function ($query) use ($volume) {
+                    $query->where('volume', $volume);
+                })->whereBetween('tanggal_invoice', [$tanggalMulai, $tanggalAkhir])->get();
+            } else if(isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+                $tanggalMulai = request()->tanggalMulai;
+                $tanggalAkhir = request()->tanggalAkhir;
+                $rekapPenjualan = Invoice::whereBetween('tanggal_invoice', [$tanggalMulai, $tanggalAkhir])->get();
+            } else if (isset(request()->volume)) {
+                $volume = request()->volume;
+                $rekapPenjualan = Invoice::whereHas('dataHarga', function ($query) use ($volume) {
+                    $query->where('volume', $volume);
                 })->get();
             } else {
-                $rekapPenjualan = RekapPenjualan::get();
+                $rekapPenjualan = Invoice::get();
             }
     
             if (request()->get('export') == 'pdf') {
@@ -48,9 +59,11 @@ class RekapPenjualanController extends Controller
             return view('pages.penerimaan-jasa.rekap-penjualan', [
                 'rekapPenjualan' => $rekapPenjualan,
                 'id_rekapPenjualan' => RekapPenjualan::latest()->get()->first()->id ?? 1,
+                'dataHarga' => DataHargar::get(),
                 'invoice' => Invoice::get(),
                 'dataOrder' => DataOrder::get(),
-                'jumlahTotalPenjualan' => 0
+                'jumlahTotalPenjualan' => 0,
+                'jumlahJumlahDibayar' => 0
             ]);
 
         } else {

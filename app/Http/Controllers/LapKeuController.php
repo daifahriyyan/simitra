@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\KeuHpp;
+use App\Models\Invoice;
 use App\Models\KeuAkun;
 use App\Models\DataHargar;
 use App\Models\DataHppFeet;
@@ -42,7 +44,12 @@ class LapKeuController extends Controller
             $kode_akun = KeuAkun::where('kode_akun', request()->nama_akun)->get()->first()->id ?? 1;
             $akunSelected = KeuAkun::where('kode_akun', request()->nama_akun ?? '1110')->get()->first();
             if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
-                $jurnalUmum = KeuDetailJurnal::where('kode_akun', $kode_akun)->whereBetween('created_at', [request()->tanggalMulai, request()->tanggalAkhir])->get();
+                $tanggalMulai = request()->tanggalMulai;
+                $tanggalAkhir = request()->tanggalAkhir;
+                
+                $jurnalUmum = KeuDetailJurnal::where('kode_akun', $kode_akun)->whereHas('jurnal', function ($query) use ($tanggalMulai, $tanggalAkhir) {
+                    $query->whereBetween('tanggal_jurnal', [$tanggalMulai, $tanggalAkhir]);
+                })->get();
             } else {
                 $jurnalUmum = KeuDetailJurnal::where('kode_akun', $kode_akun)->get();
             }
@@ -127,16 +134,16 @@ class LapKeuController extends Controller
         } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Keuangan') {
             if (isset(request()->bulan) && isset(request()->tahun)) {
                 $hpp_sesungguhnya = HppSesungguhnya::whereMonth('tanggal_input', request()->bulan)->whereYear('tanggal_input', request()->tahun)->get();
-                $DataHarga = DataHargar::whereMonth('created_at', request()->bulan)->whereYear('created_at', request()->tahun)->get();
+                $DataHarga = Invoice::whereMonth('created_at', request()->bulan)->whereYear('created_at', request()->tahun)->get()->first();
             } else if (isset(request()->tahun)) {
                 $hpp_sesungguhnya = HppSesungguhnya::whereYear('tanggal_input', request()->tahun)->get();
-                $DataHarga = DataHargar::whereYear('created_at', request()->tahun)->get();
+                $DataHarga = Invoice::whereYear('created_at', request()->tahun)->get()->first();
             } else if (isset(request()->bulan)) {
                 $hpp_sesungguhnya = HppSesungguhnya::whereMonth('tanggal_input', request()->bulan)->get();
-                $DataHarga = DataHargar::whereMonth('created_at', request()->bulan)->get();
+                $DataHarga = Invoice::whereMonth('created_at', request()->bulan)->get()->first();
             } else {
                 $hpp_sesungguhnya = HppSesungguhnya::get();
-                $DataHarga = DataHargar::get();
+                $DataHarga = Invoice::get()->first();
             }
     
             if (request()->get('export') == 'pdf') {
@@ -302,13 +309,11 @@ class LapKeuController extends Controller
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function postingLabaRugi(Request $request)
     {
         KeuLabaRugi::create([
             'jumlah_laba_rugi' => $request->jumlah_laba_rugi,
+            'beban_pajak_penghasilan' => $request->beban_pajak_penghasilan,
             'bulan' => $request->bulan,
             'tahun' => $request->tahun,
             'tanggal_posting' => date('Y-m-d'),
@@ -317,11 +322,15 @@ class LapKeuController extends Controller
         return redirect()->route('Laporan Laba Rugi');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function postingHPP(Request $request)
     {
-        //
+        KeuHpp::create([
+            'jumlah_hpp' => $request->jumlah_hpp,
+            'bulan' => $request->bulan,
+            'tahun' => $request->tahun,
+            'tanggal_posting' => date('Y-m-d'),
+        ]);
+
+        return redirect()->route('Harga Pokok Penjualan');
     }
 }

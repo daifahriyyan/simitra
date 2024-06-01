@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\KeuAkun;
 use App\Models\KeuJurnal;
+use App\Models\Notifikasi;
 use App\Models\KeuSupplier;
 use App\Models\KeuPembelian;
 use Illuminate\Http\Request;
@@ -219,6 +220,15 @@ class PembelianController extends Controller
                 'harga_saldo' => $harga_saldo,
                 'jumlah_saldo' => $jumlah_saldo,
                 'total_saldo' => $total_saldo,
+            ]);
+
+            $nama_persediaan = DataPersediaan::where('id', $request['id_persediaan'])->get()->first()->nama_persediaan;
+    
+            // Menambahkan Notifikasi
+            Notifikasi::create([
+                'keterangan' => "Telah ditambahkan Pembelian $nama_persediaan, cek Kartu Persediaan",
+                'is_read' => 'N',
+                'posisi' => 'Operasional',
             ]);
         }
 

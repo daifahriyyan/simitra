@@ -197,7 +197,7 @@
                       </tr>
                       @foreach ($asetTetap as $record)
                       @php
-                      $jumlah_aset_tetap += $record->saldo_akun;
+                      $jumlah_aset_tetap -= $record->saldo_akun;
                       @endphp
                       <tr>
                         <td>{{ $record->nama_akun }}</td>
@@ -212,7 +212,7 @@
                       </tr>
                       @endif
                       <tr>
-                        <th>Jumlah Aktiva</th>
+                        <th>Total Aktiva</th>
                         <th></th>
                         <th>Rp. {{ number_format($jumlah_aset_tetap + $jumlah_aset_lancar) }}</th>
                       </tr>
@@ -247,6 +247,12 @@
                       </tr>
                       @endforeach
                       <tr>
+                        <td>Hutang Pajak</td>
+                        <td>Rp. {{ number_format($labaRugi->beban_pajak_penghasilan) }}</td>
+                        <td></td>
+                      </tr>
+                      <tr>
+                        <?php $jumlah_kewajiban_jkpdk = $jumlah_kewajiban_jkpdk + $labaRugi->beban_pajak_penghasilan ?>
                         <th>Jumlah Kewajiban Jangka Pendek</th>
                         <th></th>
                         <th>Rp. {{ number_format($jumlah_kewajiban_jkpdk) }}</th>
@@ -296,7 +302,7 @@
                       </tr>
                       @endforeach
                       <tr>
-                        <td>Laba / Rugi</td>
+                        <td>Laba / Rugi Bersih</td>
                         <td>Rp. {{ number_format($labaRugi->jumlah_laba_rugi) }}</td>
                         <td></td>
                       </tr>
@@ -307,7 +313,7 @@
                       </tr>
                       @endif
                       <tr>
-                        <th>Jumlah Passiva</th>
+                        <th>Total Passiva</th>
                         <th></th>
                         <th>Rp. {{ number_format($jumlah_ekuitas + $labaRugi->jumlah_laba_rugi + $jumlah_kewajiban_jkpjg
                           + $jumlah_kewajiban_jkpdk) }}

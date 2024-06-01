@@ -99,233 +99,221 @@
                         <option value="Import">Import</option>
                       </select>
                     </div>
-                    <div class="mb-3">
-                      <label for="destination" class="form-label">Destination:</label>
-                      <input type="text" class="form-control" id="destination" name="destination" required>
-                    </div>
-                    <div class="mb-3">
-                      <label for="kondisi_status" class="form-label">Kondisi:</label>
-                      <select class="form-control" id="kondisi_status" name="kondisi_status" required>
-                        <option value="">Pilih Kondisi</option>
-                        <option value="Finish">Finish</option>
-                        <option value="Unfinish">Unfinish</option>
-                        <option value="Asalan">Asalan</option>
-                        <option value="Sudah Diproses">Sudah Diproses</option>
-                      </select>
-                    </div>
-                    <div class="mb-3">
-                      <label for="packing" class="form-label">Packing:</label>
-                      <select class="form-control" id="packing" name="packing" required>
-                        <option value="">Pilih Packing</option>
-                        <option value="Plastik Wrapping">Plastik Wrapping</option>
-                        <option value="Karung Goni">Karung Goni</option>
-                        <option value="Single Face">Single Face</option>
-                        <option value="Karung Plastik">Karung Plastik</option>
-                        <option value="Lainnya">Lainnya</option>
-                      </select>
-                    </div>
-                    <div class="mb-3">
-                      <label for="place_fumigation" class="form-label">Tempat Fumigasi:</label>
-                      <select class="form-control" id="place_fumigation" name="place_fumigation" required>
-                        <option value="">Pilih Tempat Fumigasi</option>
-                        <option value="Memenuhi Syarat">Memenuhi Syarat</option>
-                        <option value="Tidak Memenuhi Syarat">Tidak Memenuhi Syarat</option>
-                      </select>
-                    </div>
-                    <div class="mb-3">
-                      <label for="kesimpulan" class="form-label">Kesimpulan:</label>
-                      <select class="form-control" id="kesimpulan" name="kesimpulan" required>
-                        <option value="">Pilih Kesimpulan</option>
-                        <option value="Bisa Dilakukan Fumigasi">Bisa Dilakukan Fumigasi</option>
-                        <option value="Tidak Bisa Dilakukan Fumigasi">Tidak Bisa Dilakukan Fumigasi</option>
-                      </select>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                      <button type="submit" class="btn btn-primary">Simpan</button>
-                    </div>
-                  </form>
+                    <label for="kondisi_status" class="form-label">Kondisi:</label>
+                    <select class="form-control" id="kondisi_status" name="kondisi_status" required>
+                      <option value="">Pilih Kondisi</option>
+                      <option value="Finish">Finish</option>
+                      <option value="Unfinish">Unfinish</option>
+                      <option value="Asalan">Asalan</option>
+                      <option value="Sudah Diproses">Sudah Diproses</option>
+                    </select>
                 </div>
+                <div class="mb-3">
+                  <label for="packing" class="form-label">Packing:</label>
+                  <select class="form-control" id="packing" name="packing" required>
+                    <option value="">Pilih Packing</option>
+                    <option value="Plastik Wrapping">Plastik Wrapping</option>
+                    <option value="Karung Goni">Karung Goni</option>
+                    <option value="Single Face">Single Face</option>
+                    <option value="Karung Plastik">Karung Plastik</option>
+                    <option value="Lainnya">Lainnya</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="place_fumigation" class="form-label">Tempat Fumigasi:</label>
+                  <select class="form-control" id="place_fumigation" name="place_fumigation" required>
+                    <option value="">Pilih Tempat Fumigasi</option>
+                    <option value="Memenuhi Syarat">Memenuhi Syarat</option>
+                    <option value="Tidak Memenuhi Syarat">Tidak Memenuhi Syarat</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="kesimpulan" class="form-label">Kesimpulan:</label>
+                  <select class="form-control" id="kesimpulan" name="kesimpulan" required>
+                    <option value="">Pilih Kesimpulan</option>
+                    <option value="Bisa Dilakukan Fumigasi">Bisa Dilakukan Fumigasi</option>
+                    <option value="Tidak Bisa Dilakukan Fumigasi">Tidak Bisa Dilakukan Fumigasi</option>
+                  </select>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                  <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+                </form>
               </div>
             </div>
           </div>
-          @foreach ($verifikasi as $record)
-          <!-- Modal Edit Data -->
-          <div class="modal fade" id="editModal{{ $record->id }}" tabindex="-1" aria-labelledby="editModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="editModalLabel">Edit Data Verifikasi Order</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <form method="POST" action="{{ route('Ubah Verifikasi Order', $record->id) }}">
-                    @csrf @method('put')
-                    <div class="mb-3">
-                      <label for="id_verifikasi" class="form-label">ID Verifikasi:</label>
-                      <input type="text" class="form-control" id="id_verifikasi" name="id_verifikasi"
-                        value="VO00{{ $verifikasi->count() + 1 }}" readonly required>
-                    </div>
-                    <div class="mb-3">
-                      <label for="id_order" class="form-label">ID Order:</label>
-                      {{-- <input type="number" class="form-control" id="id_order" name="id_order" required> --}}
-                      <select class="form-control form-select-lg" name="id_order" id="id_order" required>
-                        <option value="{{ $record->id_order }}">{{ $record->detailOrder->id_detailorder }}</option>
-                        @foreach ($dataOrder as $item)
-                        <option value="{{ $item->id }}">{{ $item->id_detailorder }}</option>
-                        @endforeach
-                      </select>
-                    </div>
-                    <div class="mb-3">
-                      <label for="waktu" class="form-label">Waktu:</label>
-                      <select class="form-control" id="waktu" name="waktu" required>
-                        <option value="{{ $record->waktu }}">{{ $record->waktu }}</option>
-                        <option value="Cukup">Cukup</option>
-                        <option value="Tidak Cukup">Tidak Cukup</option>
-                      </select>
-                    </div>
-                    <div class="mb-3">
-                      <label for="tujuan" class="form-label">Tujuan:</label>
-                      <select class="form-control" id="tujuan" name="tujuan" required>
-                        <option value="{{ $record->tujuan }}">{{ $record->tujuan }}</option>
-                        <option value="Export">Export</option>
-                        <option value="Import">Import</option>
-                      </select>
-                    </div>
-                    <div class="mb-3">
-                      <label for="destination" class="form-label">Destination:</label>
-                      <input type="text" class="form-control" id="destination" name="destination"
-                        value="{{ $record->destination }}" required>
-                    </div>
-                    <div class="mb-3">
-                      <label for="kondisi_status" class="form-label">Kondisi:</label>
-                      <select class="form-control" id="kondisi_status" name="kondisi_status" required>
-                        <option value="{{ $record->kondisi_status }}">{{ $record->kondisi_status }}</option>
-                        <option value="Finish">Finish</option>
-                        <option value="Unfinish">Unfinish</option>
-                        <option value="Asalan">Asalan</option>
-                        <option value="Sudah Diproses">Sudah Diproses</option>
-                      </select>
-                    </div>
-                    <div class="mb-3">
-                      <label for="packing" class="form-label">Packing:</label>
-                      <select class="form-control" id="packing" name="packing" required>
-                        <option value="{{ $record->packing }}">{{ $record->packing }}</option>
-                        <option value="Plastik Wrapping">Plastik Wrapping</option>
-                        <option value="Karung Goni">Karung Goni</option>
-                        <option value="Single Face">Single Face</option>
-                        <option value="Karung Plastik">Karung Plastik</option>
-                        <option value="Lainnya">Lainnya</option>
-                      </select>
-                    </div>
-                    <div class="mb-3">
-                      <label for="place_fumigation" class="form-label">Tempat Fumigasi:</label>
-                      <select class="form-control" id="place_fumigation" name="place_fumigation" required>
-                        <option value="{{ $record->place_fumigation }}">{{ $record->place_fumigation }}</option>
-                        <option value="Memenuhi Syarat">Memenuhi Syarat</option>
-                        <option value="Tidak Memenuhi Syarat">Tidak Memenuhi Syarat</option>
-                      </select>
-                    </div>
-                    <div class="mb-3">
-                      <label for="kesimpulan" class="form-label">Kesimpulan:</label>
-                      <select class="form-control" id="kesimpulan" name="kesimpulan" required>
-                        <option value="{{ $record->kesimpulan }}">{{ $record->kesimpulan }}</option>
-                        <option value="Bisa Dilakukan Fumigasi">Bisa Dilakukan Fumigasi</option>
-                        <option value="Tidak Bisa Dilakukan Fumigasi">Tidak Bisa Dilakukan Fumigasi</option>
-                      </select>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                      <button type="submit" class="btn btn-primary">Update</button>
-                    </div>
-                  </form>
-                </div>
+        </div>
+        @foreach ($verifikasi as $record)
+        <!-- Modal Edit Data -->
+        <div class="modal fade" id="editModal{{ $record->id }}" tabindex="-1" aria-labelledby="editModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Edit Data Verifikasi Order</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-            </div>
-          </div>
-          <!-- Modal Delete -->
-          <div class="modal fade" id="deleteRecord{{ $record->id }}" tabindex="-1" aria-labelledby="deleteRecordLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content">
-                <form method="POST" action="{{ route('Hapus Verifikasi Order', $record->id) }}">
-                  @method('delete')@csrf
-                  <div class="modal-body">
-                    Apakah Anda sudah yakin ingin menghapus Data ini?
+              <div class="modal-body">
+                <form method="POST" action="{{ route('Ubah Verifikasi Order', $record->id) }}">
+                  @csrf @method('put')
+                  <div class="mb-3">
+                    <label for="id_verifikasi" class="form-label">ID Verifikasi:</label>
+                    <input type="text" class="form-control" id="id_verifikasi" name="id_verifikasi"
+                      value="VO00{{ $verifikasi->count() + 1 }}" readonly required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="id_order" class="form-label">ID Order:</label>
+                    {{-- <input type="number" class="form-control" id="id_order" name="id_order" required> --}}
+                    <select class="form-control form-select-lg" name="id_order" id="id_order" required>
+                      <option value="{{ $record->id_order }}">{{ $record->detailOrder->id_detailorder }}</option>
+                      @foreach ($dataOrder as $item)
+                      <option value="{{ $item->id }}">{{ $item->id_detailorder }}</option>
+                      @endforeach
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="waktu" class="form-label">Waktu:</label>
+                    <select class="form-control" id="waktu" name="waktu" required>
+                      <option value="{{ $record->waktu }}">{{ $record->waktu }}</option>
+                      <option value="Cukup">Cukup</option>
+                      <option value="Tidak Cukup">Tidak Cukup</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="tujuan" class="form-label">Tujuan:</label>
+                    <select class="form-control" id="tujuan" name="tujuan" required>
+                      <option value="{{ $record->tujuan }}">{{ $record->tujuan }}</option>
+                      <option value="Export">Export</option>
+                      <option value="Import">Import</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="kondisi_status" class="form-label">Kondisi:</label>
+                    <select class="form-control" id="kondisi_status" name="kondisi_status" required>
+                      <option value="{{ $record->kondisi_status }}">{{ $record->kondisi_status }}</option>
+                      <option value="Finish">Finish</option>
+                      <option value="Unfinish">Unfinish</option>
+                      <option value="Asalan">Asalan</option>
+                      <option value="Sudah Diproses">Sudah Diproses</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="packing" class="form-label">Packing:</label>
+                    <select class="form-control" id="packing" name="packing" required>
+                      <option value="{{ $record->packing }}">{{ $record->packing }}</option>
+                      <option value="Plastik Wrapping">Plastik Wrapping</option>
+                      <option value="Karung Goni">Karung Goni</option>
+                      <option value="Single Face">Single Face</option>
+                      <option value="Karung Plastik">Karung Plastik</option>
+                      <option value="Lainnya">Lainnya</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="place_fumigation" class="form-label">Tempat Fumigasi:</label>
+                    <select class="form-control" id="place_fumigation" name="place_fumigation" required>
+                      <option value="{{ $record->place_fumigation }}">{{ $record->place_fumigation }}</option>
+                      <option value="Memenuhi Syarat">Memenuhi Syarat</option>
+                      <option value="Tidak Memenuhi Syarat">Tidak Memenuhi Syarat</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="kesimpulan" class="form-label">Kesimpulan:</label>
+                    <select class="form-control" id="kesimpulan" name="kesimpulan" required>
+                      <option value="{{ $record->kesimpulan }}">{{ $record->kesimpulan }}</option>
+                      <option value="Bisa Dilakukan Fumigasi">Bisa Dilakukan Fumigasi</option>
+                      <option value="Tidak Bisa Dilakukan Fumigasi">Tidak Bisa Dilakukan Fumigasi</option>
+                    </select>
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
                   </div>
                 </form>
               </div>
             </div>
           </div>
-          @endforeach
-          <!-- Modal Konfirmasi Logout -->
-          <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="logoutModalLabel">Konfirmasi Logout</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                  </button>
-                </div>
+        </div>
+        <!-- Modal Delete -->
+        <div class="modal fade" id="deleteRecord{{ $record->id }}" tabindex="-1" aria-labelledby="deleteRecordLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <form method="POST" action="{{ route('Hapus Verifikasi Order', $record->id) }}">
+                @method('delete')@csrf
                 <div class="modal-body">
-                  Apakah Anda Yakin Ingin Keluar dari Sistem?
+                  Apakah Anda sudah yakin ingin menghapus Data ini?
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                  <a href="login.html" class="btn btn-primary">Logout</a>
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-danger">Delete</button>
                 </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        @endforeach
+        <!-- Modal Konfirmasi Logout -->
+        <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="logoutModalLabel">Konfirmasi Logout</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                Apakah Anda Yakin Ingin Keluar dari Sistem?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <a href="login.html" class="btn btn-primary">Logout</a>
               </div>
             </div>
           </div>
-          <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
+        </div>
+        <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
 
-          <!-- Row -->
-          <div class="row">
-            <!-- DataTable with Hover -->
-            <div class="col-lg-12">
-              <div class="card mb-4">
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">Verifikasi Order</h6> <!-- EDIT NAMA -->
-                  <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                    <!-- Tombol Tambah dengan Icon -->
-                    <div>
-                      <button type="button" class="btn btn-sm btn-info" style='width: 70px; height: 30px;'
-                        data-bs-toggle="modal" data-bs-target="#addModal">
-                        Tambah
-                      </button>
-                    </div>
-                    <!-- Tombol Filter Tanggal dengan Icon -->
-                    <div class="input-group">
-                      <form action="{{ route('Verifikasi Order') }}">
-                        <input type="date" class="form-control-sm border-1" id="tanggalMulai"
-                          value="{{ request()->tanggalMulai }}" name="tanggalMulai"
-                          aria-describedby="tanggalMulaiLabel">
-                        <input type="date" class="form-control-sm border-1" id="tanggalAkhir"
-                          value="{{ request()->tanggalAkhir }}" name="tanggalAkhir"
-                          aria-describedby="tanggalAkhirLabel">
-                        <button type="subnit" class="btn btn-secondary btn-sm" style="width: 60px; height: 30px;">
-                          Filter
-                        </button>
-                      </form>
-                    </div>
-                    <!-- Tombol Cetak Tabel dengan Icon -->
-                    <div>
-                      <a href="{{ route('Verifikasi Order') }}?export=pdf{{ (request()->tanggalMulai)? '&tanggalMulai='.request()->tanggalMulai : '' }}{{ (request()->tanggalAkhir)? '&tanggalAkhir='.request()->tanggalAkhir : '' }}"
-                        class="btn btn-sm btn-warning" style='width: 60px; height: 30px;'>
-                        Cetak
-                      </a>
-                    </div>
+        <!-- Row -->
+        <div class="row">
+          <!-- DataTable with Hover -->
+          <div class="col-lg-12">
+            <div class="card mb-4">
+              <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Verifikasi Order</h6> <!-- EDIT NAMA -->
+                <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                  <!-- Tombol Tambah dengan Icon -->
+                  <div>
+                    <button type="button" class="btn btn-sm btn-info" style='width: 70px; height: 30px;'
+                      data-bs-toggle="modal" data-bs-target="#addModal">
+                      Tambah
+                    </button>
                   </div>
+                  <!-- Tombol Filter Tanggal dengan Icon -->
+                  <div class="input-group">
+                    <form action="{{ route('Verifikasi Order') }}">
+                      <input type="date" class="form-control-sm border-1" id="tanggalMulai"
+                        value="{{ request()->tanggalMulai }}" name="tanggalMulai" aria-describedby="tanggalMulaiLabel">
+                      <input type="date" class="form-control-sm border-1" id="tanggalAkhir"
+                        value="{{ request()->tanggalAkhir }}" name="tanggalAkhir" aria-describedby="tanggalAkhirLabel">
+                      <button type="subnit" class="btn btn-secondary btn-sm" style="width: 60px; height: 30px;">
+                        Filter
+                      </button>
+                    </form>
+                  </div>
+                  <!-- Tombol Cetak Tabel dengan Icon -->
+                  <div>
+                    <a href="{{ route('Verifikasi Order') }}?export=pdf{{ (request()->tanggalMulai)? '&tanggalMulai='.request()->tanggalMulai : '' }}{{ (request()->tanggalAkhir)? '&tanggalAkhir='.request()->tanggalAkhir : '' }}"
+                      class="btn btn-sm btn-warning" style='width: 60px; height: 30px;'>
+                      Cetak
+                    </a>
+                  </div>
+                </div>
 
-                  <!-- Skrip JavaScript untuk Filter Tanggal dan Cetak Tabel -->
-                  <script>
-                    function filterTanggal() {
+                <!-- Skrip JavaScript untuk Filter Tanggal dan Cetak Tabel -->
+                <script>
+                  function filterTanggal() {
                 var tanggalMulai = document.getElementById("tanggalMulai").value;
                 var tanggalAkhir = document.getElementById("tanggalAkhir").value;
                 
@@ -342,82 +330,89 @@
                 // Lakukan pencetakan sesuai dengan rentang tanggal yang dipilih
                 window.print();
             }
-                  </script>
-                </div>
+                </script>
+              </div>
 
-                <div class="table-responsive p-3">
-                  <table class="table align-items-center table-flush table-hover text-nowrap" id="dataTableHover">
-                    <!-- AWAL EDIT SESUAIKAN TABEL DATABASE -->
-                    <thead class="thead-light">
-                      <tr>
-                        <th>Id Verifikasi</th>
-                        <th>Id Order</th>
-                        <th>Id Order Container</th>
-                        <th>Tanggal Order</th>
-                        <th>Id Customer</th>
-                        <th>Nama Customer</th>
-                        <th>Alamat Customer</th>
-                        <th>Commodity</th>
-                        <th>Stuffing Date</th>
-                        <th>Closing Time</th>
-                        <th>Waktu</th>
-                        <th>Tujuan</th>
-                        <th>Destination</th>
-                        <th>Kondisi Status</th>
-                        <th>Packing</th>
-                        <th>Tempat Fumigasi</th>
-                        <th>Kesimpulan</th>
-                        <th>Aksi</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      @foreach ($verifikasi as $record)
-                      <tr>
-                        <td>{{ $record->id_verifikasi }}</td>
-                        <td>{{ $record->detailOrder->dataOrder->id_order }}</td>
-                        <td>{{ $record->detailOrder->id_detailorder }}</td>
-                        <td>{{ $record->detailOrder->dataOrder->tanggal_order }}</td>
-                        <td>{{ $record->detailOrder->dataOrder->dataCustomer->id_customer }}</td>
-                        <td>{{ $record->detailOrder->dataOrder->dataCustomer->nama_customer }}</td>
-                        <td>{{ $record->detailOrder->dataOrder->dataCustomer->alamat_customer }}</td>
-                        <td>{{ $record->detailOrder->commodity }}</td>
-                        <td>{{ $record->detailOrder->stuffing_date }}</td>
-                        <td>{{ $record->detailOrder->closing_time }}</td>
-                        <td>{{ $record->waktu }}</td>
-                        <td>{{ $record->tujuan }}</td>
-                        <td>{{ $record->destination }}</td>
-                        <td>{{ $record->kondisi_status }}</td>
-                        <td>{{ $record->packing }}</td>
-                        <td>{{ $record->place_fumigation }}</td>
-                        <td>{{ $record->kesimpulan }}</td>
-                        <td class="d-flex">
-                          <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
-                            data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
-                          <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
-                            data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
-                          <a href="{{ route('Verifikasi Order') }}?export=pdf-detail&id={{ $record->id }}"
-                            class='btn btn-primary btn-sm' style='width: 30px; height: 30px;' target='_blank'
-                            role='button'><i class='fas fa-print'></i></a>
-                          <a href="{{ route('Verifikasi Order') }}?verif={{ $record->id_order }}"
-                            class='btn btn-info btn-sm' style='width: 30px; height: 30px;'><i
-                              class='fas fa-check'></i></a>
-                          <a href="{{ route('Verifikasi Order') }}?reject={{ $record->id_order }}"
-                            class='btn btn-danger btn-sm' style='width: 30px; height: 30px;'><i
-                              class='fas fa-times'></i></a>
-                        </td>
-                      </tr>
-                      @endforeach
-                    </tbody>
-                    <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
-                  </table>
-                </div>
+              <div class="table-responsive p-3">
+                <table class="table align-items-center table-flush table-hover text-nowrap" id="dataTableHover">
+                  <!-- AWAL EDIT SESUAIKAN TABEL DATABASE -->
+                  <thead class="thead-light">
+                    <tr>
+                      <th>Id Verifikasi</th>
+                      <th>Id Order</th>
+                      <th>Id Order Container</th>
+                      <th>Tanggal Order</th>
+                      <th>Id Customer</th>
+                      <th>Nama Customer</th>
+                      <th>Alamat Customer</th>
+                      <th>Commodity</th>
+                      <th>Stuffing Date</th>
+                      <th>Closing Time</th>
+                      <th>Waktu</th>
+                      <th>Tujuan</th>
+                      <th>Destination</th>
+                      <th>Kondisi Status</th>
+                      <th>Packing</th>
+                      <th>Tempat Fumigasi</th>
+                      <th>Kesimpulan</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach ($verifikasi as $record)
+                    <tr>
+                      <td>{{ $record->id_verifikasi }}</td>
+                      <td>{{ $record->detailOrder->dataOrder->id_order }}</td>
+                      <td>{{ $record->detailOrder->id_detailorder }}</td>
+                      <td>{{ $record->detailOrder->dataOrder->tanggal_order }}</td>
+                      <td>{{ $record->detailOrder->dataOrder->dataCustomer->id_customer }}</td>
+                      <td>{{ $record->detailOrder->dataOrder->dataCustomer->nama_customer }}</td>
+                      <td>{{ $record->detailOrder->dataOrder->dataCustomer->alamat_customer }}</td>
+                      <td>{{ $record->detailOrder->commodity }}</td>
+                      <td>{{ $record->detailOrder->stuffing_date }}</td>
+                      <td>{{ $record->detailOrder->closing_time }}</td>
+                      <td>{{ $record->waktu }}</td>
+                      <td>{{ $record->tujuan }}</td>
+                      <td>{{ $record->detailOrder->destination }}</td>
+                      <td>{{ $record->kondisi_status }}</td>
+                      <td>{{ $record->packing }}</td>
+                      <td>{{ $record->place_fumigation }}</td>
+                      <td>{{ $record->kesimpulan }}</td>
+                      <td class="d-flex">
+                        <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
+                          data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
+                        {{-- <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
+                          data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button> --}}
+                        <a href="{{ route('Verifikasi Order') }}?export=pdf-detail&id={{ $record->id }}"
+                          class='btn btn-primary btn-sm' style='width: 30px; height: 30px;' target='_blank'
+                          role='button'><i class='fas fa-print'></i></a>
+                        <a href="{{ route('Verifikasi Order') }}?verif={{ $record->id_order }}"
+                          class='btn btn-info btn-sm' style='width: 30px; height: 30px;'><i
+                            class='fas fa-check'></i></a>
+                        <a href="{{ route('Verifikasi Order') }}?reject={{ $record->id_order }}"
+                          class='btn btn-danger btn-sm' style='width: 30px; height: 30px;'><i
+                            class='fas fa-times'></i></a>
+                      </td>
+                    </tr>
+                    @endforeach
+                  </tbody>
+                  <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
+                </table>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <!-- Footer -->
+      <footer>
+        <p id="tanggalJam"
+          style="font-size: 12px; margin: 0; justify-content: flex-end; display: flex; background-color: #f8f9fa;">
+        </p>
+      </footer>
+      <!-- Footer -->
     </div>
-  </div> <!-- Scroll to top -->
+  </div>
+  <!-- Scroll to top -->
   <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
   </a>

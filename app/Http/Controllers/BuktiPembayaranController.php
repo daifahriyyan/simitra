@@ -7,6 +7,7 @@ use App\Models\Invoice;
 use App\Models\KeuAkun;
 use App\Models\DataOrder;
 use App\Models\KeuJurnal;
+use App\Models\Notifikasi;
 use App\Models\DetailOrder;
 use Illuminate\Http\Request;
 use App\Models\BuktiPembayaran;
@@ -50,12 +51,20 @@ class BuktiPembayaranController extends Controller
             }
     
             if (request()->get('verif') !== null) {
-                DetailOrder::where('id', request()->get('verif'))->update([
+                $id_order = DataOrder::where('id', request()->get('verif'))->get()->first()->id_order;
+                DetailOrder::where('id_order', request()->get('verif'))->update([
                     'verifikasi' => 6
+                ]);
+                
+                // Menambahkan Notifikasi
+                Notifikasi::create([
+                    'keterangan' => "Pembayaran dari Order no.".$id_order." telah lunas, cek jurnal",
+                    'is_read' => 'N',
+                    'posisi' => 'Keuangan',
                 ]);
             }
             if (request()->get('reject') !== null) {
-                DetailOrder::where('id', request()->get('reject'))->update([
+                DetailOrder::where('id_order', request()->get('reject'))->update([
                     'verifikasi' => 6,
                     'is_reject' => '1'
                 ]);
@@ -121,6 +130,12 @@ class BuktiPembayaranController extends Controller
             $storeData->bukti_pembayaran = $fileBP;
             $storeData->save();
 
+            Notifikasi::create([
+                'keterangan' => 'Telah diupload Bukti Pembayaran, cek bukti dan Verifikasi Pelunasan',
+                'is_read' => 'N',
+                'posisi' => 'Administrasi',
+            ]);
+    
             return redirect()->back();
         }
     }

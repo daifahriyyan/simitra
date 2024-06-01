@@ -73,7 +73,7 @@
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="m-0 font-weight-bold text-primary">Laporan Laba Rugi</h6>
                   <div class="btn-group ml-auto" role="group" aria-label="Basic mixed styles example">
-                    <!-- Tombol Tambah dengan Icon -->
+                    <!-- Tombol Posting  -->
                     <div>
                       <form action="{{ route('Posting Laba Rugi') }}" method="POST" id="posting">
                         @csrf
@@ -242,16 +242,37 @@
                         <th></th>
                         <th>Rp. {{ number_format($jumlah_beban) }}</th>
                       </tr>
+                      <tr>
+                        {{-- identifikasi laba rugi operasional --}}
+                        <?php $labaRugiOperasional = ($jumlah_pendapatan - $total_hpp_sesungguhnya) - $jumlah_beban ?>
+                        <th>Laba/Rugi Operasional</th>
+                        <th></th>
+                        <th>Rp. {{ number_format($labaRugiOperasional) }}
+                        </th>
+                      </tr>
+                      <tr>
+                        <?php 
+                        $bebanPajakPenghasilan = $labaRugiOperasional  * 22/100 ;
+                          if($bebanPajakPenghasilan < 0){
+                            $bebanPajakPenghasilan = 0;
+                          }
+                        ?>
+                        <th>Beban Pajak Penghasilan</th>
+                        <th></th>
+                        <th>Rp. {{ number_format( $bebanPajakPenghasilan) }}
+                        </th>
+                        <input type="hidden" name="beban_pajak_penghasilan" value="{{ $bebanPajakPenghasilan }}"
+                          form="posting">
+                      </tr>
                       @endif
-                      @if (isset($pendapatan[0]) || isset($hpp[0]) || isset($beban[0]))
+                      @if (isset($labaRugiOperasional) || isset($bebanPajakPenghasilan))
                       <tr>
                         <th>Laba/Rugi Bersih</th>
                         <th></th>
-                        <th>Rp. {{ number_format($jumlah_pendapatan - ($total_hpp_sesungguhnya ?? 0) - $jumlah_beban) }}
+                        <th>Rp. {{ number_format($labaRugiOperasional - $bebanPajakPenghasilan) }}
                         </th>
                         <input type="hidden" name="jumlah_laba_rugi"
-                          value="{{ $jumlah_pendapatan - ($total_hpp_sesungguhnya ?? 0) - $jumlah_beban }}"
-                          form="posting">
+                          value="{{ $labaRugiOperasional - $bebanPajakPenghasilan }}" form="posting">
                       </tr>
                       @else
                       <tr>

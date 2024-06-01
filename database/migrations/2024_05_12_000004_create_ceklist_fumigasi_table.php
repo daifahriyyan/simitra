@@ -15,13 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('id_ceklist');
             $table->unsignedBigInteger('id_order');
-            $table->date('tanggal_order');
+            // $table->date('tanggal_order');
             $table->string('ceklist_fumigasi');
             $table->timestamps();
         });
 
         Schema::table('ceklist_fumigasi', function (Blueprint $table) {
-            $table->foreign('id_order')->references('id')->on('data_order')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('id_order')->references('id')->on('detail_order')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 

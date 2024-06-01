@@ -81,6 +81,7 @@
     .request-details th {
       padding: 8px;
       padding-bottom: 10px;
+      font-size: 12px;
       text-align: center;
       border-bottom: 1px solid black;
       border-right: 1px solid black;
@@ -89,6 +90,7 @@
     .request-details td {
       padding: 8px;
       padding-bottom: 10px;
+      font-size: 12px;
       text-align: left;
       border-bottom: 1px solid black;
       border-right: 1px solid black;
@@ -135,22 +137,30 @@
           <th>Volume</th>
           <th>Quantity</th>
           <th>Total Penjualan</th>
+          <th>PPN</th>
+          <th>Jumlah Dibayar</th>
         </tr>
         <?php $jumlahTotalPenjualan = 0 ?>
+        <?php $jumlahJumlahDibayar = 0 ?>
         @foreach ($rekapPenjualan as $record)
         <?php $jumlahTotalPenjualan += $record->total_penjualan ?>
+        <?php $jumlahJumlahDibayar += $record->jumlah_dibayar ?>
         <tr>
-          <td>{{ $record->invoice->id_invoice }}</td>
-          <td>{{ $record->invoice->tanggal_invoice }}</td>
-          <td>{{ $record->dataOrder->volume }}</td>
-          <td>{{ $record->dataOrder->jumlah_order }}</td>
+          <td>{{ $record->id_invoice }}</td>
+          <td>{{ $record->tanggal_invoice }}</td>
+          <td>{{ $record->detailOrder->dataOrder->volume }}</td>
+          <td>{{ $record->detailOrder->dataOrder->jumlah_order }}</td>
           <td>Rp. {{ number_format($record->total_penjualan) }}</td>
+          <td>{{ $record->ppn }}</td>
+          <td>Rp. {{ number_format($record->jumlah_dibayar) }}</td>
         </tr>
         @endforeach
         @if ($jumlahTotalPenjualan != 0)
         <tr>
           <th colspan="4">Jumlah Total Penjualan</th>
           <th>Rp. {{ number_format($jumlahTotalPenjualan) }}</th>
+          <th></th>
+          <th>Rp. {{ number_format($jumlahJumlahDibayar) }}</th>
         </tr>
         @endif
       </table>

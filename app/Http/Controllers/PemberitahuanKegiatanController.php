@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Throwable;
 use App\Models\DataOrder;
+use App\Models\Notifikasi;
 use App\Models\DetailOrder;
 use Illuminate\Http\Request;
 use App\Models\Pemberitahuan;
@@ -57,6 +58,15 @@ class PemberitahuanKegiatanController extends Controller
             if (request()->get('verif') !== null) {
                 DetailOrder::where('id', request()->get('verif'))->update([
                     'verifikasi' => 3
+                ]);
+                
+                $id_detailorder = DetailOrder::where('id', request()->get('verif'))->get()->first()->id_detailorder;
+                
+                // Menambahkan Notifikasi
+                Notifikasi::create([
+                    'keterangan' => "Order no.".$id_detailorder." telah selesai dikerjakan, buat sertif",
+                    'is_read' => 'N',
+                    'posisi' => 'Administrasi',
                 ]);
             }
     

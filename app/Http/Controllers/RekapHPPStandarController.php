@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Throwable;
+use App\Models\Invoice;
 use App\Models\RekapHpp;
 use App\Models\DataHargar;
 use Illuminate\Http\Request;
@@ -21,10 +22,24 @@ class RekapHPPStandarController extends Controller
           return redirect()->route('Home');
           
         } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Keuangan') {
-            if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
-                $rekapHppStandar = RekapHpp::whereBetween('tanggal_input', [request()->tanggalMulai, request()->tanggalAkhir])->get();
+            if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir) && isset(request()->volume)) {
+                $tanggalMulai = request()->tanggalMulai;
+                $tanggalAkhir = request()->tanggalAkhir;
+                $volume = request()->volume;
+                $rekapHppStandar = Invoice::whereHas('dataHarga', function ($query) use ($volume) {
+                    $query->where('volume', $volume);
+                })->whereBetween('tanggal_invoice', [$tanggalMulai, $tanggalAkhir])->get();
+            } else if(isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
+                $tanggalMulai = request()->tanggalMulai;
+                $tanggalAkhir = request()->tanggalAkhir;
+                $rekapHppStandar = Invoice::whereBetween('tanggal_invoice', [$tanggalMulai, $tanggalAkhir])->get();
+            } else if (isset(request()->volume)) {
+                $volume = request()->volume;
+                $rekapHppStandar = Invoice::whereHas('dataHarga', function ($query) use ($volume) {
+                    $query->where('volume', $volume);
+                })->get();
             } else {
-                $rekapHppStandar = RekapHpp::get();
+                $rekapHppStandar = Invoice::get();
             }
     
             if (request()->get('export') == 'pdf') {

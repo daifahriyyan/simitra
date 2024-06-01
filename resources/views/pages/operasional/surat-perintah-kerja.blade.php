@@ -71,7 +71,7 @@
                     <div class="mb-3">
                       <label for="id_spk" class="form-label">ID SPK:</label>
                       <input type="text" class="form-control" id="id_spk" name="id_spk"
-                        value="SPK{{ str_pad($spk->count()+1, 5, 0 ,STR_PAD_LEFT) }}" required>
+                        value="SPK{{ str_pad($spk->count()+1, 5, 0 ,STR_PAD_LEFT) }}" required readonly>
                     </div>
                     <div class="mb-3">
                       <label for="tanggal" class="form-label">Tanggal:</label>
@@ -187,9 +187,9 @@
                       <label for="id_order" class="form-label">ID Order:</label>
                       {{-- <input type="number" class="form-control" id="id_order" name="id_order" required> --}}
                       <select class="form-control form-select-lg" name="id_order" id="id_order" required>
-                        <option value="{{ $record->id_order }}">{{ $record->dataOrder->id_order }}</option>
+                        <option value="{{ $record->id_order }}">{{ $record->detailOrder->id_detailorder }}</option>
                         @foreach ($dataOrder as $item)
-                        <option value="{{ $item->id }}">{{ $item->id_order }}</option>
+                        <option value="{{ $item->id }}">{{ $item->id_detailorder }}</option>
                         @endforeach
                       </select>
                     </div>

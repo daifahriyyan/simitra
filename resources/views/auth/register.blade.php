@@ -125,7 +125,7 @@
             </form>
             <hr>
             <div class="text-center">
-              <a class="font-weight-bold small" href="login.html">Already have an account?</a>
+              <a class="font-weight-bold small" href="{{ route('Login Pegawai') }}">Already have an account?</a>
             </div>
             <div class="text-center">
             </div>

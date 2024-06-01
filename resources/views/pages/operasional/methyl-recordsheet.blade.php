@@ -146,7 +146,7 @@
                     <div class="mb-3">
                       <label for="id_order" class="form-label">ID Order:</label>
                       <select class="form-control form-select-lg" name="id_order" id="id_order" required>
-                        <option value="{{ $record->id_order }}">{{ $record->dataOrder->id_order }}</option>
+                        <option value="{{ $record->id_order }}">{{ $record->detailOrder->id_detailorder }}</option>
                         @foreach ($dataOrder as $item)
                         <option value="{{ $item->id }}">{{ $item->id_detailorder }}</option>
                         @endforeach

@@ -8,6 +8,7 @@ use App\Models\KeuAkun;
 use App\Models\DataOrder;
 use App\Models\KeuJurnal;
 use App\Models\DataHargar;
+use App\Models\Notifikasi;
 use App\Models\Sertifikat;
 use App\Models\DetailOrder;
 use App\Models\DataCustomer;
@@ -100,9 +101,9 @@ class InvoiceController extends Controller
         // ambil data harga berdasarkan id data standar yang diinput
         $dataHarga = DataHargar::where('id', $request['id_data_standar'])->get()->first();
         // hitung total penjualan
-        $totalPenjualan = $dataHarga->harga_jual * $dataOrder->jumlah_order;
+        $totalPenjualan = intval($dataHarga->harga_jual) * $dataOrder->dataOrder->jumlah_order;
         // hitung jumlah dibayar
-        $jumlah_dibayar = $totalPenjualan + ($totalPenjualan * $request['ppn']);
+        $jumlah_dibayar = $totalPenjualan + ($totalPenjualan * ($request['ppn']/100));
 
         $termin = explode('/', $request->termin);
         $tglJatuhTempo = date("Y-m-d", strtotime("+$termin[1] days", strtotime($request['tanggal_invoice'])));
@@ -250,6 +251,13 @@ class InvoiceController extends Controller
             'tanggal_jatuh_tempo' => $tglJatuhTempo
         ]);
 
+                // Menambahkan Notifikasi
+                Notifikasi::create([
+                    'keterangan' => "Telah ditambahkan invoice no.".request()->id_invoice." cek jurnal",
+                    'is_read' => 'N',
+                    'posisi' => 'Keuangan',
+                ]);
+
         return redirect(route('Invoice'))->with('success', 'Data Invoice Berhasil ditambahkan');
     }
 
@@ -281,7 +289,7 @@ class InvoiceController extends Controller
         // hitung total penjualan
         $totalPenjualan = $dataHarga->harga_jual * $dataOrder->jumlah_order;
         // hitung jumlah dibayar
-        $jumlah_dibayar = $totalPenjualan + ($totalPenjualan * $request['ppn']);
+        $jumlah_dibayar = $totalPenjualan + ($totalPenjualan * ($request['ppn']/100));
 
         $termin = explode('/', $request->termin);
         $tglJatuhTempo = date("Y-m-d", strtotime("+$termin[1] days", strtotime($request['tanggal_invoice'])));

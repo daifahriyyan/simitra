@@ -173,7 +173,7 @@
         </tr>
         <tr>
           <th>Nilai Buku</th>
-          <td>: {{ $detail->nilai_buku }}</td>
+          <td>: {{ number_format($detail->nilai_buku, 2, ',','.') }}</td>
           <td></td>
         </tr>
       </table>

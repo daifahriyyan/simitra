@@ -22,6 +22,7 @@
         </form>
       </div>
     </li>
+    @if (Auth::user()->posisi == 'Administrasi' || Auth::user()->posisi == 'Operasional' || Auth::user()->posisi == 'Keuangan')
     <li class="nav-item dropdown no-arrow mx-1">
       <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">
@@ -33,6 +34,8 @@
         <h6 class="dropdown-header">
           Alerts Center
         </h6>
+        @if (!is_null(App\Models\Notifikasi::get()))
+        @foreach (App\Models\Notifikasi::where('posisi', Auth::user()->posisi)->limit(5)->get() as $item)
         <a class="dropdown-item d-flex align-items-center" href="#">
           <div class="mr-3">
             <div class="icon-circle bg-primary">
@@ -40,11 +43,13 @@
             </div>
           </div>
           <div>
-            <div class="small text-gray-500">December 12, 2019</div>
-            <span class="font-weight-bold">A new monthly report is ready to download!</span>
+            <div class="small text-gray-500">{{ date_format($item->created_at, 'M d H:i, Y') }}</div>
+            <span class="font-weight-bold">{{ $item->keterangan }}</span>
           </div>
         </a>
-        <a class="dropdown-item d-flex align-items-center" href="#">
+        @endforeach
+        @endif
+        {{-- <a class="dropdown-item d-flex align-items-center" href="#">
           <div class="mr-3">
             <div class="icon-circle bg-success">
               <i class="fas fa-donate text-white"></i>
@@ -65,10 +70,11 @@
             <div class="small text-gray-500">December 2, 2019</div>
             Spending Alert: We've noticed unusually high spending for your account.
           </div>
-        </a>
+        </a> --}}
         <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
       </div>
     </li>
+    @endif
     <li class="nav-item dropdown no-arrow mx-1">
       <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">

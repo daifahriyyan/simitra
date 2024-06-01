@@ -130,98 +130,83 @@
       <p style="text-align: center;">Per {{ $bulan[request()->bulan] ?? 'Belum Dipilih' }} {{ request()->tahun ??
         'Belum Dipilih' }}</p>
       <table>
-        <tr>
-          <th>Keterangan</th>
-          <th>Jumlah</th>
-          <th>Total</th>
-        </tr>
-        @php
-        $total_hpp_sesungguhnya = 0;
-        $total_hpp_sesungguhnya = $hppSesungguhnya->sum('bbb_sesungguhnya') +
-        $hppSesungguhnya->sum('btk_sesungguhnya') +
-        $hppSesungguhnya->sum('bop_sesungguhnya');
-        @endphp
-        <tr>
-          <th>HPP SESUNGGUHNYA</th>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>Biaya Bahan Baku</td>
-          <td>Rp. {{ number_format($hppSesungguhnya->sum('bbb_sesungguhnya')) }}</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>Biaya Tenaga Kerja</td>
-          <td>Rp. {{ number_format($hppSesungguhnya->sum('btk_sesungguhnya')) }}</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>Biaya Overhead Pabrik</td>
-          <td>Rp. {{ number_format($hppSesungguhnya->sum('bop_sesungguhnya')) }}</td>
-          <td></td>
-        </tr>
-        <tr>
-          <th>Jumlah HPP Sesungguhnya</th>
-          <th></th>
-          <th>Rp. {{ number_format($total_hpp_sesungguhnya) }}</th>
-        </tr>
-        <tr>
-          <td>
-            <br>
-          </td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <th>HPP STANDAR</th>
-          <td></td>
-          <td></td>
-        </tr>
-        @php
-        $total_hpp = 0;
-        @endphp
-        @foreach ($hpp as $record)
-        @php
-        $jumlah = $record->bbb_standar + $record->btk_standar + $record->bop_standar;
-        $total_hpp += $jumlah;
-        @endphp
-        <tr>
-          <th>Volume : {{ $record->volume }}</th>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>Biaya Bahan Baku</td>
-          <td>Rp. {{ number_format($record->bbb_standar) }}</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>Biaya Tenaga Kerja</td>
-          <td>Rp. {{ number_format($record->btk_standar) }}</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>Biaya Overhead Pabrik</td>
-          <td>Rp. {{ number_format($record->bop_standar) }}</td>
-          <td></td>
-        </tr>
-        <tr>
-          <th>Jumlah HPP Standar</th>
-          <th>Rp. {{ number_format($jumlah) }}</th>
-          <th></th>
-        </tr>
-        @endforeach
-        <tr>
-          <th>Total HPP Standar</th>
-          <th></th>
-          <th>Rp. {{ number_format($total_hpp) }}</th>
-        </tr>
-        <tr>
-          <th>Selisih Efisiensi Biaya</th>
-          <th></th>
-          <th>Rp. {{ number_format($total_hpp_sesungguhnya - $total_hpp) }}</th>
-        </tr>
+        <!-- AWAL EDIT SESUAIKAN TABEL DATABASE -->
+        <thead class="thead-light">
+          <tr>
+            <th>Keterangan</th>
+            <th>Jumlah</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          @php
+          $total_hpp_sesungguhnya = 0;
+          $total_hpp_sesungguhnya = $hppSesungguhnya->sum('bbb_sesungguhnya') +
+          $hppSesungguhnya->sum('btk_sesungguhnya') +
+          $hppSesungguhnya->sum('bop_sesungguhnya');
+          @endphp
+          <tr>
+            <th>HPP SESUNGGUHNYA</th>
+            <th></th>
+            <th></th>
+          </tr>
+          <tr>
+            <td>Biaya Bahan Baku</td>
+            <td>Rp. {{ number_format($hppSesungguhnya->sum('bbb_sesungguhnya')) }}</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Biaya Tenaga Kerja</td>
+            <td>Rp. {{ number_format($hppSesungguhnya->sum('btk_sesungguhnya')) }}</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Biaya Overhead Pabrik</td>
+            <td>Rp. {{ number_format($hppSesungguhnya->sum('bop_sesungguhnya')) }}</td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>Jumlah HPP Sesungguhnya</th>
+            <th></th>
+            <th>Rp. {{ number_format($total_hpp_sesungguhnya) }}</th>
+          </tr>
+          <tr>
+            <td colspan="3">
+              <br>
+            </td>
+          </tr>
+          <tr>
+            <th>HPP STANDAR</th>
+            <th></th>
+            <th></th>
+          </tr>
+          <tr>
+            <td>Biaya Bahan Baku</td>
+            <td>Rp. {{ number_format($hpp->dataHarga->sum('bbb_standar')) }}</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Biaya Tenaga Kerja</td>
+            <td>Rp. {{ number_format($hpp->dataHarga->sum('btk_standar')) }}</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Biaya Overhead Pabrik</td>
+            <td>Rp. {{ number_format($hpp->dataHarga->sum('bop_standar')) }}</td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>Total HPP Standar</th>
+            <th></th>
+            <th>Rp. {{ number_format($hpp->dataHarga->sum('hpp')) }}</th>
+          </tr>
+          <tr>
+            <th>Selisih Efisiensi Biaya</th>
+            <th></th>
+            <th>Rp. {{ number_format($total_hpp_sesungguhnya - $hpp->dataHarga->sum('hpp')) }}</th>
+          </tr>
+        </tbody>
+        <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
       </table>
     </div>
     <br>

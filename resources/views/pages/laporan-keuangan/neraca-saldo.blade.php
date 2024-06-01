@@ -186,6 +186,10 @@
                         <td>Rp. {{ number_format($saldoDebet) }}</td>
                         <td>Rp. {{ number_format($saldoKredit) }}</td>
                       </tr>
+                      @php
+                          $saldoDebet = 0;
+                          $saldoKredit = 0;
+                      @endphp
                       @endforeach
                       <tr>
                         <th colspan="2" class="text-right">Total</th>

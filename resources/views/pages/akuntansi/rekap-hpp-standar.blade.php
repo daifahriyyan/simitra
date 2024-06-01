@@ -58,7 +58,7 @@
           </div>
           <!-- AWAL EDIT SESUAIKAN TABEL DATABASE -->
           <!-- Modal Tambah Data -->
-          <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+          {{-- <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
@@ -177,7 +177,7 @@
               </div>
             </div>
           </div>
-          @endforeach
+          @endforeach --}}
           <!-- Modal Konfirmasi Logout -->
           <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -210,14 +210,22 @@
                   <div class="btn-group" role="group" aria-label="Basic mixed styles example">
                     <!-- Tombol Tambah dengan Icon -->
                     <div>
-                      <button type="button" class="btn btn-sm btn-info" style='width: 70px; height: 30px;'
+                      {{-- <button type="button" class="btn btn-sm btn-info" style='width: 70px; height: 30px;'
                         data-bs-toggle="modal" data-bs-target="#addModal">
                         Tambah
-                      </button>
+                      </button> --}}
                     </div>
-                    <!-- Tombol Filter Id Supplier dan Tanggal dengan Icon -->
                     <div class="input-group">
                       <form action="{{ route('Rekap HPP Standar') }}">
+                        <label for="volume" class="mb-0 mr-2">Volume : </label>
+                        <select class="form-control-sm" name="volume" id="volume">
+                          <option value="{{ request()->volume ?? '' }}">{{ request()->volume ?? 'Pilih Filter Volume' }}
+                          </option>
+                          @foreach ($dataHarga as $item)
+                          <option value="{{ $item->volume }}">{{ $item->volume }}</option>
+                          @endforeach
+                        </select>
+                        <!-- Tombol Filter Id Supplier dan Tanggal dengan Icon -->
                         <input type="date" class="form-control-sm border-1" id="tanggalMulai"
                           value="{{ request()->tanggalMulai }}" name="tanggalMulai"
                           aria-describedby="tanggalMulaiLabel">
@@ -231,7 +239,7 @@
                     </div>
                     <!-- Tombol Cetak Tabel dengan Icon -->
                     <div>
-                      <a href="{{ route('Rekap HPP Standar') }}?export=pdf{{ (request()->tanggalMulai)? '&tanggalMulai='.request()->tanggalMulai : '' }}{{ (request()->tanggalAkhir)? '&tanggalAkhir='.request()->tanggalAkhir : '' }}"
+                      <a href="{{ route('Rekap HPP Standar') }}?export=pdf{{ (request()->volume)? '&volume='.request()->volume : '' }}{{ (request()->tanggalMulai)? '&tanggalMulai='.request()->tanggalMulai : '' }}{{ (request()->tanggalAkhir)? '&tanggalAkhir='.request()->tanggalAkhir : '' }}"
                         class="btn btn-sm btn-warning" style='width: 60px; height: 30px;'>
                         Cetak
                       </a>
@@ -261,44 +269,67 @@
                 </div>
 
                 <div class="table-responsive p-3">
-                  <table class="table align-items-center table-flush table-hover" id="dataTableHover">
+                  <table class="table align-items-center table-flush table-hover text-nowrap" id="dataTableHover">
                     <!-- AWAL EDIT SESUAIKAN TABEL DATABASE -->
                     <thead class="thead-light">
                       <tr>
-                        <th>ID Rekap</th>
-                        <th>Tanggal Input</th>
-                        <th>ID Data Standar</th>
-                        <th>ID Rekap Penjualan</th>
+                        <th>ID Invoice</th>
+                        <th>Tanggal Invoice</th>
                         <th>Volume</th>
                         <th>Quantity</th>
+                        <th>ID Data Standar</th>
+                        <th>Biaya Bahan Baku</th>
+                        <th>Biaya tenaga Kerja</th>
+                        <th>Biaya Overhead Pabrik</th>
                         <th>HPP</th>
                         <th>Total HPP</th>
-                        <th>Aksi</th>
+                        {{-- <th>Aksi</th> --}}
                       </tr>
                     </thead>
                     <tbody>
+                      @php
+                      $jumlahBBB = 0;
+                      $jumlahBTK = 0;
+                      $jumlahBOP = 0;
+                      $jumlahHPP = 0;
+                      $jumlahTotalHPP = 0;
+                      @endphp
                       @foreach ($rekapHPPStandar as $record)
-                      <?php $JumlahTotalHPP += $record->total_hpp ?>
+                      @php
+                      $jumlahBBB += $record->dataHarga->bbb_standar;
+                      $jumlahBTK += $record->dataHarga->btk_standar;
+                      $jumlahBOP += $record->dataHarga->bop_standar;
+                      $jumlahHPP += $record->dataHarga->hpp;
+                      $JumlahTotalHPP += $record->dataHarga->hpp * $record->detailOrder->dataOrder->jumlah_order
+                      @endphp
                       <tr>
-                        <td>{{ $record->id_rekap }}</td>
-                        <td>{{ $record->tanggal_input }}</td>
+                        <td>{{ $record->id_invoice }}</td>
+                        <td>{{ $record->tanggal_invoice }}</td>
+                        <td>{{ $record->dataHarga->volume }}</td>
+                        <td>{{ $record->detailOrder->dataOrder->jumlah_order }}</td>
                         <td>{{ $record->dataHarga->id_datastandar }}</td>
-                        <td>{{ $record->rekapPenjualan->id_rekap_penjualan }}</td>
-                        <td>{{ $record->rekapPenjualan->dataOrder->volume }}</td>
-                        <td>{{ $record->rekapPenjualan->dataOrder->jumlah_order }}</td>
-                        <td>{{ number_format($record->dataHarga->hpp, 2, ',', '.') }}</td>
-                        <td>{{ number_format($record->total_hpp, 2, ',', '.') }}</td>
-                        <td>
+                        <td>Rp. {{ number_format($record->dataHarga->bbb_standar) }}</td>
+                        <td>Rp. {{ number_format($record->dataHarga->btk_standar) }}</td>
+                        <td>Rp. {{ number_format($record->dataHarga->bop_standar) }}</td>
+                        <td>Rp. {{ number_format($record->dataHarga->hpp) }}</td>
+                        <td>Rp. {{ number_format($record->dataHarga->hpp *
+                          $record->detailOrder->dataOrder->jumlah_order) }}
+                        </td>
+                        {{-- <td>
                           <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
                             data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
                           <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
                             data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
-                        </td>
+                        </td> --}}
                       </tr>
                       @endforeach
                       @if ($JumlahTotalHPP != 0)
                       <tr>
-                        <th colspan="7">Jumlah Total HPP</th>
+                        <th colspan="5">Jumlah</th>
+                        <th>Rp. {{ number_format($jumlahBBB) }}</th>
+                        <th>Rp. {{ number_format($jumlahBTK) }}</th>
+                        <th>Rp. {{ number_format($jumlahBOP) }}</th>
+                        <th>Rp. {{ number_format($jumlahHPP) }}</th>
                         <th>Rp. {{ number_format($JumlahTotalHPP) }}</th>
                       </tr>
                       @endif
@@ -311,15 +342,22 @@
           </div>
         </div>
       </div>
-
-      <!-- Footer -->
       <footer>
         <p id="tanggalJam"
-          style="font-size: 12px; margin: 0; justify-content: flex-end; display: flex; background-color: #f8f9fa;"></p>
+          style="font-size: 12px; margin: 0; justify-content: flex-end; display: flex; background-color: #f8f9fa;">
+        </p>
       </footer>
+    </div>
+  </div>
 
-      <script>
-        function updateTanggalJam() {
+  <!-- Footer -->
+  <footer>
+    <p id="tanggalJam"
+      style="font-size: 12px; margin: 0; justify-content: flex-end; display: flex; background-color: #f8f9fa;"></p>
+  </footer>
+
+  <script>
+    function updateTanggalJam() {
           var date = new Date();
           var options = {
             weekday: 'long',
@@ -339,17 +377,17 @@
 
         // Memperbarui tanggal dan jam setiap detik
         setInterval(updateTanggalJam, 1000);
-      </script>
-      <!-- Footer -->
-    </div>
+  </script>
+  <!-- Footer -->
+  </div>
 
-    <!-- Scroll to top -->
-    <a class="scroll-to-top rounded" href="#page-top">
-      <i class="fas fa-angle-up"></i>
-    </a>
-    <!-- AWAL EDIT SESUAIKAN TABEL DATABASE -->
-    <script>
-      function openEditModal(idRekap, tanggalInput, idDataStandar, idRekapPenjualan, volume, quantity, hpp, totalHpp) {
+  <!-- Scroll to top -->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+  <!-- AWAL EDIT SESUAIKAN TABEL DATABASE -->
+  <script>
+    function openEditModal(idRekap, tanggalInput, idDataStandar, idRekapPenjualan, volume, quantity, hpp, totalHpp) {
         document.getElementById("edit_id_rekap").value = idRekap;
         document.getElementById("edit_tanggal_input").value = tanggalInput;
         document.getElementById("edit_id_data_standar").value = idDataStandar;
@@ -371,30 +409,30 @@
           window.location.href = "?id_rekap=" + idRekap;
         };
       }
-    </script>
-    <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
+  </script>
+  <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/js/bootstrap.bundle.min.js"></script>
-    <script src="//cdn.datatables.net/2.0.3/js/dataTables.min.js"></script>
-    <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js')}}"></script>
-    <script src="{{ asset('js/simitra.min.js') }}"></script>
-    <script src="{{ asset('vendor/chart.js/Chart.min.js') }}"></script>
-    <script src="{{ asset('js/demo/chart-area-demo.js') }}"></script>
-    <!-- Page level plugins -->
-    <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/js/bootstrap.bundle.min.js"></script>
+  <script src="//cdn.datatables.net/2.0.3/js/dataTables.min.js"></script>
+  <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+  <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js')}}"></script>
+  <script src="{{ asset('js/simitra.min.js') }}"></script>
+  <script src="{{ asset('vendor/chart.js/Chart.min.js') }}"></script>
+  <script src="{{ asset('js/demo/chart-area-demo.js') }}"></script>
+  <!-- Page level plugins -->
+  <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
+  <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
 
-    <!-- Page level custom scripts -->
-    <script>
-      $(document).ready(function() {
+  <!-- Page level custom scripts -->
+  <script>
+    $(document).ready(function() {
         $('#dataTableHover').DataTable();
       });
-    </script>
+  </script>
 </body>
 
 </html>

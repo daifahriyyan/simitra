@@ -25,7 +25,9 @@ class CeklistFumigasiController extends Controller
             if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
                 $tanggalMulai = request()->tanggalMulai;
                 $tanggalAkhir = request()->tanggalAkhir;
-                $ceklistFumigasi = CeklistFumigasi::whereBetween('tanggal_order', [$tanggalMulai, $tanggalAkhir])->get();
+                $ceklistFumigasi = CeklistFumigasi::whereHas('detailOrder.dataOrder', function ($query) use ($tanggalMulai, $tanggalAkhir) {
+                    $query->whereBetween('tanggal_order', [$tanggalMulai, $tanggalAkhir]);
+                })->get();
             } else {
                 $ceklistFumigasi = CeklistFumigasi::get();
             }
@@ -79,7 +81,7 @@ class CeklistFumigasiController extends Controller
         CeklistFumigasi::create([
             'id_ceklist' => $request['id_ceklist'],
             'id_order' => $request['id_order'],
-            'tanggal_order' => $request['tanggal_order'],
+            // 'tanggal_order' => $request['tanggal_order'],
             'ceklist_fumigasi' => $fileCF,
         ]);
 
@@ -127,7 +129,7 @@ class CeklistFumigasiController extends Controller
             'id_ceklist' => request()->id_ceklist,
             'id_order' => request()->id_order,
             'ceklist_fumigasi' => $fileCF,
-            'tanggal_order' => request()->tanggal_order,
+            // 'tanggal_order' => request()->tanggal_order,
         ]);
 
         return redirect(route('Ceklist Fumigasi'))->with('success', 'Data Ceklist Fumigasi Berhasil Diperbarui');

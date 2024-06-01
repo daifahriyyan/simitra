@@ -135,16 +135,18 @@ class DetailSupplierController extends Controller
         $id_2110 = KeuAkun::where('kode_akun', '2110')->get()->first()->id;
         $id_1110 = KeuAkun::where('kode_akun', '1110')->get()->first()->id;
 
+        $jurnal = KeuJurnal::where('no_jurnal', $no_jurnal)->get()->first();
+
         // Masukkan Data Penggajian Ke Detail Jurnal Umum bagian debet
         KeuDetailJurnal::create([
-            'no_jurnal' => $id_2110,
-            'kode_akun' => '2110',
+            'no_jurnal' => $jurnal->id,
+            'kode_akun' => $id_2110,
             'debet' => $request->pembayaran
         ]);
         // Masukkan Data Penggajian Ke Detail Jurnal Umum bagian kredit
         KeuDetailJurnal::create([
-            'no_jurnal' => $id_1110,
-            'kode_akun' => '1110',
+            'no_jurnal' => $jurnal->id,
+            'kode_akun' => $id_1110,
             'kredit' => $request->pembayaran
         ]);
 

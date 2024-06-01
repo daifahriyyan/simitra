@@ -80,6 +80,7 @@
     .request-details th {
       padding: 8px;
       padding-bottom: 10px;
+      font-size: 10px;
       text-align: center;
       border-bottom: 1px solid black;
       border-right: 1px solid black;
@@ -88,6 +89,7 @@
     .request-details td {
       padding: 8px;
       padding-bottom: 10px;
+      font-size: 10px;
       text-align: left;
       border-bottom: 1px solid black;
       border-right: 1px solid black;

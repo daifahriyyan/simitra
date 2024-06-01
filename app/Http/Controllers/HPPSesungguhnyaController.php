@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notifikasi;
 use Illuminate\Http\Request;
 use App\Models\HppSesungguhnya;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -68,6 +69,13 @@ class HPPSesungguhnyaController extends Controller
             'btk_sesungguhnya' => $request['btk_sesungguhnya'],
             'bop_sesungguhnya' => $request['bop_sesungguhnya'],
             'hpp_sesungguhnya' => $hppSesungguhnya,
+        ]);
+
+        // Menambahkan Notifikasi
+        Notifikasi::create([
+            'keterangan' => "Telah ditambahkan HPP Sesungguhnya, cek laporan hpp",
+            'is_read' => 'N',
+            'posisi' => 'Keuangan',
         ]);
 
         return redirect(route('HPP Sesungguhnya'))->with('success', 'Data HPP Sesungguhnya Berhasil Ditambahkan');

@@ -76,7 +76,8 @@
     .custom-table th,
     .custom-table td {
       border: 1px solid black;
-      padding: 8px;
+      padding: 0px 5px 0px 5px;
+      font-size: 10px;
       text-align: center;
     }
 
@@ -116,37 +117,71 @@
       <h3 style="text-align: center; font-weight: bold; text-decoration: underline;">REKAP HPP STANDAR</h3>
       <br>
       <table class="custom-table">
-        <tr>
-          <th style="width: 5%;">No</th>
-          <th style="width: 5%;">Id Rekap</th>
-          <th>Tanggal Input</th>
-          <th>ID Data standar</th>
-          <th>ID Rekap Penjualan</th>
-          <th>Volume</th>
-          <th>Quantity</th>
-          <th style="width: 15%;">HPP</th>
-          <th style="width: 15%;">Total</th>
-        </tr>
-        @foreach ($rekapHppStandar as $record)
-        <?php $JumlahTotalHPP += $record->total_hpp ?>
-        <tr>
-          <td>{{ $loop->iteration }}</td>
-          <td>{{ $record->id_rekap }}</td>
-          <td>{{ $record->tanggal_input }}</td>
-          <td>{{ $record->dataHarga->id_datastandar }}</td>
-          <td>{{ $record->rekapPenjualan->id_rekap_penjualan }}</td>
-          <td>{{ $record->rekapPenjualan->dataOrder->volume }}</td>
-          <td>{{ $record->rekapPenjualan->dataOrder->jumlah_order }}</td>
-          <td>{{ number_format($record->dataHarga->hpp, 2, ',', '.') }}</td>
-          <td>{{ number_format($record->total_hpp, 2, ',', '.') }}</td>
-        </tr>
-        @endforeach
-        @if ($JumlahTotalHPP != 0)
-        <tr>
-          <th colspan="8">Jumlah Total HPP</th>
-          <th>Rp. {{ number_format($JumlahTotalHPP) }}</th>
-        </tr>
-        @endif
+        <!-- AWAL EDIT SESUAIKAN TABEL DATABASE -->
+        <thead class="thead-light">
+          <tr>
+            <th>ID Invoice</th>
+            <th>Tanggal Invoice</th>
+            <th>Volume</th>
+            <th>Quantity</th>
+            <th>ID Data Standar</th>
+            <th>Biaya Bahan Baku</th>
+            <th>Biaya tenaga Kerja</th>
+            <th>Biaya Overhead Pabrik</th>
+            <th>HPP</th>
+            <th>Total HPP</th>
+            {{-- <th>Aksi</th> --}}
+          </tr>
+        </thead>
+        <tbody>
+          @php
+          $jumlahBBB = 0;
+          $jumlahBTK = 0;
+          $jumlahBOP = 0;
+          $jumlahHPP = 0;
+          $jumlahTotalHPP = 0;
+          @endphp
+          @foreach ($rekapHppStandar as $record)
+          @php
+          $jumlahBBB += $record->dataHarga->bbb_standar;
+          $jumlahBTK += $record->dataHarga->btk_standar;
+          $jumlahBOP += $record->dataHarga->bop_standar;
+          $jumlahHPP += $record->dataHarga->hpp;
+          $JumlahTotalHPP += $record->dataHarga->hpp * $record->detailOrder->dataOrder->jumlah_order
+          @endphp
+          <tr>
+            <td>{{ $record->id_invoice }}</td>
+            <td>{{ $record->tanggal_invoice }}</td>
+            <td>{{ $record->dataHarga->volume }}</td>
+            <td>{{ $record->detailOrder->dataOrder->jumlah_order }}</td>
+            <td>{{ $record->dataHarga->id_datastandar }}</td>
+            <td>Rp. {{ number_format($record->dataHarga->bbb_standar) }}</td>
+            <td>Rp. {{ number_format($record->dataHarga->btk_standar) }}</td>
+            <td>Rp. {{ number_format($record->dataHarga->bop_standar) }}</td>
+            <td>Rp. {{ number_format($record->dataHarga->hpp) }}</td>
+            <td>Rp. {{ number_format($record->dataHarga->hpp *
+              $record->detailOrder->dataOrder->jumlah_order) }}
+            </td>
+            {{-- <td>
+              <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
+                data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
+              <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
+                data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
+            </td> --}}
+          </tr>
+          @endforeach
+          @if ($JumlahTotalHPP != 0)
+          <tr>
+            <th colspan="5">Jumlah</th>
+            <th>Rp. {{ number_format($jumlahBBB) }}</th>
+            <th>Rp. {{ number_format($jumlahBTK) }}</th>
+            <th>Rp. {{ number_format($jumlahBOP) }}</th>
+            <th>Rp. {{ number_format($jumlahHPP) }}</th>
+            <th>Rp. {{ number_format($JumlahTotalHPP) }}</th>
+          </tr>
+          @endif
+        </tbody>
+        <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
       </table>
       <br>
       <br>

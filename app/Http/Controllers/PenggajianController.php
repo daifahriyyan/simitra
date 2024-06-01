@@ -24,7 +24,7 @@ class PenggajianController extends Controller
           
         } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Keuangan') {
             if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
-                $penggajian = KeuPenggajian::whereBetween('created_at', [request()->tanggalMulai, request()->tanggalAkhir])->get();
+                $penggajian = KeuPenggajian::whereBetween('tanggal_input', [request()->tanggalMulai, request()->tanggalAkhir])->get();
             } else {
                 $penggajian = KeuPenggajian::get();
             }
@@ -109,7 +109,7 @@ class PenggajianController extends Controller
         // Ambil Data Gaji Pokok sesuai nama pegawai yang diinput sebelumnya
         $gaji_pokok = DataPegawai::where('id', $request['id_pegawai'])->get()->first()->gaji_pokok;
         // Lakukan Penjumlahan supaya menjadi Gaji Bersih
-        $gaji_bersih = $gaji_pokok + $request['bonus'] + $request['tunjangan_lembur'] + $request['iuran'];
+        $gaji_bersih = $gaji_pokok + $request['bonus'] + $request['tunjangan_lembur'] - $request['iuran'];
 
         // Buat Data Penggajian
         KeuPenggajian::create([
@@ -123,9 +123,9 @@ class PenggajianController extends Controller
         ]);
 
         // jika jenis akun adalah kredit maka kurangi 
-        $saldo_beban_gaji = $beban_gaji->saldo_akun + $gaji_bersih;
+        $saldo_beban_gaji = intval($beban_gaji->saldo_akun) + $gaji_bersih;
         // jika jenis akun adalah kredit maka kurangi 
-        $saldo_hutang_gaji = $hutang_gaji->saldo_akun + $gaji_bersih;
+        $saldo_hutang_gaji = intval($hutang_gaji->saldo_akun) + $gaji_bersih;
 
         // ubah sesuai operasi diatas
         KeuAkun::where('kode_akun', '5220')->update([
@@ -152,7 +152,7 @@ class PenggajianController extends Controller
             'no_bukti' => $request->id_penggajian,
         ]);
 
-        $id_jurnal = KeuJurnal::get()->first()->id;
+        $id_jurnal = KeuJurnal::where('no_bukti', $request->id_penggajian)->get()->first()->id;
 
         // Masukkan Data Penggajian Ke Detail Jurnal Umum bagian debet
         KeuDetailJurnal::create([
@@ -192,7 +192,8 @@ class PenggajianController extends Controller
     public function update(Request $request, string $id)
     {
         $gaji_pokok = DataPegawai::where('id', $request['id_pegawai'])->get()->first()->gaji_pokok;
-        $gaji_bersih = $gaji_pokok + $request['bonus'] + $request['tunjangan_lembur'] + $request['iuran'];
+        $gaji_bersih = $gaji_pokok + $request['bonus'] + $request['tunjangan_lembur'] - $request['iuran'];
+        $gaji_bersih_sebelumnya = KeuPenggajian::where('id', $id)->get()->first()->gaji_bersih;
         // dd($gaji_bersih);
         KeuPenggajian::where('id', $id)->update([
             'id_penggajian' => $request['id_penggajian'],
@@ -204,6 +205,25 @@ class PenggajianController extends Controller
             'gaji_bersih' => $gaji_bersih
         ]);
 
+        // ambil data beban gaji dengan kode 5220 dari table keu_akun
+        $beban_gaji = KeuAkun::where('kode_akun', '5220')->get()->first();
+        // ambil data hutang gaji dengan kode2130 dari table keu_akun
+        $hutang_gaji = KeuAkun::where('kode_akun', '2130')->get()->first();
+
+        // jika jenis akun adalah kredit maka kurangi 
+        $saldo_beban_gaji = intval($beban_gaji->saldo_akun) - $gaji_bersih_sebelumnya + $gaji_bersih;
+        // jika jenis akun adalah kredit maka kurangi 
+        $saldo_hutang_gaji = intval($hutang_gaji->saldo_akun) - $gaji_bersih_sebelumnya + $gaji_bersih;
+
+        // ubah sesuai operasi diatas
+        KeuAkun::where('kode_akun', '5220')->update([
+            'saldo_akun' => $saldo_beban_gaji,
+        ]);
+        // ubah sesuai operasi diatas
+        KeuAkun::where('kode_akun', '2130')->update([
+            'saldo_akun' => $saldo_hutang_gaji,
+        ]);
+
         // Ambil nama pegawai 
         $nama_pegawai = DataPegawai::where('id', $request['id_pegawai'])->first()->nama_pegawai;
 
@@ -213,7 +233,6 @@ class PenggajianController extends Controller
             'uraian_jurnal' => 'Penggajian Atas ' . $nama_pegawai,
             'no_bukti' => $request->id_penggajian,
         ]);
-
         // ambil data no jurnal dimana no bukti berdasarkan data penggajian yang ingin dirubah
         $no_jurnal = KeuJurnal::where('no_bukti', $request->id_penggajian)->get()->first()->id;
 
@@ -271,7 +290,7 @@ class PenggajianController extends Controller
                 $kode_akun = $record->kode_akun;
 
                 // dapatkan akun berdasarkan kode akun yang dihapus
-                $akun = KeuAkun::where('kode_akun', $kode_akun)->get()->first();
+                $akun = KeuAkun::where('id', $kode_akun)->get()->first();
                 // ambil saldo debet tiap akun
                 $saldoDebet = $record->debet;
                 // ambil saldo kredit tiap akun

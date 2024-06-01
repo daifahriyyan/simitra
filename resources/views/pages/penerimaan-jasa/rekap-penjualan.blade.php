@@ -56,6 +56,7 @@
             </ol>
           </div>
           <!-- AWAL EDIT SESUAIKAN TABEL DATABASE -->
+          {{--
           <!-- Modal Tambah Data -->
           <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -74,7 +75,7 @@
                     </div>
                     <div class="mb-3">
                       <label for="id_invoice" class="form-label">ID Invoice:</label>
-                      {{-- <input type="number" class="form-control" id="id_invoice" name="id_invoice" required> --}}
+                      <input type="number" class="form-control" id="id_invoice" name="id_invoice" required>
                       <select class="form-control form-select-lg" name="id_invoice" id="id_invoice">
                         <option selected>Pilih ID Invoice</option>
                         @foreach ($invoice as $item)
@@ -84,7 +85,7 @@
                     </div>
                     <div class="mb-3">
                       <label for="id_order" class="form-label">ID Order:</label>
-                      {{-- <input type="number" class="form-control" id="id_order" name="id_order" required> --}}
+                      <input type="number" class="form-control" id="id_order" name="id_order" required>
                       <select class="form-control form-select-lg" name="id_order" id="id_order">
                         <option selected>Pilih ID Order</option>
                         @foreach ($dataOrder as $item)
@@ -121,7 +122,7 @@
                     </div>
                     <div class="mb-3">
                       <label for="id_invoice" class="form-label">ID Invoice:</label>
-                      {{-- <input type="number" class="form-control" id="id_invoice" name="id_invoice" required> --}}
+                      <input type="number" class="form-control" id="id_invoice" name="id_invoice" required>
                       <select class="form-control form-select-lg" name="id_invoice" id="id_invoice">
                         <option value="{{ $record->id_invoice }}">{{ $record->invoice->id_invoice }}</option>
                         @foreach ($invoice as $item)
@@ -131,7 +132,7 @@
                     </div>
                     <div class="mb-3">
                       <label for="id_order" class="form-label">ID Order:</label>
-                      {{-- <input type="number" class="form-control" id="id_order" name="id_order" required> --}}
+                      <input type="number" class="form-control" id="id_order" name="id_order" required>
                       <select class="form-control form-select-lg" name="id_order" id="id_order">
                         <option value="{{ $record->id_order }}">{{ $record->dataOrder->id_order }}</option>
                         @foreach ($dataOrder as $item)
@@ -167,7 +168,7 @@
               </div>
             </div>
           </div>
-          @endforeach
+          @endforeach --}}
 
           <!-- Row -->
           <div class="row">
@@ -178,12 +179,21 @@
                   <h6 class="m-0 font-weight-bold text-primary">Rekap Penjualan</h6> <!-- EDIT NAMA -->
                   <div class="btn-group" role="group" aria-label="Basic mixed styles example">
                     <!-- Tombol Tambah dengan Icon -->
-                    <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#addModal">
+                    {{-- <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal"
+                      data-bs-target="#addModal">
                       Tambah
-                    </button>
-                    <!-- Tombol Filter Tanggal dengan Icon -->
+                    </button> --}}
                     <div class="input-group">
-                      <form action="{{ route('Rekap Penjualan') }}">
+                      <form action="{{ route('Rekap Penjualan') }}" id="filter">
+                        <label for="volume" class="mb-0 mr-2">Volume : </label>
+                        <select class="form-control-sm" name="volume" id="volume">
+                          <option value="{{ request()->volume ?? '' }}">{{ request()->volume ?? 'Pilih Filter Volume' }}
+                          </option>
+                          @foreach ($dataHarga as $item)
+                          <option value="{{ $item->volume }}">{{ $item->volume }}</option>
+                          @endforeach
+                        </select>
+                        <!-- Tombol Filter Tanggal dengan Icon -->
                         <input type="date" class="form-control-sm border-1" id="tanggalMulai"
                           value="{{ request()->tanggalMulai }}" name="tanggalMulai"
                           aria-describedby="tanggalMulaiLabel">
@@ -196,10 +206,12 @@
                       </form>
                     </div>
                     <!-- Tombol Cetak Tabel dengan Icon -->
-                    <a href="{{ route('Rekap Penjualan') }}?export=pdf{{ (request()->tanggalMulai)? '&tanggalMulai='.request()->tanggalMulai : '' }}{{ (request()->tanggalAkhir)? '&tanggalAkhir='.request()->tanggalAkhir : '' }}"
-                      class="btn btn-sm btn-warning">
-                      Cetak
-                    </a>
+                    <div>
+                      <a href="{{ route('Rekap Penjualan') }}?export=pdf{{ (request()->volume)? '&volume='.request()->volume : '' }}{{ (request()->tanggalMulai)? '&tanggalMulai='.request()->tanggalMulai : '' }}{{ (request()->tanggalAkhir)? '&tanggalAkhir='.request()->tanggalAkhir : '' }}"
+                        class="btn btn-sm btn-warning">
+                        Cetak
+                      </a>
+                    </div>
                   </div>
 
                   <!-- Skrip JavaScript untuk Filter Tanggal dan Cetak Tabel -->
@@ -212,15 +224,15 @@
                   // Anda dapat menambahkan logika Anda di sini
                   console.log("Tanggal Mulai:", tanggalMulai);
                   console.log("Tanggal Akhir:", tanggalAkhir);
-              }
+                  }
 
-              function cetakTabel() {
+                  function cetakTabel() {
                   // Mencetak isi tabel yang sesuai dengan rentang tanggal yang dipilih
                   filterTanggal(); // Memanggil fungsi filterTanggal() untuk mendapatkan rentang tanggal yang dipilih
                   
                   // Lakukan pencetakan sesuai dengan rentang tanggal yang dipilih
                   window.print();
-              }
+                  }
                   </script>
                 </div>
 
@@ -235,31 +247,38 @@
                         <th>Volume</th>
                         <th>Quantity</th>
                         <th>Total Penjualan</th>
-                        <th>Aksi</th>
+                        <th>PPN</th>
+                        <th>Jumlah Dibayar</th>
+                        {{-- <th>Aksi</th> --}}
                       </tr>
                     </thead>
                     <tbody>
                       @foreach ($rekapPenjualan as $record)
                       <?php $jumlahTotalPenjualan += $record->total_penjualan ?>
+                      <?php $jumlahJumlahDibayar += $record->jumlah_dibayar ?>
                       <tr>
-                        <td>{{ $record->id_rekap_penjualan }}</td>
-                        <td>{{ $record->invoice->id_invoice }}</td>
-                        <td>{{ $record->invoice->tanggal_invoice }}</td>
-                        <td>{{ $record->dataOrder->volume }}</td>
-                        <td>{{ $record->dataOrder->jumlah_order }}</td>
-                        <td>{{ $record->total_penjualan }}</td>
-                        <td>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $record->id_invoice }}</td>
+                        <td>{{ $record->tanggal_invoice }}</td>
+                        <td>{{ $record->dataHarga->volume }}</td>
+                        <td>{{ $record->detailOrder->dataOrder->jumlah_order }}</td>
+                        <td>Rp. {{ number_format($record->total_penjualan) }}</td>
+                        <td>{{ $record->ppn }}</td>
+                        <td>Rp. {{ number_format($record->jumlah_dibayar) }}</td>
+                        {{-- <td>
                           <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
                             data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
                           <button type='button' class='btn btn-danger btn-sm' data-bs-toggle='modal'
                             data-bs-target='#deleteRecord{{ $record->id }}'><i class='fas fa-trash'></i></button>
-                        </td>
+                        </td> --}}
                       </tr>
                       @endforeach
                       @if ($jumlahTotalPenjualan != 0)
                       <tr>
-                        <th colspan="5">Jumlah Total Penjualan</th>
+                        <th colspan="5">Jumlah</th>
                         <th>Rp. {{ number_format($jumlahTotalPenjualan) }}</th>
+                        <th></th>
+                        <th>Rp. {{ number_format($jumlahJumlahDibayar) }}</th>
                       </tr>
                       @endif
                     </tbody>
@@ -271,15 +290,14 @@
           </div>
         </div>
       </div>
+      <!-- Footer -->
+      <footer>
+        <p id="tanggalJam"
+          style="font-size: 12px; margin: 0; justify-content: flex-end; display: flex; background-color: #f8f9fa;">
+        </p>
+      </footer>
     </div>
   </div>
-
-  <!-- Footer -->
-  <footer>
-    <p id="tanggalJam"
-      style="font-size: 12px; margin: 0; justify-content: flex-end; display: flex; background-color: #f8f9fa;">
-    </p>
-  </footer>
 
   <!-- Scroll to top -->
   <a class="scroll-to-top rounded" href="#page-top">

@@ -31,7 +31,7 @@
       <p class="input-order-label">
         <label for="id_customer">ID Customer</label>
         <input type="text" id="id_customer" value="C_00{{ Auth::user()->id }}" form="order" readonly>
-        <input type="hidden" id="id_customer" name="id_customer" value="{{ Auth::user()->id }}" form="order" readonly>
+        <input type="hidden" id="id_customer" name="id_customer" value="{{ Auth::user()->dataCustomer->id }}" form="order" readonly>
       </p>
       <p class="input-order-label">
         <label for="customer_name">Nama</label>

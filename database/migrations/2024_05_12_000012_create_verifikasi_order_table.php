@@ -17,7 +17,6 @@ return new class extends Migration
             $table->unsignedBigInteger('id_order');
             $table->string('waktu');
             $table->string('tujuan');
-            $table->string('destination');
             $table->string('packing');
             $table->string('kondisi_status');
             $table->string('place_fumigation');

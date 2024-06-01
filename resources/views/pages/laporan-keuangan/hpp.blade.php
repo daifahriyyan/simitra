@@ -73,13 +73,23 @@
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="m-0 font-weight-bold text-primary">Laporan Harga Pokok Penjualan</h6>
                   <div class="btn-group ml-auto" role="group" aria-label="Basic mixed styles example">
-                    <!-- Tombol Tambah dengan Icon -->
+                    <!-- Tombol Posting -->
                     <div>
+                      <form action="{{ route('Posting HPP') }}" method="POST" id="posting">
+                        @csrf
+                        <input type="hidden" name="bulan" value="{{ request()->bulan }}">
+                        <input type="hidden" name="tahun" value="{{ request()->tahun }}">
+                        <button type="submit" class="btn btn-sm btn-primary" style='width: 70px; height: 30px;'>
+                          Posting
+                        </button>
+                      </form>
+                    </div>
+                    {{-- <div>
                       <button type="button" class="btn btn-sm btn-primary" style='width: 70px; height: 30px;'
                         data-bs-toggle="modal" data-bs-target="#addModal">
                         Posting
                       </button>
-                    </div>
+                    </div> --}}
                     <!-- Tombol Filter Pilih BUlan dan Tahun dengan Icon -->
                     <div class="input-group">
                       <form action="{{ route('Harga Pokok Penjualan') }}">
@@ -207,48 +217,39 @@
                       <tr>
                         <th colspan="3">HPP STANDAR</th>
                       </tr>
-                      @php
-                      $total_hpp = 0;
-                      @endphp
-                      @foreach ($hpp as $record)
-                      @php
-                      $jumlah = $record->bbb_standar + $record->btk_standar + $record->bop_standar;
-                      $total_hpp += $jumlah;
-                      @endphp
-                      <tr>
-                        <th colspan="3">Volume : {{ $record->volume }}</th>
-                      </tr>
+                      @if ($hpp)
                       <tr>
                         <td>Biaya Bahan Baku</td>
-                        <td>Rp. {{ number_format($record->bbb_standar) }}</td>
+                        <td>Rp. {{ number_format($hpp->dataHarga->sum('bbb_standar')) }}</td>
                         <td></td>
                       </tr>
                       <tr>
                         <td>Biaya Tenaga Kerja</td>
-                        <td>Rp. {{ number_format($record->btk_standar) }}</td>
+                        <td>Rp. {{ number_format($hpp->dataHarga->sum('btk_standar')) }}</td>
                         <td></td>
                       </tr>
                       <tr>
                         <td>Biaya Overhead Pabrik</td>
-                        <td>Rp. {{ number_format($record->bop_standar) }}</td>
+                        <td>Rp. {{ number_format($hpp->dataHarga->sum('bop_standar')) }}</td>
                         <td></td>
                       </tr>
                       <tr>
-                        <th>Jumlah HPP Standar</th>
-                        <th>Rp. {{ number_format($jumlah) }}</th>
-                        <th></th>
-                      </tr>
-                      @endforeach
-                      <tr>
                         <th>Total HPP Standar</th>
                         <th></th>
-                        <th>Rp. {{ number_format($total_hpp) }}</th>
+                        <th>Rp. {{ number_format($hpp->dataHarga->sum('hpp')) }}</th>
                       </tr>
                       <tr>
                         <th>Selisih Efisiensi Biaya</th>
                         <th></th>
-                        <th>Rp. {{ number_format($total_hpp_sesungguhnya - $total_hpp) }}</th>
+                        <th>Rp. {{ number_format($total_hpp_sesungguhnya - $hpp->dataHarga->sum('hpp')) }}</th>
+                        <input type="hidden" name="jumlah_hpp" id="jumlah_hpp"
+                          value="{{ $total_hpp_sesungguhnya - $hpp->dataHarga->sum('hpp') }}" form="posting">
                       </tr>
+                      @else
+                      <tr>
+                        <td colspan="3" class="text-center">HPP Standar Tidak Ada</td>
+                      </tr>
+                      @endif
                     </tbody>
                     <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
                   </table>
@@ -264,9 +265,11 @@
         <p id="tanggalJam"
           style="font-size: 12px; margin: 0; justify-content: flex-end; display: flex; background-color: #f8f9fa;"></p>
       </footer>
+    </div>
+  </div>
 
-      <script>
-        function updateTanggalJam() {
+  <script>
+    function updateTanggalJam() {
       var date = new Date();
       var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
       var formattedDate = date.toLocaleDateString('id-ID', options);
@@ -278,31 +281,31 @@
 
     // Memperbarui tanggal dan jam setiap detik
     setInterval(updateTanggalJam, 1000);
-      </script>
-      <!-- Footer -->
-    </div>
+  </script>
+  <!-- Footer -->
+  </div>
 
-    <!-- Scroll to top -->
-    <a class="scroll-to-top rounded" href="#page-top">
-      <i class="fas fa-angle-up"></i>
-    </a>
+  <!-- Scroll to top -->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
-    <script src="{{ asset('js/simitra.min.js') }}"></script>
-    <!-- Page level plugins -->
-    <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+  <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+  <script src="{{ asset('js/simitra.min.js') }}"></script>
+  <!-- Page level plugins -->
+  <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
+  <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
 
-    <!-- Page level custom scripts -->
-    <script>
-      $(document).ready(function () {
+  <!-- Page level custom scripts -->
+  <script>
+    $(document).ready(function () {
       $('#dataTableHover').DataTable();
     });
-    </script>
+  </script>
 </body>
 
 </html>

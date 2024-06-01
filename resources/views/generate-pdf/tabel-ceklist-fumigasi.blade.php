@@ -118,7 +118,7 @@
           <td>{{ $record->detailOrder->dataOrder->id_order }}</td>
           <td>{{ $record->detailOrder->id_detailorder }}</td>
           <td>{{ $record->ceklist_fumigasi }}</td>
-          <td>{{ $record->tanggal_order }}</td>
+          <td>{{ $record->detailOrder->dataOrder->tanggal_order }}</td>
         </tr>
         @endforeach
       </table>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DataOrder;
 use App\Models\DataHargar;
 use App\Models\DetailOrder;
+use App\Models\Notifikasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -41,9 +42,6 @@ class HomeController extends Controller
             'jumlah_order' => request()->jumlah_order,
         ]);
 
-
-
-
         $id = DataOrder::latest()->get()->first()->id;
         for ($i = 1; $i <= $request["jumlah_order"]; $i++) {
 
@@ -77,6 +75,12 @@ class HomeController extends Controller
                 'packing_list' => $filePL,
             ]);
         }
+
+        Notifikasi::create([
+            'keterangan' => 'Mendapat Order Baru no. '.request()->id_order,
+            'is_read' => 'N',
+            'posisi' => 'Administrasi',
+        ]);
 
         return redirect(route('Daftar Order'))->with('success', 'Data Order Berhasil Ditambah');
     }
@@ -117,7 +121,7 @@ class HomeController extends Controller
     public function daftarOrder()
     {
         return view('customer-side.order', [
-            'order' => DataOrder::where('id_customer', Auth::user()->id)->get()
+            'order' => DataOrder::where('id_customer', Auth::user()->dataCustomer->id)->get()
         ]);
     }
 

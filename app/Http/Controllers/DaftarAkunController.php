@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Throwable;
 use App\Models\KeuAkun;
 use App\Models\KeuJurnal;
 use Illuminate\Http\Request;
@@ -57,6 +58,14 @@ class DaftarAkunController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate(request(), [
+            'kode_akun' => 'required|unique:keu_akun,kode_akun',
+            'nama_akun' => 'required',
+            'jenis_akun' => 'required',
+            'kelompok_akun' => 'required',
+            'saldo_akun' => 'required'
+        ]);
+        
         KeuAkun::create([
             'kode_akun' => $request['kode_akun'],
             'nama_akun' => $request['nama_akun'],
@@ -137,7 +146,12 @@ class DaftarAkunController extends Controller
      */
     public function destroy(string $id)
     {
-        KeuAkun::where('id', $id)->delete();
+        try {
+            KeuAkun::where('id', $id)->delete();
+            // Validate the value...
+        } catch (Throwable $e) {
+            return back()->with('error', $e->getMessage());
+        }
 
         return redirect()->route('Daftar Akun')->with('hapus', 'Data Berhasil Dihapus');
     }
