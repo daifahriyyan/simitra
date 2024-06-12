@@ -45,7 +45,7 @@ class MethylRecordsheetController extends Controller
             }
     
             return view('pages.operasional.methyl-recordsheet', [
-                'dataOrder' => DetailOrder::get(),
+                'dataOrder' => DetailOrder::latest()->get(),
                 'dataRecordsheet' => $metilRecordsheet
             ]);
 

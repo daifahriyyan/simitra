@@ -72,7 +72,7 @@
                     <div class="mb-3">
                       <label for="id_sp" class="form-label">ID Pemberitahuan:</label>
                       <input type="text" class="form-control" id="id_sp" name="id_sp"
-                        value="SP000{{ $sp->count() + 1 }}/MIM/2024" required>
+                        value="SP000{{ $sp->count() + 1 }}/MIM/2024" readonly required>
                     </div>
                     <div class="mb-3">
                       <label for="id_order" class="form-label">ID Order:</label>
@@ -146,14 +146,14 @@
                     <div class="mb-3">
                       <label for="id_sp" class="form-label">ID Pemberitahuan:</label>
                       <input type="text" class="form-control" id="id_sp" name="id_sp" value="{{ $record->id_sp }}"
-                        required>
+                        readonly required>
                     </div>
                     <div class="mb-3">
                       <label for="id_order" class="form-label">ID Order:</label>
                       {{-- <input type="number" class="form-control" id="id_order" name="id_order" required> --}}
                       <select class="form-control form-select-lg" name="id_order" id="id_order" required>
-                        <option value="{{ $record->id_order?? '' }}">{{ $record->dataOrder->id_order?? 'Silahkan Pilih
-                          Kesediaan' }}</option>
+                        <option value="{{ $record->id_order?? '' }}">{{ $record->dataOrder->id_order?? 'ID Order' }}
+                        </option>
                         @foreach ($detailOrder as $item)
                         <option value="{{ $item->id }}">{{ $item->id_detailorder }}</option>
                         @endforeach

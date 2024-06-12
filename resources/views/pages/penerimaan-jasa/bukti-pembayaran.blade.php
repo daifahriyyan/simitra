@@ -230,6 +230,7 @@
                         <th>Id Detail Order</th>
                         <th>Tanggal Pembayaran</th>
                         <th>Bukti Pembayaran</th>
+                        <th>Jumlah Dibayar</th>
                         <th>Status</th>
                         <th>Aksi</th>
                       </tr>
@@ -244,6 +245,7 @@
                           <a href='{{ asset("storage/bukti_pembayaran/$record->bukti_pembayaran") }}' target="_blank">{{
                             $record->bukti_pembayaran }}</a>
                         </td>
+                        <td>{{ number_format($record->invoice->jumlah_dibayar) }}</td>
                         <td>
                           <?php
                     if($record->detailOrder->verifikasi < 6){ 

@@ -62,6 +62,21 @@
             </div>
           </div>
           @endif
+          @if (session()->has('success'))
+          <div class="row">
+            <div class="col d-flex justify-content-center">
+              <div class="alert alert-success alert-dismissible fade show" style="min-height: 50px; width:500px;"
+                role="alert">
+                <div>
+                  {{ session('success') }}
+                </div>
+                <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          @endif
           <!-- Your container content -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Order</h1> <!-- EDIT NAMA -->
@@ -429,8 +444,8 @@
                         <td>
                           {{-- <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
                             data-bs-target='#editModal{{ $item->id }}'><i class='fas fa-edit'></i></button> --}}
-                          <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
-                            data-bs-target="#deleteRecord{{ $item->id }}"><i class='fas fa-trash'></i></button>
+                          {{-- <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
+                            data-bs-target="#deleteRecord{{ $item->id }}"><i class='fas fa-trash'></i></button> --}}
                           <a href="{{ route('Data Order') }}?export=pdf-detail&id_detailorder={{ $item->id_detailorder }}"
                             class='btn btn-primary btn-sm' style='width: 30px; height: 30px;' target='_blank'
                             role='button'><i class='fas fa-print'></i></a>

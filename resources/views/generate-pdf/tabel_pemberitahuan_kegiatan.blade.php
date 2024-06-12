@@ -104,7 +104,7 @@
 <body>
   <div class="container">
     <div class="letterhead">
-      <img src="{{ public_path('assets/img/logo-surat.jpg') }}" alt="Company Logo" class="logo">
+      <img src="{{ public_path('assets/img/logo-surat.png') }}" alt="Company Logo" class="logo">
       <h1>PT MITRA INDO MAJU MANDIRI<br>Fumigation, Termite & Pest Control</h1>
       <div class="address">
         <p>Jl. Pakis II Blok C No. 60 Perum Ardhimas Bumi Mulya</p>
@@ -142,12 +142,16 @@
           <th style="width: 30%;">Keterangan</th>
         </tr>
         @foreach ($pemberitahuanKegiatan as $record)
+        @php
+        $jam_mulai = $record->jam_mulai;
+        $jam_selesai = $record->jam_selesai;
+        @endphp
         <tr>
           <td>{{ $loop->iteration }}</td>
           <td>{{ $record->detailOrder->container }}</td>
           <td>{{ $record->detailOrder->dataOrder->volume }}</td>
-          <td>{{ $record->jam_mulai }}</td>
-          <td>{{ $record->jam_selesai }}</td>
+          <td>{{ date_format(new DateTime("$jam_mulai"), 'H:i:s') }}</td>
+          <td>{{ date_format(new DateTime("$jam_selesai"), 'H:i:s') }}</td>
           <td>{{ $record->keterangan }}</td>
         </tr>
         @endforeach

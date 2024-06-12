@@ -72,7 +72,7 @@
                     <div class="mb-3">
                       <label for="id_recordsheet" class="form-label">ID Recordsheet:</label>
                       <input type="text" class="form-control" id="id_recordsheet" name="id_recordsheet"
-                        value="R00{{ $dataRecordsheet->count() + 1 }}" required>
+                        value="R00{{ $dataRecordsheet->count() + 1 }}" readonly required>
                     </div>
                     <div class="mb-3">
                       <label for="id_order" class="form-label">ID Order:</label>
@@ -141,7 +141,7 @@
                     <div class="mb-3">
                       <label for="id_recordsheet" class="form-label">ID Recordsheet:</label>
                       <input type="text" class="form-control" id="id_recordsheet" name="id_recordsheet"
-                        value="{{ $record->id_recordsheet }}" required>
+                        value="{{ $record->id_recordsheet }}" readonly required>
                     </div>
                     <div class="mb-3">
                       <label for="id_order" class="form-label">ID Order:</label>

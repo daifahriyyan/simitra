@@ -48,6 +48,21 @@
             </div>
           </div>
           @endif
+          @if (session()->has('success'))
+          <div class="row">
+            <div class="col d-flex justify-content-center">
+              <div class="alert alert-success alert-dismissible fade show" style="min-height: 50px; width:500px;"
+                role="alert">
+                <div>
+                  {{ session('success') }}
+                </div>
+                <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          @endif
           <!-- Your container content -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Sertifikat</h1> <!-- EDIT NAMA -->
@@ -402,7 +417,7 @@
                       @foreach ($sertifikat as $record)
                       <tr>
                         <td>{{ $record->id_sertif }}</td>
-                        <td>{{ $record->id_reg }}</td>
+                        {{-- <td>{{ $record->id_reg }}</td> --}}
                         <td>{{ $record->target }}</td>
                         <td>{{ $record->detailOrder->commodity }}</td>
                         <td>{{ $record->consignment }}</td>
@@ -432,7 +447,7 @@
                         <td>{{ $record->detailOrder->container }}</td>
                         <td>{{ $record->wrapping }}</td>
                         <td>{{ $record->tanggal_sertif }}</td>
-                        <td>{{ $record->no_reg }}</td>
+                        {{-- <td>{{ $record->no_reg }}</td> --}}
                         <td>
                           <?php
                     if($item->detailOrder->verifikasi <= 3){ 
@@ -447,11 +462,11 @@
                             data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
                           <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
                             data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
-                          <a href='generate_pdf.php?id_order_container=" . htmlspecialchars($data['
-                            id_order_container']) . "' class='btn btn-primary btn-sm' target='_blank' role='button'><i class='fas fa-print'></i></a>
-                    <a href=" {{ route('Sertifikat') }}?verif={{ $record->id_order }}"
-                            class='btn btn-info btn-sm' style='width: 30px; height: 30px;'><i
-                              class='fas fa-check'></i></a>
+                          <a href="{{ route('Sertifikat') }}?export=pdf-detail&id={{ $record->id_order }}"
+                            class='btn btn-primary btn-sm' style='width: 30px; height: 30px;' target='_blank'
+                            role='button'><i class='fas fa-print'></i></a>
+                          <a href=" {{ route('Sertifikat') }}?verif={{ $record->id_order }}" class='btn btn-info btn-sm'
+                            style='width: 30px; height: 30px;'><i class='fas fa-check'></i></a>
                         </td>
                       </tr>
                       @endforeach

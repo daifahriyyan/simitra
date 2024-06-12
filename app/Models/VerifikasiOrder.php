@@ -34,4 +34,9 @@ class VerifikasiOrder extends Model
     {
         return $this->belongsTo(DetailOrder::class, 'id_order', 'id');
     }
+
+    public function detailOorder()
+    {
+        return $this->belongsTo(DetailOrder::class, 'id', 'id_order');
+    }
 }

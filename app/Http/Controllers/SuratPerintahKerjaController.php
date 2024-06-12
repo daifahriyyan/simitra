@@ -59,7 +59,7 @@ class SuratPerintahKerjaController extends Controller
             return view('pages.operasional.surat-perintah-kerja', [
                 'title' => 'Surat Perintah Kerja',
                 'spk' => $spk,
-                'dataOrder' => DetailOrder::get(),
+                'dataOrder' => DetailOrder::latest()->get(),
                 'dataPegawai' => DataPegawai::get(),
                 'detailOrder' => DetailOrder::get(),
             ]);

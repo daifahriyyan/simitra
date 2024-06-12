@@ -20,8 +20,22 @@ class SertifikatController extends Controller
   public function index()
   {
     if (Auth::user()->posisi == null) {
-      return redirect()->route('Home');
-      
+      if (request()->get('export') == 'pdf-detail') {
+        $detail = DetailOrder::where('id', request()->id)->get()->first();
+        Pdf::setOption([
+          'enabled' => true,
+          'isRemoteEnabled' => true,
+          'chroot' => realpath(''),
+          'isPhpEnabled' => true,
+          'isFontSubsettingEnabled' => true,
+          'pdfBackend' => 'CPDF',
+          'isHtml5ParserEnabled' => true
+        ]);
+        $pdf = Pdf::loadView('generate-pdf.baris-sertifikat', ['detail' => $detail])->setPaper('a4');
+        return $pdf->stream('Sertifikat.pdf');
+      } else {
+        return redirect()->route('Home');
+      }
     } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Administrasi') {
       if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
         $tanggalMulai = request()->tanggalMulai;
@@ -30,7 +44,7 @@ class SertifikatController extends Controller
       } else {
         $sertifikat = Sertifikat::get();
       }
-  
+
       if (request()->get('export') == 'pdf') {
         Pdf::setOption([
           'enabled' => true,
@@ -44,7 +58,7 @@ class SertifikatController extends Controller
         $pdf = Pdf::loadView('generate-pdf.tabel-sertifikat', ['sertifikat' => $sertifikat])->setPaper('a4', 'landscape');
         return $pdf->stream('Daftar Sertifikat.pdf');
       } else if (request()->get('export') == 'pdf-detail') {
-        $detail = DetailOrder::where('id_detailorder', request()->id_detailorder)->get()->first();
+        $detail = DetailOrder::where('id', request()->id)->get()->first();
         Pdf::setOption([
           'enabled' => true,
           'isRemoteEnabled' => true,
@@ -54,22 +68,24 @@ class SertifikatController extends Controller
           'pdfBackend' => 'CPDF',
           'isHtml5ParserEnabled' => true
         ]);
-        $pdf = Pdf::loadView('generate-pdf.request-order', ['detail' => $detail])->setPaper('a4');
-        return $pdf->stream('Request Order.pdf');
+        $pdf = Pdf::loadView('generate-pdf.baris-sertifikat', ['detail' => $detail])->setPaper('a4');
+        return $pdf->stream('Sertifikat.pdf');
       }
-  
+
       if (request()->get('verif') !== null) {
         DetailOrder::where('id', request()->get('verif'))->update([
-          'verifikasi' => 4
+          'verifikasi' => 5,
+          'is_reject' => '0'
         ]);
+
+        return redirect()->route('Sertifikat')->with('success', 'Verifikasi telah berhasil diupdate di web luar');
       }
       return view('pages.penerimaan-jasa.sertifikat', [
         'sertifikat' => $sertifikat,
-        'dataOrder' => DetailOrder::get(),
+        'dataOrder' => DetailOrder::latest()->get(),
         'dataImporter' => DataImporter::get(),
         'metilRecordsheet' => MetilRecordsheet::get(),
       ]);
-
     } else {
       return redirect()->route('Dashboard');
     }

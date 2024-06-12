@@ -126,13 +126,7 @@
   <li class="nav-item">
     <a class="nav-link" href="{{ route('Daftar User') }}">
       <i class="fas fa-user-plus"></i>
-      <span>Account</span>
-    </a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{{ route('User Logs') }}">
-      <i class="fas fa-address-card"></i>
-      <span>User Logs</span>
+      <span>Users</span>
     </a>
   </li>
   @endif
@@ -159,7 +153,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-        <form action="{{ route('Logout') }}" method="post">
+        <form action="{{ route('Logout Pegawai') }}" method="post">
           @csrf
           <button type="submit" class="btn btn-primary"><a>Logout</a></button>
         </form>

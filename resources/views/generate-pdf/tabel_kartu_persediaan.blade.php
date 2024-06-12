@@ -106,7 +106,7 @@
 <body>
   <div class="container">
     <div class="letterhead">
-      <img src="{{ public_path('assets/img/logo-surat.jpg') }}" alt="Company Logo" class="logo">
+      <img src="{{ public_path('assets/img/logo-surat.png') }}" alt="Company Logo" class="logo">
       <h1>PT MITRA INDO MAJU MANDIRI<br>Fumigation, Termite & Pest Control</h1>
       <div class="address">
         <p>Jl. Pakis II Blok C No. 60 Perum Ardhimas Bumi Mulya</p>
@@ -154,13 +154,9 @@
           <td>{{ $record->harga_keluar }}</td>
           <td>{{ $record->jumlah_keluar }}</td>
           <td>{{ $record->total_keluar }}</td>
+          <td>{{ $record->harga_saldo }}</td>
+          <td>{{ $record->jumlah_saldo }}</td>
           <td>{{ $record->total_saldo }}</td>
-          <td class="d-flex">
-            <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
-              data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
-            <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
-              data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
-          </td>
         </tr>
         @endforeach
       </table>
@@ -171,7 +167,7 @@
     <div class="signature" style="text-align: right; margin-left: 400px">
       <table>
         <tr>
-          <th>Semarang, (get tanggal today)</th>
+          <th>Semarang, {{ date('d / M / Y') }}</th>
         </tr>
         <tr>
           <th>Manajer Teknik,</th>
@@ -190,7 +186,7 @@
       <table>
         <tr>
           <td style="font-size: 7px;"><b>Print by</b></td>
-          <td style="font-size: 7px;">: (siapa yang ngeklik print)</td>
+          <td style="font-size: 7px;">: {{ Auth::user()->username }}</td>
         </tr>
       </table>
     </div>

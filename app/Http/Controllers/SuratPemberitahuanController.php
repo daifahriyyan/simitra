@@ -57,7 +57,7 @@ class SuratPemberitahuanController extends Controller
             }
             return view('pages.operasional.surat-pemberitahuan', [
                 'title' => 'Surat Pemberitahuan',
-                'detailOrder' => DetailOrder::get(),
+                'detailOrder' => DetailOrder::latest()->get(),
                 'sp' => $sp
             ]);
 

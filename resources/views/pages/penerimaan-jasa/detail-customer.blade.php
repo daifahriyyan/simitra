@@ -233,6 +233,16 @@
                     <!-- Tombol Filter Tanggal dengan Icon -->
                     <div class="input-group">
                       <form action="{{ route('Detail Customer') }}">
+                        <label for="nama_customer" class="mb-0 mr-2">Customer:</label>
+                        <select class="form-control-sm border-1" style="width: 250px; height: 30px;" id="nama_customer"
+                          name="nama_customer">
+                          <option value="{{ $customerSelected->id ?? '' }}">{{ $customerSelected->nama_customer ??
+                            'Pilih Customer' }}
+                          </option>
+                          @foreach ($customers as $item)
+                          <option value="{{ $item->id }}">{{ $item->nama_customer }}</option>
+                          @endforeach
+                        </select>
                         <input type="date" class="form-control-sm border-1" id="tanggalMulai"
                           value="{{ request()->tanggalMulai }}" name="tanggalMulai"
                           aria-describedby="tanggalMulaiLabel">
@@ -281,7 +291,7 @@
                         <th>Id Customer</th>
                         <th>Termin</th>
                         <th>Tanggal Input</th>
-                        <th>Saldo Awal</th>
+                        <th>Tanggal Jatuh Tempo</th>
                         <th>Total Penjualan</th>
                         <th>Total Penerimaan</th>
                         <th>Saldo Akhir</th>
@@ -295,10 +305,11 @@
                         <td>{{ $record->dataCustomer->id_customer }}</td>
                         <td>{{ $record->termin }}</td>
                         <td>{{ $record->tanggal_input }}</td>
-                        <td>{{ $record->saldo_awal }}</td>
-                        <td>{{ $record->total_penjualan }}</td>
-                        <td>{{ $record->penerimaan }}</td>
-                        <td>{{ $record->saldo_akhir }}</td>
+                        <td>{{ $record->tanggal_jatuh_tempo }}</td>
+                        {{-- <td>{{ number_format($record->saldo_awal, 2, ',','.') }}</td> --}}
+                        <td>{{ number_format($record->total_penjualan, 2, ',','.') }}</td>
+                        <td>{{ number_format($record->penerimaan, 2, ',','.') }}</td>
+                        <td>{{ number_format($record->saldo_akhir, 2, ',','.') }}</td>
                         <td>
                           @if($record->status == 'Lunas')
                           <span class='badge badge-success'>Lunas</span>
@@ -314,12 +325,12 @@
                         </td>
                         <td>
                           <button type="button" class='btn btn-info btn-sm' data-bs-toggle="modal"
-                            data-bs-target='#verification{{ $record->id }}'>👍</button>
+                            data-bs-target='#verification{{ $record->id }}'><i class='fas fa-thumbs-up'></i></button>
                           <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
                             data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
                           <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"
                             data-bs-target="#deleteRecord{{ $record->id }}"><i class='fas fa-trash'></i></button>
-                          <a href="{{ route('Detail Customer') }}?export=pdf&id_customer={{ $record->id }}"
+                          <a href="{{ route('Detail Customer') }}?export=pdf-detail&id_customer={{ $record->id }}"
                             class='btn btn-primary btn-sm' style='width: 30px; height: 30px;' target='_blank'
                             role='button'><i class='fas fa-print'></i></a>
                         </td>

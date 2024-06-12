@@ -116,7 +116,7 @@
 <body>
   <div class="container">
     <div class="letterhead">
-      <img src="{{ public_path('assets/img/logo-surat.jpg') }}" alt="Company Logo" class="logo">
+      <img src="{{ public_path('assets/img/logo-surat.png') }}" alt="Company Logo" class="logo">
       <h1>PT MITRA INDO MAJU MANDIRI<br>Fumigation, Termite & Pest Control</h1>
       <div class="address">
         <p>Jl. Pakis II Blok C No. 60 Perum Ardhimas Bumi Mulya</p>
@@ -131,180 +131,201 @@
         request()->tahun ??
         'Belum Dipilih' }}</p>
       <table>
-        <tr>
-          <th>Keterangan</th>
-          <th>Jumlah</th>
-          <th>Total</th>
-        </tr>
-        @if ($asetLancar != null || $asetTetap != null)
-        <tr>
-          <th style="text-align: left">Aktiva</th>
-          <th></th>
-          <th></th>
-        </tr>
+        <!-- AWAL EDIT SESUAIKAN TABEL DATABASE -->
+        <thead class="thead-light">
+          <tr>
+            <th>Keterangan</th>
+            <th>Jumlah</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if ($asetLancar != null || $asetTetap != null)
+          <tr>
+            <th colspan="3">Aktiva</th>
+          </tr>
 
-        {{-- Aset Lancar --}}
-        @if ($asetLancar != null)
-        <tr>
-          <th style="text-align: left">Aset Lancar</th>
-          <th></th>
-          <th></th>
-        </tr>
-        @foreach ($asetLancar as $record)
-        @php
-        $jumlah_aset_lancar += $record->saldo_akun;
-        @endphp
-        <tr>
-          <td>{{ $record->nama_akun }}</td>
-          <td>Rp. {{ number_format($record->saldo_akun) }}</td>
-          <td></td>
-        </tr>
-        @endforeach
-        <tr>
-          <th style="text-align: left;">Jumlah Aset Lancar</th>
-          <th></th>
-          <th>Rp. {{ number_format($jumlah_aset_lancar) }}</th>
-        </tr>
-        @endif
+          {{-- Aset Lancar --}}
+          @if ($asetLancar != null)
+          <tr>
+            <th colspan="3">Aset Lancar</th>
+          </tr>
+          @php
+          $total_hpp_sesungguhnya = 0;
+          @endphp
+          @foreach ($asetLancar as $record)
+          <?php
+          $total_hpp_sesungguhnya = $hppSesungguhnya->sum('bbb_sesungguhnya') +
+          $hppSesungguhnya->sum('btk_sesungguhnya') +
+          $hppSesungguhnya->sum('bop_sesungguhnya');
+          
+          $kas = $labaRugi->beban_pajak_penghasilan - ($total_hpp_sesungguhnya - $hpp->dataHarga->sum('hpp'));
+          // if ($record->kode_akun == '1110') {
+          //   $jumlah_aset_lancar += $kas;
+          // <tr>
+          //   <td>Kas</td>
+          //   <td>Rp. {{ number_format($kas) }}</td>
+          //   <td></td>
+          // </tr>
+          // } else{
+            $jumlah_aset_lancar += $record->saldo_akun;
+          ?>
+          <tr>
+            <td>{{ $record->nama_akun }}</td>
+            <td>Rp. {{ number_format($record->saldo_akun) }}</td>
+            <td></td>
+          </tr>
+          <?php
+          // }
+          ?>
+          @endforeach
+          <tr>
+            <th>Jumlah Aset Lancar</th>
+            <th></th>
+            <th>Rp. {{ number_format($jumlah_aset_lancar) }}</th>
+          </tr>
+          @endif
 
-        {{-- Aset Tetap --}}
-        @if ($asetTetap != null)
-        <tr>
-          <th style="text-align: left">Aset Tetap</th>
-          <th></th>
-          <th></th>
-        </tr>
-        @foreach ($asetTetap as $record)
-        @php
-        $jumlah_aset_tetap += $record->saldo_akun;
-        @endphp
-        <tr>
-          <td>{{ $record->nama_akun }}</td>
-          <td>Rp. {{ number_format($record->saldo_akun) }}</td>
-          <td></td>
-        </tr>
-        @endforeach
-        <tr>
-          <th style="text-align: left;">Jumlah Aset Tetap</th>
-          <th></th>
-          <th>Rp. {{ number_format($jumlah_aset_tetap) }}</th>
-        </tr>
-        @endif
-        <tr>
-          <th style="text-align: left;">Jumlah Aktiva</th>
-          <th></th>
-          <th>Rp. {{ number_format($jumlah_aset_tetap + $jumlah_aset_lancar) }}</th>
-        </tr>
+          {{-- Aset Tetap --}}
+          @if ($asetTetap != null)
+          <tr>
+            <th colspan="3">Aset Tetap</th>
+          </tr>
+          @foreach ($asetTetap as $record)
+          @php
+          if($record->kode_akun == '1220'){
+          $jumlah_aset_tetap -= $record->saldo_akun;
+          }else{
+          $jumlah_aset_tetap += $record->saldo_akun;
+          }
+          @endphp
+          <tr>
+            <td>{{ $record->nama_akun }}</td>
+            <td>Rp. {{ number_format($record->saldo_akun) }}</td>
+            <td></td>
+          </tr>
+          @endforeach
+          <tr>
+            <th>Jumlah Aset Tetap</th>
+            <th></th>
+            <th>Rp. {{ number_format($jumlah_aset_tetap) }}</th>
+          </tr>
+          @endif
+          <tr>
+            <th>Total Aktiva</th>
+            <th></th>
+            <th>Rp. {{ number_format($jumlah_aset_tetap + $jumlah_aset_lancar) }}</th>
+          </tr>
 
-        <tr>
-          <th style="text-align: left"><br></th>
-          <th></th>
-          <th></th>
-        </tr>
-        @endif
+          <tr>
+            <th colspan="3"><br></th>
+          </tr>
+          @endif
 
-        @if ($kewajibanJkPdk != null || $kewajibanJkPjg != null || $ekuitas != null)
-        <tr>
-          <th style="text-align: left">Passiva</th>
-          <th></th>
-          <th></th>
-        </tr>
-        @if ($kewajibanJkPdk != null || $kewajibanJkPjg != null)
-        <tr>
-          <th style="text-align: left">Kewajiban</th>
-          <th></th>
-          <th></th>
-        </tr>
-        @endif
-        {{-- Kewajiban Jangka Pendek --}}
-        @if ($kewajibanJkPdk != null)
-        <tr>
-          <th style="text-align: left">Kewajiban Jangka Pendek</th>
-          <th></th>
-          <th></th>
-        </tr>
-        @foreach ($kewajibanJkPdk as $record)
-        @php
-        $jumlah_kewajiban_jkpdk += $record->saldo_akun;
-        @endphp
-        <tr>
-          <td>{{ $record->nama_akun }}</td>
-          <td>Rp. {{ number_format($record->saldo_akun) }}</td>
-          <td></td>
-        </tr>
-        @endforeach
-        <tr>
-          <th style="text-align: left;">Jumlah Kewajiban Jangka Pendek</th>
-          <th></th>
-          <th>Rp. {{ number_format($jumlah_kewajiban_jkpdk) }}</th>
-        </tr>
-        @endif
+          @if ($kewajibanJkPdk != null || $kewajibanJkPjg != null || $ekuitas != null)
+          <tr>
+            <th colspan="3">Passiva</th>
+          </tr>
+          @if ($kewajibanJkPdk != null || $kewajibanJkPjg != null)
+          <tr>
+            <th colspan="3">Kewajiban</th>
+          </tr>
+          @endif
+          {{-- Kewajiban Jangka Pendek --}}
+          @if ($kewajibanJkPdk != null)
+          <tr>
+            <th colspan="3">Kewajiban Jangka Pendek</th>
+          </tr>
+          @foreach ($kewajibanJkPdk as $record)
+          @php
+          $jumlah_kewajiban_jkpdk += $record->saldo_akun;
+          @endphp
+          <tr>
+            <td>{{ $record->nama_akun }}</td>
+            <td>Rp. {{ number_format($record->saldo_akun) }}</td>
+            <td></td>
+          </tr>
+          @endforeach
+          <tr>
+            <td>Hutang Pajak</td>
+            <td>Rp. {{ number_format($labaRugi->beban_pajak_penghasilan) }}</td>
+            <td></td>
+          </tr>
+          <tr>
+            <?php $jumlah_kewajiban_jkpdk = $jumlah_kewajiban_jkpdk + $labaRugi->beban_pajak_penghasilan ?>
+            <th>Jumlah Kewajiban Jangka Pendek</th>
+            <th></th>
+            <th>Rp. {{ number_format($jumlah_kewajiban_jkpdk) }}</th>
+          </tr>
+          @endif
 
-        {{-- Kewajiban Jangka Panjang --}}
-        @if ($kewajibanJkPjg != null)
-        <tr>
-          <th style="text-align: left">Kewajiban Jangka Panjang</th>
-          <th></th>
-          <th></th>
-        </tr>
-        @foreach ($kewajibanJkPjg as $record)
-        @php
-        $jumlah_kewajiban_jkpjg += $record->saldo_akun;
-        @endphp
-        <tr>
-          <td>{{ $record->nama_akun }}</td>
-          <td>Rp. {{ number_format($record->saldo_akun) }}</td>
-          <td></td>
-        </tr>
-        @endforeach
-        <tr>
-          <th style="text-align: left;">Jumlah Kewajiban Jangka Panjang</th>
-          <th></th>
-          <th>Rp. {{ number_format($jumlah_kewajiban_jkpjg) }}</th>
-        </tr>
-        @endif
-        <tr>
-          <th style="text-align: left;">Jumlah Kewajiban</th>
-          <th></th>
-          <th>Rp. {{ number_format($jumlah_kewajiban_jkpjg + $jumlah_kewajiban_jkpdk) }}</th>
-        </tr>
+          {{-- Kewajiban Jangka Panjang --}}
+          @if ($kewajibanJkPjg != null)
+          <tr>
+            <th colspan="3">Kewajiban Jangka Panjang</th>
+          </tr>
+          @foreach ($kewajibanJkPjg as $record)
+          @php
+          $jumlah_kewajiban_jkpjg += $record->saldo_akun;
+          @endphp
+          <tr>
+            <td>{{ $record->nama_akun }}</td>
+            <td>Rp. {{ number_format($record->saldo_akun) }}</td>
+            <td></td>
+          </tr>
+          @endforeach
+          <tr>
+            <th>Jumlah Kewajiban Jangka Panjang</th>
+            <th></th>
+            <th>Rp. {{ number_format($jumlah_kewajiban_jkpjg) }}</th>
+          </tr>
+          @endif
+          <tr>
+            <th>Jumlah Kewajiban</th>
+            <th></th>
+            <th>Rp. {{ number_format($jumlah_kewajiban_jkpjg + $jumlah_kewajiban_jkpdk) }}</th>
+          </tr>
 
-        {{-- Ekuitas --}}
-        @if ($ekuitas != null)
-        <tr>
-          <th style="text-align: left">Ekuitas</th>
-          <th></th>
-          <th></th>
-        </tr>
-        @foreach ($ekuitas as $record)
-        @php
-        $jumlah_ekuitas += $record->saldo_akun;
-        @endphp
-        <tr>
-          <td>{{ $record->nama_akun }}</td>
-          <td>Rp. {{ number_format($record->saldo_akun) }}</td>
-          <td></td>
-        </tr>
-        @endforeach
-        <tr>
-          <th style="text-align: left;">Jumlah Ekuitas</th>
-          <th></th>
-          <th>Rp. {{ number_format($jumlah_ekuitas) }}</th>
-        </tr>
-        @endif
-        <tr>
-          <th style="text-align: left;">Jumlah Passiva</th>
-          <th></th>
-          <th>Rp. {{ number_format($jumlah_ekuitas + $jumlah_kewajiban_jkpjg + $jumlah_kewajiban_jkpdk) }}
-          </th>
-        </tr>
-        @else
-        <tr>
-          <th style="text-align: left" class="text-center">Data Tidak Ada</th>
-          <th></th>
-          <th></th>
-        </tr>
-        @endif
+          {{-- Ekuitas --}}
+          @if ($ekuitas != null)
+          <tr>
+            <th colspan="3">Ekuitas</th>
+          </tr>
+          @foreach ($ekuitas as $record)
+          @php
+          $jumlah_ekuitas += $record->saldo_akun;
+          @endphp
+          <tr>
+            <td>{{ $record->nama_akun }}</td>
+            <td>Rp. {{ number_format($record->saldo_akun) }}</td>
+            <td></td>
+          </tr>
+          @endforeach
+          <tr>
+            <td>Laba / Rugi Bersih</td>
+            <td>Rp. {{ number_format($labaRugi->jumlah_laba_rugi) }}</td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>Jumlah Ekuitas</th>
+            <th></th>
+            <th>Rp. {{ number_format($jumlah_ekuitas + $labaRugi->jumlah_laba_rugi) }}</th>
+          </tr>
+          @endif
+          <tr>
+            <th>Total Passiva</th>
+            <th></th>
+            <th>Rp. {{ number_format($jumlah_ekuitas + $labaRugi->jumlah_laba_rugi + $jumlah_kewajiban_jkpjg
+              + $jumlah_kewajiban_jkpdk) }}
+            </th>
+          </tr>
+          @else
+          <tr>
+            <th colspan="3" class="text-center">Data Tidak Ada</th>
+          </tr>
+          @endif
+        </tbody>
+        <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
       </table>
     </div>
     <br>

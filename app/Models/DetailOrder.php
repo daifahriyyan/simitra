@@ -51,6 +51,11 @@ class DetailOrder extends Model
         return $this->belongsTo(Sertifikat::class, 'id', 'id_order');
     }
 
+    public function sertifikat()
+    {
+        return $this->hasOne(Sertifikat::class, 'id_order', 'id');
+    }
+
     public function suratPemberitahuan()
     {
         return $this->hasOne(SuratPemberitahuan::class, 'id', 'id_order');
@@ -60,4 +65,19 @@ class DetailOrder extends Model
     {
         return $this->hasOne(SuratPerintahKerja::class, 'id', 'id_order');
     }
+
+    public function spkk()
+    {
+        return $this->belongsTo(SuratPerintahKerja::class, 'id_order', 'id');
+    }
+    public function verifikasiOrder()
+    {
+        return $this->hasOne(VerifikasiOrder::class, 'id', 'id_order');
+    }
+
+    public function verifikasi()
+    {
+        return $this->belongsTo(VerifikasiOrder::class, 'id_order', 'id');
+    }
+
 }

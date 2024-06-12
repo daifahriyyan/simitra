@@ -116,7 +116,7 @@
 <body>
   <div class="container">
     <div class="letterhead">
-      <img src="{{ public_path('assets/img/logo-surat.jpg') }}" alt="Company Logo" class="logo">
+      <img src="{{ public_path('assets/img/logo-surat.png') }}" alt="Company Logo" class="logo">
       <h1>PT MITRA INDO MAJU MANDIRI<br>Fumigation, Termite & Pest Control</h1>
       <div class="address">
         <p>Jl. Pakis II Blok C No. 60 Perum Ardhimas Bumi Mulya</p>
@@ -130,64 +130,74 @@
       <p style="text-align: center;">Per {{ $bulan[request()->bulan] ?? 'Belum Dipilih' }} {{ request()->tahun ??
         'Belum Dipilih' }}</p>
       <table>
-        <tr>
-          <th>Kode Akun</th>
-          <th>Nama Akun</th>
-          <th>Debet</th>
-          <th>Kredit</th>
-        </tr>
-        @php
-        $jenis_akun = '';
-        $saldoDebet = 0;
-        $saldoKredit = 0;
-        $totalDebet = 0;
-        $totalKredit = 0;
-        @endphp
-        @foreach ($neracaSaldo as $record)
-        @php
-        if(isset(request()->bulan) && isset(request()->tahun)){
-        $debet = App\Models\KeuDetailJurnal::where('kode_akun',
-        $record->id)->whereMonth('created_at', request()->bulan)->whereYear('created_at',
-        request()->tahun)->sum('debet');
-        $kredit = App\Models\KeuDetailJurnal::where('kode_akun',
-        $record->id)->whereMonth('created_at', request()->bulan)->whereYear('created_at',
-        request()->tahun)->sum('kredit');
-        } else if (isset(request()->bulan)){
-        $debet = App\Models\KeuDetailJurnal::where('kode_akun',
-        $record->id)->whereMonth('created_at', request()->bulan)->sum('debet');
-        $kredit = App\Models\KeuDetailJurnal::where('kode_akun',
-        $record->id)->whereMonth('created_at', request()->bulan)->sum('kredit');
-        } else if (isset(request()->tahun)){
-        $debet = App\Models\KeuDetailJurnal::where('kode_akun',
-        $record->id)->whereYear('created_at', request()->tahun)->sum('debet');
-        $kredit = App\Models\KeuDetailJurnal::where('kode_akun',
-        $record->id)->whereYear('created_at', request()->tahun)->sum('kredit');
-        } else {
-        $debet = App\Models\KeuDetailJurnal::where('kode_akun', $record->id)->sum('debet');
-        $kredit = App\Models\KeuDetailJurnal::where('kode_akun', $record->id)->sum('kredit');
-        }
+        <!-- AWAL EDIT SESUAIKAN TABEL DATABASE -->
+        <thead class="thead-light">
+          <tr>
+            <th>Kode Akun</th>
+            <th>Nama Akun</th>
+            <th>Debet</th>
+            <th>Kredit</th>
+          </tr>
+        </thead>
+        <tbody>
+          @php
+          $jenis_akun = '';
+          $saldoDebet = 0;
+          $saldoKredit = 0;
+          $totalDebet = 0;
+          $totalKredit = 0;
+          @endphp
+          @foreach ($neracaSaldo as $record)
+          @php
+          if(isset(request()->bulan) && isset(request()->tahun)){
+          $debet = App\Models\KeuDetailJurnal::where('kode_akun',
+          $record->id)->whereMonth('created_at', request()->bulan)->whereYear('created_at',
+          request()->tahun)->sum('debet');
+          $kredit = App\Models\KeuDetailJurnal::where('kode_akun',
+          $record->id)->whereMonth('created_at', request()->bulan)->whereYear('created_at',
+          request()->tahun)->sum('kredit');
+          } else if (isset(request()->bulan)){
+          $debet = App\Models\KeuDetailJurnal::where('kode_akun',
+          $record->id)->whereMonth('created_at', request()->bulan)->sum('debet');
+          $kredit = App\Models\KeuDetailJurnal::where('kode_akun',
+          $record->id)->whereMonth('created_at', request()->bulan)->sum('kredit');
+          } else if (isset(request()->tahun)){
+          $debet = App\Models\KeuDetailJurnal::where('kode_akun',
+          $record->id)->whereYear('created_at', request()->tahun)->sum('debet');
+          $kredit = App\Models\KeuDetailJurnal::where('kode_akun',
+          $record->id)->whereYear('created_at', request()->tahun)->sum('kredit');
+          } else {
+          $debet = App\Models\KeuDetailJurnal::where('kode_akun', $record->id)->sum('debet');
+          $kredit = App\Models\KeuDetailJurnal::where('kode_akun', $record->id)->sum('kredit');
+          }
 
-        if($record->jenis_akun == 'debet'){
-        $saldoDebet = $debet - $kredit;
-        } else if ($record->jenis_akun == 'kredit'){
-        $saldoKredit = $kredit - $debet;
-        }
+          if($record->jenis_akun == 'debet'){
+          $saldoDebet = $debet - $kredit;
+          } else if ($record->jenis_akun == 'kredit'){
+          $saldoKredit = $kredit - $debet;
+          }
 
-        $totalDebet += $saldoDebet;
-        $totalKredit += $saldoKredit;
-        @endphp
-        <tr>
-          <td>{{ $record->kode_akun }}</td>
-          <td>{{ $record->nama_akun }}</td>
-          <td>Rp. {{ number_format($saldoDebet) }}</td>
-          <td>Rp. {{ number_format($saldoKredit) }}</td>
-        </tr>
-        @endforeach
-        <tr>
-          <th colspan="2" class="text-right">Total</th>
-          <th>Rp. {{ number_format($totalDebet) }}</th>
-          <th>Rp. {{ number_format($totalKredit) }}</th>
-        </tr>
+          $totalDebet += $saldoDebet;
+          $totalKredit += $saldoKredit;
+          @endphp
+          <tr>
+            <td>{{ $record->kode_akun }}</td>
+            <td>{{ $record->nama_akun }}</td>
+            <td>Rp. {{ number_format($saldoDebet) }}</td>
+            <td>Rp. {{ number_format($saldoKredit) }}</td>
+          </tr>
+          @php
+          $saldoDebet = 0;
+          $saldoKredit = 0;
+          @endphp
+          @endforeach
+          <tr>
+            <th colspan="2" class="text-right">Total</th>
+            <th>Rp. {{ number_format($totalDebet) }}</th>
+            <th>Rp. {{ number_format($totalKredit) }}</th>
+          </tr>
+        </tbody>
+        <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
       </table>
     </div>
     <br>

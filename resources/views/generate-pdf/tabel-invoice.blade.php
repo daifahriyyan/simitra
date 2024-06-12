@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daftar ORDER</title>
+  <title>Daftar Invoice</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -93,7 +93,7 @@
 <body>
   <div class="container">
     <div class="letterhead">
-      <img src="{{ public_path('assets/img/logo-surat.jpg') }}" alt="Company Logo" class="logo">
+      <img src="{{ public_path('assets/img/logo-surat.png') }}" alt="Company Logo" class="logo">
       <h1>PT MITRA INDO MAJU MANDIRI<br>Fumigation, Termite & Pest Control</h1>
       <div class="address">
         <p>Jl. Pakis II Blok C No. 60 Perum Ardhimas Bumi Mulya</p>
@@ -111,21 +111,21 @@
           <th>ID Order</th>
           <th>Nama Customer</th>
           <th>Alamat Customer</th>
-          <th>ID Sertif</th>
+          {{-- <th>ID Sertif</th> --}}
           <th>No BL</th>
           <th>Shipper</th>
-          <th>Destination</th>
-          <th>Commodity</th>
+          {{-- <th>Destination</th>
+          <th>Commodity</th> --}}
           <th>Stuffing Date</th>
           <th>Closing Time</th>
-          <th>ID Recordsheet</th>
+          {{-- <th>ID Recordsheet</th>
           <th>Dossage (g/m³)</th>
           <th>Treatment</th>
           <th>Quantity</th>
           <th>Volume</th>
           <th>No Kontainer</th>
           <th>ID Data Standar</th>
-          <th>Harga Jual</th>
+          <th>Harga Jual</th> --}}
           <th>Total Penjualan</th>
           <th>PPN</th>
           <th>Jumlah Dibayar</th>
@@ -137,16 +137,16 @@
           <td>{{ $record->detailOrder->dataOrder->id_order }}</td>
           <td>{{ $record->detailOrder->dataOrder->dataCustomer->nama_customer }}</td>
           <td>{{ $record->detailOrder->dataOrder->dataCustomer->alamat_customer }}</td>
-          <td>{{ $record->sertifikat->id_sertif }}</td>
-          <td>{{ $record->no_bl }}</td>
+          {{-- <td>{{ $record->sertifikat->id_sertif }}</td> --}}
+          <td>{{ $record->sertifikat->consignment }}</td>
           <td>{{ $record->shipper }}</td>
-          <td>{!! $record->detailOrder->destination ?? "<span class='text-danger'>Data Tidak
+          {{-- <td>{!! $record->detailOrder->destination ?? "<span class='text-danger'>Data Tidak
               Ditemukan</span>" !!}</td>
           <td>{!! $record->detailOrder->commodity ?? "<span class='text-danger'>Data Tidak
-              Ditemukan</span>" !!}</td>
+              Ditemukan</span>" !!}</td> --}}
           <td>{{ $record->stuffing_date }}</td>
           <td>{{ $record->closing_time }}</td>
-          <td>{{ $record->methylRecordsheet->id_recordsheet }}</td>
+          {{-- <td>{{ $record->methylRecordsheet->id_recordsheet }}</td>
           <td>{{ $record->methylRecordsheet->applied_dose_rate }}</td>
           <td>{{ $record->detailOrder->dataOrder->treatment }}</td>
           <td>{{ $record->detailOrder->dataOrder->jumlah_order }}</td>
@@ -154,7 +154,7 @@
           <td>{!! $record->detailOrder->container ?? "<span class='text-danger'>Data Tidak
               Ditemukan</span>" !!}</td>
           <td>{{ $record->dataHarga->id_datastandar}}</td>
-          <td>{{ $record->dataHarga->harga_jual }}</td>
+          <td>{{ $record->dataHarga->harga_jual }}</td> --}}
           <td>{{ $record->total_penjualan }}</td>
           <td>{{ $record->ppn }}</td>
           <td>{{ $record->jumlah_dibayar }}</td>
@@ -163,7 +163,7 @@
       </table>
     </div>
     <br>
-    <div class="signature" style="text-align: right; margin-left: 400px">
+    <div class="signature" style="text-align: right; margin-left: 700px">
       <table>
         <tr>
           <th>Semarang, {{ date('d M Y') }}</th>

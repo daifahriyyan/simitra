@@ -199,9 +199,10 @@
                   <h6 class="m-0 font-weight-bold text-primary">Customer</h6> <!-- EDIT NAMA -->
                   <div class="btn-group" role="group" aria-label="Basic mixed styles example">
                     <!-- Tombol Tambah dengan Icon -->
-                    <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#addModal">
+                    {{-- <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal"
+                      data-bs-target="#addModal">
                       Tambah
-                    </button>
+                    </button> --}}
                     <!-- Tombol Cetak Tabel dengan Icon -->
                     <a href="{{ route('Data Customer') }}?export=pdf" class="btn btn-sm btn-warning">
                       Cetak

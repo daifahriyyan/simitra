@@ -23,9 +23,9 @@ class DetailCustomerController extends Controller
       if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
         $tanggalMulai = request()->tanggalMulai;
         $tanggalAkhir = request()->tanggalAkhir;
-        $detailCustomer = DetailCustomer::whereBetween('tanggal_input', [$tanggalMulai, $tanggalAkhir])->get();
+        $detailCustomer = DetailCustomer::where('id_customer', request()->nama_customer ?? '!=', '')->whereBetween('tanggal_input', [$tanggalMulai, $tanggalAkhir])->get();
       } else {
-        $detailCustomer = DetailCustomer::get();
+        $detailCustomer = DetailCustomer::where('id_customer', request()->nama_customer ?? '!=', '')->get();
       }
   
       if (request()->get('export') == 'pdf') {
@@ -42,7 +42,7 @@ class DetailCustomerController extends Controller
         return $pdf->stream('Daftar Detail Customer.pdf');
       }
   
-      if (request()->get('export') == 'pdf') {
+      if (request()->get('export') == 'pdf-detail') {
         $detailCustomer = DetailCustomer::with('dataCustomer')->where('id', request()->get('id_customer'))->get()->first();
         Pdf::setOption([
           'enabled' => true,
@@ -69,7 +69,8 @@ class DetailCustomerController extends Controller
         'title' => 'Detail Customer',
         'records' => $detailCustomer,
         'id_detail_customer' => DetailCustomer::latest()->get()->first()->id ?? 1,
-        'customers' => DataCustomer::all()
+        'customers' => DataCustomer::all(),
+        'customerSelected' => DataCustomer::where('id', request()->nama_customer ?? '!=', '')->get()->first()
       ]);
 
     } else {

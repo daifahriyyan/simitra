@@ -116,7 +116,7 @@
 <body>
   <div class="container">
     <div class="letterhead">
-      <img src="{{ public_path('assets/img/logo-surat.jpg') }}" alt="Company Logo" class="logo">
+      <img src="{{ public_path('assets/img/logo-surat.png') }}" alt="Company Logo" class="logo">
       <h1>PT MITRA INDO MAJU MANDIRI<br>Fumigation, Termite & Pest Control</h1>
       <div class="address">
         <p>Jl. Pakis II Blok C No. 60 Perum Ardhimas Bumi Mulya</p>
@@ -169,32 +169,11 @@
           <td></td>
         </tr>
         @endif
-        @if (isset($hpp[0]))
-        @php
-        $total_hpp_sesungguhnya = $hpp->sum('bbb_standar') + $hpp->sum('btk_standar') +
-        $hpp->sum('bop_standar');
-        @endphp
-        <tr>
-          <th style="text-align: left">Harga Pokok Penjualan</th>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td style="text-align: left">Harga Pokok Penjualan</td>
-          <td></td>
-          <td>Rp. {{ number_format($total_hpp_sesungguhnya) }}</td>
-        </tr>
-        <tr>
-          <th style="text-align: left">Laba/Rugi Kotor</th>
-          <th></th>
-          <th style="text-align: left">Rp. {{ number_format($jumlah_pendapatan - $total_hpp_sesungguhnya) }}</th>
-        </tr>
-        @endif
         @if (isset($beban[0]))
         <tr>
-          <th>Beban Usaha</th>
-          <td></td>
-          <td></td>
+          <th style="text-align: left">Beban Usaha</th>
+          <th></th>
+          <th></th>
         </tr>
         @foreach ($beban as $record)
         @php
@@ -207,18 +186,34 @@
         </tr>
         @endforeach
         <tr>
-          <th style="text-align: left">Total Beban Usaha</th>
+          <th>Total Beban Usaha</th>
           <th></th>
-          <th style="text-align: left">Rp. {{ number_format($jumlah_beban) }}</th>
+          <th>Rp. {{ number_format($jumlah_beban) }}</th>
+        </tr>
+        <tr>
+          {{-- identifikasi laba rugi operasional --}}
+          <?php $labaRugiSebelumPajak = $jumlah_pendapatan - $jumlah_beban ?>
+          <th>Laba/Rugi Sebelum Pajak</th>
+          <th></th>
+          <th>Rp. {{ number_format($labaRugiSebelumPajak) }}</th>
+        </tr>
+        <tr>
+          <?php 
+        $bebanPajakPenghasilan = intval($pendapatan[0]->saldo_akun) * 0.5 /100 ;
+          if($bebanPajakPenghasilan < 0){
+            $bebanPajakPenghasilan = 0;
+          }
+        ?>
+          <th>Beban Pajak Penghasilan</th>
+          <th></th>
+          <th>Rp. {{ number_format($bebanPajakPenghasilan) }}</th>
         </tr>
         @endif
-        @if (isset($pendapatan[0]) || isset($hpp[0]) || isset($beban[0]))
+        @if (isset($labaRugiSebelumPajak) || isset($bebanPajakPenghasilan))
         <tr>
-          <th style="text-align: left">Laba/Rugi Bersih</th>
+          <th>Laba/Rugi Bersih</th>
           <th></th>
-          <th style="text-align: left">Rp. {{ number_format($jumlah_pendapatan - ($total_hpp_sesungguhnya ?? 0) -
-            $jumlah_beban) }}
-          </th>
+          <th>Rp. {{ number_format($labaRugiSebelumPajak - $bebanPajakPenghasilan) }}</th>
         </tr>
         @else
         <tr>

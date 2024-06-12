@@ -23,6 +23,11 @@ class SuratPerintahKerja extends Model
         return $this->belongsTo(DetailOrder::class, 'id_order', 'id');
     }
 
+    public function detailOrders()
+    {
+        return $this->hasOne(DetailOrder::class, 'id', 'id_order');
+    }
+
     public function dataPegawai()
     {
         return $this->belongsTo(DataPegawai::class, 'id_pegawai', 'id');

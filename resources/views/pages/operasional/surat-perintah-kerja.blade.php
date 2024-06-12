@@ -84,7 +84,8 @@
                     </div>
                     <div class="mb-3">
                       <label for="jumlah_container" class="form-label">Jumlah Kontainer:</label>
-                      <input type="number" class="form-control" id="jumlah_container" name="jumlah_container" required>
+                      <input type="number" class="form-control" id="jumlah_container" name="jumlah_container" value="1"
+                        readonly required>
                     </div>
                     <div class="mb-3">
                       <label for="id_order" class="form-label">ID Detail Order:</label>
@@ -181,7 +182,7 @@
                     <div class="mb-3">
                       <label for="jumlah_container" class="form-label">Jumlah Kontainer:</label>
                       <input type="number" class="form-control" id="jumlah_container" name="jumlah_container"
-                        value="{{ $record->jumlah_container }}" required>
+                        value="{{ $record->jumlah_container }}" readonly required>
                     </div>
                     <div class="mb-3">
                       <label for="id_order" class="form-label">ID Order:</label>

@@ -24,9 +24,9 @@ class DetailSupplierController extends Controller
           
         } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Keuangan') {
             if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
-                $detailSupplier = DetailSupplier::whereBetween('tanggal_input', [request()->tanggalMulai, request()->tanggalAkhir])->get();
+                $detailSupplier = DetailSupplier::where('id_supplier', request()->nama_supplier ?? '!=', '')->whereBetween('tanggal_input', [request()->tanggalMulai, request()->tanggalAkhir])->get();
             } else {
-                $detailSupplier = DetailSupplier::get();
+                $detailSupplier = DetailSupplier::where('id_supplier', request()->nama_supplier ?? '!=', '')->get();
             }
     
             if (request()->get('export') == 'pdf') {
@@ -67,7 +67,8 @@ class DetailSupplierController extends Controller
             return view('pages.akuntansi.detail-supplier', [
                 'detailSupplier' => $detailSupplier,
                 'id_DS' => DetailSupplier::latest()->get()->first()->id ?? 1,
-                'keuSupplier' => KeuSupplier::get()
+                'keuSupplier' => KeuSupplier::get(),
+                'supplierSelected' => KeuSupplier::where('id', request()->nama_supplier ?? '!=', '')->get()->first()
             ]);
 
         } else {
@@ -116,6 +117,24 @@ class DetailSupplierController extends Controller
                 'saldo_akun' => 0
             ]);
         }
+
+        // ambil data Akun
+        $kodeAkun1110 = KeuAkun::where('kode_akun', '1110')->get()->first();
+        $kodeAkun2110 = KeuAkun::where('kode_akun', '2110')->get()->first();
+
+        // jika jenis akun adalah kredit maka kurangi 
+        $saldo_akun1110 = $kodeAkun1110->saldo_akun - $request->pembayaran;
+        // jika jenis akun adalah kredit maka kurangi 
+        $saldo_akun2110 = $kodeAkun2110->saldo_akun - $request->pembayaran;
+
+        // ubah sesuai operasi diatas
+        KeuAkun::where('kode_akun', '1110')->update([
+            'saldo_akun' => $saldo_akun1110,
+        ]);
+        // ubah sesuai operasi diatas
+        KeuAkun::where('kode_akun', '2110')->update([
+            'saldo_akun' => $saldo_akun2110,
+        ]);
 
         // Ambil nama pegawai 
         $nama_pegawai = KeuSupplier::where('id', $request['id_supplier'])->first()->nama_supplier;

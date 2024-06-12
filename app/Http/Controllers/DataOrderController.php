@@ -28,9 +28,9 @@ class DataOrderController extends Controller
                 $tanggalAkhir = request()->tanggalAkhir;
                 $detailOrder = DetailOrder::whereHas('dataOrder', function ($query) use ($tanggalMulai, $tanggalAkhir) {
                     $query->whereBetween('tanggal_order', [$tanggalMulai, $tanggalAkhir]);
-                })->get();
+                })->latest()->get();
             } else {
-                $detailOrder = DetailOrder::get();
+                $detailOrder = DetailOrder::latest()->get();
             }
     
             if (request()->get('export') == 'pdf') {
@@ -62,7 +62,8 @@ class DataOrderController extends Controller
     
             if (request()->get('verif') !== null) {
                 DetailOrder::where('id', request()->get('verif'))->update([
-                    'verifikasi' => 1
+                    'verifikasi' => 1,
+                    'is_reject' => '0'
                 ]);
                 
                 // Menambahkan Notifikasi
@@ -72,18 +73,21 @@ class DataOrderController extends Controller
                     'posisi' => 'Operasional',
                 ]);
         
+                return redirect()->route('Data Order')->with('success', 'Verifikasi telah berhasil diupdate di web luar');
             }
             if (request()->get('reject') !== null) {
                 DetailOrder::where('id', request()->get('reject'))->update([
                     'is_reject' => '1'
                 ]);
+
+                return redirect()->route('Data Order')->with('error', 'Reject telah berhasil diupdate di web luar');
             }
     
             return view('pages.penerimaan-jasa.order', [
                 'title' => 'Data Order',
                 'dataCustomers' => DataCustomer::all(),
                 'hargaJasa' => DataHargar::all(),
-                'dataOrder' => DataOrder::with('dataCustomer')->get(),
+                'dataOrder' => DataOrder::with('dataCustomer')->latest()->get(),
                 'detailOrder' => $detailOrder
             ]);
 

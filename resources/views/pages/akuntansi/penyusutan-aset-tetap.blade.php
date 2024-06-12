@@ -142,6 +142,22 @@
               </div>
             </div>
           </div>
+          <!-- Modal Verifikasi -->
+          <div class="modal fade" id="verifRecord{{ $record->id }}" tabindex="-1" aria-labelledby="verifRecordLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-body">
+                  yakin dengan penyusutan ini? karena akan masuk jurnal
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tidak</button>
+                  <a href="{{ route('Penyusutan Aset Tetap') }}?verif=jurnal&id={{ $record->id }}"
+                    class="btn btn-info">Ya</a>
+                </div>
+              </div>
+            </div>
+          </div>
           @endforeach
           <!-- Modal Konfirmasi Logout -->
           <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
@@ -257,6 +273,8 @@
                         <td>{{ number_format($record->akumulasi_penyusutan, 2, ',', '.') }}</td>
                         <td>{{ number_format($record->nilai_buku, 2, ',', '.') }}</td>
                         <td>
+                          <button type="submit" class='btn btn-info btn-sm' data-bs-toggle="modal"
+                            data-bs-target="#verifRecord{{ $record->id }}"><i class='fas fa-check-circle'></i></button>
                           <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
                             data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>
                           <button type="submit" class='btn btn-danger btn-sm' data-bs-toggle="modal"

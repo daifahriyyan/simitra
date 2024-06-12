@@ -173,15 +173,34 @@
                       <tr>
                         <th colspan="3">Aset Lancar</th>
                       </tr>
-                      @foreach ($asetLancar as $record)
                       @php
-                      $jumlah_aset_lancar += $record->saldo_akun;
+                      $total_hpp_sesungguhnya = 0;
                       @endphp
+                      @foreach ($asetLancar as $record)
+                      <?php
+                      $total_hpp_sesungguhnya = $hppSesungguhnya->sum('bbb_sesungguhnya') +
+                      $hppSesungguhnya->sum('btk_sesungguhnya') +
+                      $hppSesungguhnya->sum('bop_sesungguhnya');
+                      
+                      $kas = $labaRugi->beban_pajak_penghasilan - ($total_hpp_sesungguhnya - $hpp->dataHarga->sum('hpp'));
+                      // if ($record->kode_akun == '1110') {
+                      //   $jumlah_aset_lancar += $kas;
+                      // <tr>
+                      //   <td>Kas</td>
+                      //   <td>Rp. {{ number_format($kas) }}</td>
+                      //   <td></td>
+                      // </tr>
+                      // } else{
+                        $jumlah_aset_lancar += $record->saldo_akun;
+                      ?>
                       <tr>
                         <td>{{ $record->nama_akun }}</td>
                         <td>Rp. {{ number_format($record->saldo_akun) }}</td>
                         <td></td>
                       </tr>
+                      <?php
+                      // }
+                      ?>
                       @endforeach
                       <tr>
                         <th>Jumlah Aset Lancar</th>
@@ -197,7 +216,11 @@
                       </tr>
                       @foreach ($asetTetap as $record)
                       @php
+                      if($record->kode_akun == '1220'){
                       $jumlah_aset_tetap -= $record->saldo_akun;
+                      }else{
+                      $jumlah_aset_tetap += $record->saldo_akun;
+                      }
                       @endphp
                       <tr>
                         <td>{{ $record->nama_akun }}</td>

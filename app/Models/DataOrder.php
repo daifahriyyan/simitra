@@ -33,6 +33,11 @@ class DataOrder extends Model
         return $this->hasOne(VerifikasiOrder::class, 'id', 'id_order');
     }
 
+    public function verifikasi()
+    {
+        return $this->belongsTo(VerifikasiOrder::class, 'id_order', 'id');
+    }
+
     public function spk()
     {
         return $this->hasOne(SuratPerintahKerja::class, 'id', 'id_order');

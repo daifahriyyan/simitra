@@ -49,7 +49,7 @@ class CeklistFumigasiController extends Controller
             return view('pages.operasional.ceklist-fumigasi', [
                 'title' => 'Ceklist Fumigasi',
                 'ceklist' => $ceklistFumigasi,
-                'dataOrder' => DetailOrder::get()
+                'dataOrder' => DetailOrder::latest()->get()
             ]);
 
         } else {
