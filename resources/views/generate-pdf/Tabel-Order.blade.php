@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daftar ORDER</title>
+  <title>Daftar Order</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -58,7 +58,7 @@
 
     .request-details th,
     .request-details td {
-      padding: 8px;
+      padding: 4px;
       padding-bottom: 10px;
       border-bottom: 1px solid black;
       border-right: 1px solid black;
@@ -93,7 +93,7 @@
 <body>
   <div class="container">
     <div class="letterhead">
-      <img src="{{ public_path('assets/img/logo-surat.jpg') }}" alt="Company Logo" class="logo">
+      <img src="{{ public_path('assets/img/logo-surat.png') }}" alt="Company Logo" class="logo">
       <h1>PT MITRA INDO MAJU MANDIRI<br>Fumigation, Termite & Pest Control</h1>
       <div class="address">
         <p>Jl. Pakis II Blok C No. 60 Perum Ardhimas Bumi Mulya</p>
@@ -107,6 +107,7 @@
       <table>
         <tr>
           <th>Id Order</th>
+          <th>Id Detail Order</th>
           <th>Tanggal Order</th>
           <th>Nama Customer</th>
           <th>PIC</th>
@@ -122,6 +123,7 @@
         @foreach ($detailOrder as $item)
         <tr>
           <td>{{ $item->dataOrder->id_order }}</td>
+          <td>{{ $item->id_detailorder }}</td>
           <td>{{ $item->dataOrder->tanggal_order }}</td>
           <td>{{ $item->dataOrder->dataCustomer->nama_customer }}</td>
           <td>{{ $item->dataOrder->dataCustomer->pic }}</td>

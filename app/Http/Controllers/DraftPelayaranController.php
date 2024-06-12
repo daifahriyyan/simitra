@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Throwable;
 use App\Models\DataOrder;
 use App\Models\Notifikasi;
+use App\Models\DetailOrder;
 use Illuminate\Http\Request;
 use App\Models\DraftPelayaran;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -43,10 +44,24 @@ class DraftPelayaranController extends Controller
                 $pdf = Pdf::loadView('generate-pdf.tabel-draft-pelayaran', ['draftPelayaran' => $draftPelayaran])->setPaper('a4');
                 return $pdf->stream('Daftar Draft Pelayaran.pdf');
             }
+            
+            if (request()->get('verif') !== null) {
+                $id_order = DataOrder::where('id', request()->get('verif'))->get()->first()->id_order;
+                DetailOrder::where('id_order', request()->get('verif'))->update([
+                    'verifikasi' => 4
+                ]);
+                
+                // Menambahkan Notifikasi
+                // Notifikasi::create([
+                //     'keterangan' => "Pembayaran dari Order no.".$id_order." telah lunas, cek jurnal",
+                //     'is_read' => 'N',
+                //     'posisi' => 'Keuangan',
+                // ]);
+            }
     
             return view('pages.operasional.draft-pelayaran', [
                 'draftPelayaran' => $draftPelayaran,
-                'dataOrder' => DataOrder::get(),
+                'dataOrder' => DataOrder::latest()->get(),
             ]);
 
         } else {

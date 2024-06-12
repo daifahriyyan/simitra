@@ -2,10 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Invoice;
+use App\Models\KeuAkun;
+use App\Models\KeuJurnal;
+use App\Models\DetailOrder;
 use App\Models\KeuAsetTetap;
 use Illuminate\Http\Request;
+use App\Models\KeuDetailJurnal;
 use App\Models\KeuPenyusutanAt;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class PenyusutanAsetTetapController extends Controller
@@ -16,15 +22,14 @@ class PenyusutanAsetTetapController extends Controller
     public function index()
     {
         if (Auth::user()->posisi == null) {
-          return redirect()->route('Home');
-          
+            return redirect()->route('Home');
         } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Keuangan') {
             if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
                 $penyusutanAt = KeuPenyusutanAt::whereBetween('tanggal_penyusutan', [request()->tanggalMulai, request()->tanggalAkhir])->get();
             } else {
                 $penyusutanAt = KeuPenyusutanAt::get();
             }
-    
+
             if (request()->get('export') == 'pdf') {
                 Pdf::setOption([
                     'enabled' => true,
@@ -51,14 +56,95 @@ class PenyusutanAsetTetapController extends Controller
                 $pdf = Pdf::loadView('generate-pdf.baris-penyusutan-aset', ['detail' => $detail])->setPaper('a4');
                 return $pdf->stream('Penyusutan Aset Tetap.pdf');
             }
+
+            if (request()->get('verif') == 'jurnal') {
+                $PAT = KeuPenyusutanAt::where('id', request()->get('id'))->get()->first();
+
+                // ambil data Piutang Usaha dengan kode 5240 dari table keu_akun
+                $piutang_usaha = KeuAkun::where('kode_akun', '5240')->get()->first();
+                // ambil data PPN Keluaran dengan kode 1220 dari table keu_akun
+                $ppn_keluaran = KeuAkun::where('kode_akun', '1220')->get()->first();
+
+                // cek apakah Piutang Usaha dengan kode 5240 ada?
+                // jika tidak ada maka buat akun Piutang Usaha
+                if (is_null($piutang_usaha)) {
+                    KeuAkun::create([
+                        'kode_akun' => '5240',
+                        'nama_akun' => 'Piutang Usaha',
+                        'jenis_akun' => 'debet',
+                        'kelompok_akun' => 'aset',
+                        'saldo_akun' => 0
+                    ]);
+                }
+                // cek apakah PPN Keluaran dengan kode 1220 ada?
+                // jika tidak ada maka buat akun PPN Keluaran
+                if (is_null($ppn_keluaran)) {
+                    KeuAkun::create([
+                        'kode_akun' => '1220',
+                        'nama_akun' => 'PPN Keluaran',
+                        'jenis_akun' => 'kredit',
+                        'kelompok_akun' => 'aset',
+                        'saldo_akun' => 0
+                    ]);
+                }
+
+                // ambil id invoice terakhir
+                $no_JUPAT = KeuPenyusutanAt::latest()->first()->id + 1;
+                // Buat No Jurnal JUPAT
+                $no_jurnal = 'JUPAT' . str_pad($no_JUPAT, 4, 0, STR_PAD_LEFT);
+
+                // ambil data Akun
+                $kodeAkun5240 = KeuAkun::where('kode_akun', '5240')->get()->first();
+                $kodeAkun1220 = KeuAkun::where('kode_akun', '1220')->get()->first();
+
+                $beban_penyusutan = $PAT->beban_penyusutan / 12;
+
+                // jika jenis akun adalah kredit maka kurangi 
+                $saldo_akun5240 = $kodeAkun5240->saldo_akun + $beban_penyusutan;
+                // jika jenis akun adalah kredit maka kurangi 
+                $saldo_akun1220 = $kodeAkun1220->saldo_akun + $beban_penyusutan;
+
+                // ubah sesuai operasi diatas
+                KeuAkun::where('kode_akun', '5240')->update([
+                    'saldo_akun' => $saldo_akun5240,
+                ]);
+                // ubah sesuai operasi diatas
+                KeuAkun::where('kode_akun', '1220')->update([
+                    'saldo_akun' => $saldo_akun1220,
+                ]);
+
+                // Masukkan Data invoice Ke Jurnal Umum
+                KeuJurnal::create([
+                    'no_jurnal' => $no_jurnal,
+                    'tanggal_jurnal' => $PAT->tanggal_penyusutan,
+                    'uraian_jurnal' => 'Penyusutan ' . $PAT->asetTetap->nama_at,
+                    'no_bukti' => $PAT->kode_penyusutan_at,
+                ]);
+
+                $id_jurnal = KeuJurnal::where('no_jurnal', $no_jurnal)->get()->first()->id;
+                $id_5240 = KeuAkun::where('kode_akun', '5240')->get()->first()->id;
+                $id_1220 = KeuAkun::where('kode_akun', '1220')->get()->first()->id;
+
+                // Masukkan Data invoice Ke Detail Jurnal Umum bagian debet
+                KeuDetailJurnal::create([
+                    'no_jurnal' => $id_jurnal,
+                    'kode_akun' => $id_5240,
+                    'debet' => $beban_penyusutan
+                ]);
+                // Masukkan Data invoice Ke Detail Jurnal Umum bagian debet
+                KeuDetailJurnal::create([
+                    'no_jurnal' => $id_jurnal,
+                    'kode_akun' => $id_1220,
+                    'kredit' => $beban_penyusutan
+                ]);
+            }
             return view("pages.akuntansi.penyusutan-aset-tetap", [
                 'penyusutanAt' => $penyusutanAt,
                 'id_PAT' => KeuPenyusutanAt::latest()->get()->first()->id ?? 1,
                 'asetTetap' => KeuAsetTetap::get()
             ]);
-
         } else {
-          return redirect()->route('Dashboard');
+            return redirect()->route('Dashboard');
         }
     }
 

@@ -80,6 +80,17 @@ class UserController extends Controller
         return redirect('/');
     }
 
+    public function logoutPegawai(Request $request): RedirectResponse
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect()->route('Login Pegawai');
+    }
+
     public function profile()
     {
         if (Auth::user()->posisi == null) {

@@ -54,6 +54,9 @@
             <input type="file" name="packing_list" id="packing_list" required>
             <button class="btn btn-primary" type="submit">Upload</button>
           </form>
+          @elseif ($record->verifikasi >= 2)
+          <a href="{{ route('Verifikasi Order') }}?export=pdf-detail&id={{ $record->verifikasiOrder->id }}"
+            target="_blank" class="download-btn"><i class="fas fa-cloud-download-alt"></i> Verifikasi Order</a>
           @elseif ($record->verifikasi == 2 && $record->is_reject != '1')
           <form method="POST" action="{{ route('Tambah Draft Pelayaran') }}" enctype="multipart/form-data">
             @csrf
@@ -64,15 +67,15 @@
             <button class="btn btn-primary" type="submit">Upload</button>
           </form>
           @endif
-          @if ($record->verifikasi >= 4 && $record->is_reject != '1')
-          <a href="{{ route('Sertifikat') }}?export=pdf-detail&id={{ $record->sertif->id }}" target="_blank"
-            class="download-btn"><i class="fas fa-cloud-download-alt"></i> Sertifikat</a>
-          @endif
           @if ($record->verifikasi >= 5 && $record->is_reject != '1')
+          {{-- <a href="{{ route('Sertifikat') }}?export=pdf-detail&id={{ $record->sertif->id }}" target="_blank"
+            class="download-btn"><i class="fas fa-cloud-download-alt"></i> Sertifikat</a> --}}
+          @endif
+          @if ($record->verifikasi >= 6 && $record->is_reject != '1')
           <a href="{{ route('Invoice') }}?export=pdf-detail&id={{ $record->invoicee->id }}" target="_blank"
             class="download-btn"><i class="fas fa-cloud-download-alt"></i> Invoice</a>
           @endif
-          @if ($record->verifikasi == 5 && $record->is_reject != '1')
+          @if ($record->verifikasi == 6 && $record->is_reject != '1')
           <form method="POST" action="{{ route('Tambah Bukti Pembayaran') }}" enctype="multipart/form-data">
             @csrf
             <label for="bukti_pembayaran" class="upload-btn"><a class="upload-btn"><i
@@ -83,7 +86,7 @@
             <input type="file" name="bukti_pembayaran" id="bukti_pembayaran" required>
             <button class="btn btn-primary" type="submit">Upload</button>
           </form>
-          @elseif ($record->verifikasi == 6 && $record->is_reject == '1')
+          @elseif ($record->verifikasi == 7 && $record->is_reject == '1')
           <form method="POST" action="{{ route('Tambah Bukti Pembayaran') }}" enctype="multipart/form-data">
             @csrf
             <label for="bukti_pembayaran" class="upload-btn"><a class="upload-btn"><i
@@ -101,8 +104,6 @@
           <div class="step">
             @if ($record->verifikasi == 1 && $record->is_reject == '1')
             ❌
-            @elseif ($record->verifikasi == 2 && $record->is_reject == '1')
-            ❌
             @elseif($record->verifikasi >= 1)
             ✅
             @else
@@ -113,8 +114,6 @@
           <div class="step">
             @if ($record->verifikasi == 1 && $record->is_reject == '1')
             <button class="step-btn">2</button>
-            @elseif ($record->verifikasi == 2 && $record->is_reject == '1')
-            ❌
             @elseif ($record->verifikasi >= 1)
             ✅
             @else
@@ -155,7 +154,7 @@
           <div class="step">
             @if ($record->verifikasi == 2 && $record->is_reject == '1')
             ❌
-            @elseif ($record->verifikasi >= 3)
+            @elseif ($record->verifikasi >= 4)
             ✅
             @else
             <button class="step-btn">6</button>
@@ -165,7 +164,7 @@
           <div class="step">
             @if ($record->verifikasi == 2 && $record->is_reject == '1')
             ❌
-            @elseif ($record->verifikasi >= 4)
+            @elseif ($record->verifikasi >= 5)
             ✅
             @else
             <button class="step-btn">7</button>
@@ -175,7 +174,7 @@
           <div class="step">
             @if ($record->verifikasi == 2 && $record->is_reject == '1')
             ❌
-            @elseif ($record->verifikasi >= 5)
+            @elseif ($record->verifikasi >= 6)
             ✅
             @else
             <button class="step-btn">8</button>
@@ -185,7 +184,7 @@
           <div class="step">
             @if ($record->verifikasi == 2 && $record->is_reject == '1')
             ❌
-            @elseif ($record->verifikasi >= 6)
+            @elseif ($record->verifikasi >= 7)
             ✅
             @else
             <button class="step-btn">9</button>
@@ -195,9 +194,9 @@
           <div class="step">
             @if ($record->verifikasi == 2 && $record->is_reject == '1')
             ❌
-            @elseif ($record->verifikasi == 6 && $record->is_reject == '1')
+            @elseif ($record->verifikasi == 7 && $record->is_reject == '1')
             ❌
-            @elseif ($record->verifikasi >= 6)
+            @elseif ($record->verifikasi >= 7)
             ✅
             @else
             <button class="step-btn">10</button>

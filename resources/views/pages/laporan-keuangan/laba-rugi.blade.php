@@ -34,6 +34,36 @@
 
         <!-- Container Fluid-->
         <div class="container-fluid" id="container-wrapper">
+          @if (session()->has('error'))
+          <div class="row">
+            <div class="col d-flex justify-content-center">
+              <div class="alert alert-danger alert-dismissible fade show" style="min-height: 50px; width:500px;"
+                role="alert">
+                <div>
+                  {{ session('error') }}
+                </div>
+                <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          @endif
+          @if (session()->has('success'))
+          <div class="row">
+            <div class="col d-flex justify-content-center">
+              <div class="alert alert-success alert-dismissible fade show" style="min-height: 50px; width:500px;"
+                role="alert">
+                <div>
+                  {{ session('success') }}
+                </div>
+                <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          @endif
           <!-- Your container content -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Laporan Laba Rugi</h1> <!-- EDIT NAMA -->
@@ -185,101 +215,103 @@
                       </tr>
                       @foreach ($pendapatan as $record)
                       @php
-                      $jumlah_pendapatan += $record->saldo_akun;
-                      @endphp
-                      <tr>
-                        <td>{{ $record->nama_akun }}</td>
-                        <td>Rp. {{ number_format($record->saldo_akun) }}</td>
-                        <td></td>
-                      </tr>
-                      @endforeach
-                      <tr>
-                        <th>Jumlah Pendapatan</th>
-                        <th></th>
-                        <th>Rp. {{ number_format($jumlah_pendapatan) }}</th>
-                      </tr>
-                      <tr>
-                        <td colspan="3">
-                          <br>
-                        </td>
-                      </tr>
-                      @endif
-                      @if (isset($hpp[0]))
-                      @php
-                      $total_hpp_sesungguhnya = $hpp->sum('bbb_standar') + $hpp->sum('btk_standar') +
-                      $hpp->sum('bop_standar');
-                      @endphp
-                      <tr>
-                        <th colspan="3">Harga Pokok Penjualan</th>
-                      </tr>
-                      <tr>
-                        <td>Harga Pokok Penjualan</td>
-                        <td></td>
-                        <td>Rp. {{ number_format($total_hpp_sesungguhnya) }}</td>
-                      </tr>
-                      <tr>
-                        <th>Laba/Rugi Kotor</th>
-                        <th></th>
-                        <th>Rp. {{ number_format($jumlah_pendapatan - $total_hpp_sesungguhnya) }}</th>
-                      </tr>
-                      @endif
-                      @if (isset($beban[0]))
-                      <tr>
-                        <th colspan="3">Beban Usaha</th>
-                      </tr>
-                      @foreach ($beban as $record)
-                      @php
-                      $jumlah_beban += $record->saldo_akun;
-                      @endphp
-                      <tr>
-                        <td>{{ $record->nama_akun }}</td>
-                        <td>Rp. {{ number_format($record->saldo_akun) }}</td>
-                        <td></td>
-                      </tr>
-                      @endforeach
-                      <tr>
-                        <th>Total Beban Usaha</th>
-                        <th></th>
-                        <th>Rp. {{ number_format($jumlah_beban) }}</th>
-                      </tr>
-                      <tr>
-                        {{-- identifikasi laba rugi operasional --}}
-                        <?php $labaRugiOperasional = ($jumlah_pendapatan - $total_hpp_sesungguhnya) - $jumlah_beban ?>
-                        <th>Laba/Rugi Operasional</th>
-                        <th></th>
-                        <th>Rp. {{ number_format($labaRugiOperasional) }}
-                        </th>
-                      </tr>
-                      <tr>
-                        <?php 
-                        $bebanPajakPenghasilan = $labaRugiOperasional  * 22/100 ;
+                      if($record->saldo_akun <= 0){ $record->saldo_akun = 0;
+                        }
+                        $jumlah_pendapatan += $record->saldo_akun;
+                        @endphp
+                        <tr>
+                          <td>{{ $record->nama_akun }}</td>
+                          <td>Rp. {{ number_format($record->saldo_akun) }}</td>
+                          <td></td>
+                        </tr>
+                        @endforeach
+                        <tr>
+                          <th>Jumlah Pendapatan</th>
+                          <th></th>
+                          <th>Rp. {{ number_format($jumlah_pendapatan) }}</th>
+                        </tr>
+                        <tr>
+                          <td colspan="3">
+                            <br>
+                          </td>
+                        </tr>
+                        @endif
+                        @if (isset($hpp[0]))
+                        @php
+                        $total_hpp_sesungguhnya = $hpp->sum('bbb_standar') + $hpp->sum('btk_standar') +
+                        $hpp->sum('bop_standar');
+                        @endphp
+                        {{-- <tr>
+                          <th colspan="3">Harga Pokok Penjualan</th>
+                        </tr>
+                        <tr>
+                          <td>Harga Pokok Penjualan</td>
+                          <td></td>
+                          <td>Rp. {{ number_format($total_hpp_sesungguhnya) }}</td>
+                        </tr>
+                        <tr>
+                          <th>Laba/Rugi Kotor</th>
+                          <th></th>
+                          <th>Rp. {{ number_format($jumlah_pendapatan - $total_hpp_sesungguhnya) }}</th>
+                        </tr> --}}
+                        @endif
+                        @if (isset($beban[0]))
+                        <tr>
+                          <th colspan="3">Beban Usaha</th>
+                        </tr>
+                        @foreach ($beban as $record)
+                        @php
+                        $jumlah_beban += $record->saldo_akun;
+                        @endphp
+                        <tr>
+                          <td>{{ $record->nama_akun }}</td>
+                          <td>Rp. {{ number_format($record->saldo_akun) }}</td>
+                          <td></td>
+                        </tr>
+                        @endforeach
+                        <tr>
+                          <th>Total Beban Usaha</th>
+                          <th></th>
+                          <th>Rp. {{ number_format($jumlah_beban) }}</th>
+                        </tr>
+                        <tr>
+                          {{-- identifikasi laba rugi operasional --}}
+                          <?php $labaRugiSebelumPajak = $jumlah_pendapatan - $jumlah_beban ?>
+                          <th>Laba/Rugi Sebelum Pajak</th>
+                          <th></th>
+                          <th>Rp. {{ number_format($labaRugiSebelumPajak) }}
+                          </th>
+                        </tr>
+                        <tr>
+                          <?php 
+                        $bebanPajakPenghasilan = intval($pendapatan[0]->saldo_akun) * 0.5 /100 ;
                           if($bebanPajakPenghasilan < 0){
                             $bebanPajakPenghasilan = 0;
                           }
                         ?>
-                        <th>Beban Pajak Penghasilan</th>
-                        <th></th>
-                        <th>Rp. {{ number_format( $bebanPajakPenghasilan) }}
-                        </th>
-                        <input type="hidden" name="beban_pajak_penghasilan" value="{{ $bebanPajakPenghasilan }}"
-                          form="posting">
-                      </tr>
-                      @endif
-                      @if (isset($labaRugiOperasional) || isset($bebanPajakPenghasilan))
-                      <tr>
-                        <th>Laba/Rugi Bersih</th>
-                        <th></th>
-                        <th>Rp. {{ number_format($labaRugiOperasional - $bebanPajakPenghasilan) }}
-                        </th>
-                        <input type="hidden" name="jumlah_laba_rugi"
-                          value="{{ $labaRugiOperasional - $bebanPajakPenghasilan }}" form="posting">
-                      </tr>
-                      @else
-                      <tr>
-                        <th colspan="3" class="text-center">Data Tidak Ada</th>
-                      </tr>
-                      @endif
-                      <tr>
+                          <th>Beban Pajak Penghasilan</th>
+                          <th></th>
+                          <th>Rp. {{ number_format($bebanPajakPenghasilan) }}
+                          </th>
+                          <input type="hidden" name="beban_pajak_penghasilan" value="{{ $bebanPajakPenghasilan}}"
+                            form="posting">
+                        </tr>
+                        @endif
+                        @if (isset($labaRugiSebelumPajak) || isset($bebanPajakPenghasilan))
+                        <tr>
+                          <th>Laba/Rugi Bersih</th>
+                          <th></th>
+                          <th>Rp. {{ number_format($labaRugiSebelumPajak - $bebanPajakPenghasilan) }}
+                          </th>
+                          <input type="hidden" name="jumlah_laba_rugi"
+                            value="{{ $labaRugiSebelumPajak - $bebanPajakPenghasilan }}" form="posting">
+                        </tr>
+                        @else
+                        <tr>
+                          <th colspan="3" class="text-center">Data Tidak Ada</th>
+                        </tr>
+                        @endif
+                        <tr>
                     </tbody>
                     <!-- AKHIR EDIT SESUAIKAN TABEL DATABASE -->
                   </table>

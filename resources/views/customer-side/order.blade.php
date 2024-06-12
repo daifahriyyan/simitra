@@ -47,8 +47,8 @@
             "Less Container Load" }} ({{ $record->dataHarga->treatment }})
           </p>
           <p>Rp {{ number_format($record->dataHarga->harga_jual ) }}</p>
-          <a href="#" class="download-btn"><i class="fas fa-cloud-download-alt"></i> Download Sertifikat</a>
-          <a href="#" class="download-btn"><i class="fas fa-cloud-download-alt"></i> Download Invoice</a>
+          {{-- <a href="#" class="download-btn"><i class="fas fa-cloud-download-alt"></i> Download Sertifikat</a>
+          <a href="#" class="download-btn"><i class="fas fa-cloud-download-alt"></i> Download Invoice</a> --}}
         </div>
       </div>
     </div>

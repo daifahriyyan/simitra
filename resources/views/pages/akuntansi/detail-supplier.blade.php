@@ -234,6 +234,16 @@
                     <!-- Tombol Filter Id Supplier dan Tanggal dengan Icon -->
                     <div class="input-group">
                       <form action="{{ route('Detail Supplier') }}">
+                        <label for="nama_supplier" class="mb-0 mr-2">Supplier:</label>
+                        <select class="form-control-sm border-1" style="width: 100px; height: 30px;" id="nama_supplier"
+                          name="nama_supplier">
+                          <option value="{{ $supplierSelected->id ?? '' }}">{{ $supplierSelected->nama_supplier ??
+                            'Pilih Supplier' }}
+                          </option>
+                          @foreach ($keuSupplier as $item)
+                          <option value="{{ $item->id }}">{{ $item->nama_supplier }}</option>
+                          @endforeach
+                        </select>
                         <input type="date" class="form-control-sm border-1" id="tanggalMulai"
                           value="{{ request()->tanggalMulai }}" name="tanggalMulai"
                           aria-describedby="tanggalMulaiLabel">

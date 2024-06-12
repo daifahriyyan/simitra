@@ -78,7 +78,7 @@
         <div class="login-form">
           <!-- Image and heading -->
           <div class="text-center">
-            <img class="logo" src="{{ asset('img/logo/logo.png') }}" alt="Logo" style="width: 130px;">
+            <img class="logo" src="{{ asset('img/logo/logo2.png') }}" alt="Logo" style="width: 130px;">
             <h5 style="color: white;">Sistem Informasi Akuntansi
               <br>PT Mitra Indo Maju Mandiri
             </h5>
@@ -101,21 +101,16 @@
                   <span class="input-group-text text-white"><i class="fas fa-lock"></i></span>
                 </div>
                 <input type="password" class="form-control" id="password" name="password" placeholder="Password">
-                <i class="fas fa-eye-slash toggle-password"
-                  style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%); cursor: pointer; color: white;"></i>
+                <i class="fas fa-eye-slash toggle-password" onclick="togglePasswordVisibility('password')"
+                  style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%); cursor: pointer; color: white; z-index: 5;"></i>
               </div>
             </div>
 
-            <div class="form-group">
-              <div class="custom-control custom-checkbox small" style="line-height: 1.5rem;">
-                <input type="checkbox" class="custom-control-input" id="customCheck">
-                <label class="custom-control-label" for="customCheck" style="color: white;">Remember Me</label>
-              </div>
-            </div>
+
             <div class="form-group">
               <button type="submit" class="btn btn-primary btn-block">Login</button>
             </div>
-            <hr>
+
           </form>
           <hr>
           <div class="text-center">
@@ -143,18 +138,18 @@
 
 <script>
   // Function to toggle password visibility
-  function togglePasswordVisibility() {
-    var passwordInput = document.getElementById('exampleInputPassword');
-    var icon = document.querySelector('.toggle-password');
+  function togglePasswordVisibility(inputId) {
+    var passwordInput = document.getElementById(inputId);
+    var icon = document.querySelector('#' + inputId + '+ .toggle-password'); // Cari ikon toggle yang terkait dengan input
 
     if (passwordInput.type === "password") {
-      passwordInput.type = "text";
-      icon.classList.remove("fa-eye-slash");
-      icon.classList.add("fa-eye");
+        passwordInput.type = "text";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
     } else {
-      passwordInput.type = "password";
-      icon.classList.remove("fa-eye");
-      icon.classList.add("fa-eye-slash");
+        passwordInput.type = "password";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
     }
   }
 

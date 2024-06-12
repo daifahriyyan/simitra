@@ -188,13 +188,17 @@ class JurnalUmumController extends Controller
      */
     public function destroy(string $no_jurnal)
     {
-
         // ambil seluruh data detail jurnal
         $detail_jurnal = KeuDetailJurnal::where('no_jurnal', $no_jurnal)->get();
-
+        
         $no_bukti = KeuJurnal::where('id', $no_jurnal)->get()->first();
-
+        
         try {
+            // hapus record table detail jurnal berdasarkan no jurnal
+            KeuDetailJurnal::where('no_jurnal', $no_jurnal)->delete();
+            // hapus record table jurnal berdasarkan no jurnal
+            KeuJurnal::where('id', $no_jurnal)->delete();
+
             // ambil identitas jurnal
             $no_jurnal = explode('0', $no_jurnal);
             if ($no_jurnal[0] == 'JUBYR') {
@@ -204,11 +208,6 @@ class JurnalUmumController extends Controller
             } else if ($no_jurnal[0] == 'JUINV') {
                 Invoice::where('id_invoice', $no_bukti)->delete();
             }
-
-            // hapus record table detail jurnal berdasarkan no jurnal
-            KeuDetailJurnal::where('no_jurnal', $no_jurnal)->delete();
-            // hapus record table jurnal berdasarkan no jurnal
-            KeuJurnal::where('id', $no_jurnal)->delete();
 
             // Validate the value...
         } catch (Throwable $e) {

@@ -114,7 +114,7 @@ class LapKeuController extends Controller
             }
     
             return view('pages.laporan-keuangan.neraca-saldo', [
-                'neracaSaldo' => KeuAkun::get(),
+                'neracaSaldo' => $neracaSaldo,
                 'bulan' => $this->bulan
             ]);
 
@@ -239,6 +239,8 @@ class LapKeuController extends Controller
                 $kewajibanJkPjg = KeuAkun::where('kode_akun', 'like', '22%')->whereMonth('created_at', request()->bulan)->whereYear('created_at', request()->tahun)->get()->all();
                 $ekuitas = KeuAkun::where('kode_akun', 'like', '3%')->whereMonth('created_at', request()->bulan)->whereYear('created_at', request()->tahun)->get()->all();
                 $labaRugi = KeuLabaRugi::where('bulan', request()->bulan)->where('tahun', request()->tahun)->get()->first();
+                $hpp_sesungguhnya = HppSesungguhnya::whereMonth('tanggal_input', request()->bulan)->whereYear('tanggal_input', request()->tahun)->get();
+                $DataHarga = Invoice::whereMonth('created_at', request()->bulan)->whereYear('created_at', request()->tahun)->get()->first();
             } else if (isset(request()->tahun)) {
                 $asetLancar = KeuAkun::where('kode_akun', 'like', '11%')->whereYear('created_at', request()->tahun)->get()->all();
                 $asetTetap = KeuAkun::where('kode_akun', 'like', '12%')->whereYear('created_at', request()->tahun)->get()->all();
@@ -246,6 +248,8 @@ class LapKeuController extends Controller
                 $kewajibanJkPjg = KeuAkun::where('kode_akun', 'like', '22%')->whereYear('created_at', request()->tahun)->get()->all();
                 $ekuitas = KeuAkun::where('kode_akun', 'like', '3%')->whereYear('created_at', request()->tahun)->get()->all();
                 $labaRugi = KeuLabaRugi::where('tahun', request()->tahun)->get()->first();
+                $hpp_sesungguhnya = HppSesungguhnya::whereYear('tanggal_input', request()->tahun)->get();
+                $DataHarga = Invoice::whereYear('created_at', request()->tahun)->get()->first();
             } else if (isset(request()->bulan)) {
                 $asetLancar = KeuAkun::where('kode_akun', 'like', '11%')->whereMonth('created_at', request()->bulan)->get()->all();
                 $asetTetap = KeuAkun::where('kode_akun', 'like', '12%')->whereMonth('created_at', request()->bulan)->get()->all();
@@ -253,6 +257,8 @@ class LapKeuController extends Controller
                 $kewajibanJkPjg = KeuAkun::where('kode_akun', 'like', '22%')->whereMonth('created_at', request()->bulan)->get()->all();
                 $ekuitas = KeuAkun::where('kode_akun', 'like', '3%')->whereMonth('created_at', request()->bulan)->get()->all();
                 $labaRugi = KeuLabaRugi::where('bulan', request()->bulan)->get()->first();
+                $hpp_sesungguhnya = HppSesungguhnya::whereMonth('tanggal_input', request()->bulan)->get();
+                $DataHarga = Invoice::whereMonth('created_at', request()->bulan)->get()->first();
             } else {
                 $asetLancar = KeuAkun::where('kode_akun', 'like', '11%')->get()->all();
                 $asetTetap = KeuAkun::where('kode_akun', 'like', '12%')->get()->all();
@@ -260,6 +266,8 @@ class LapKeuController extends Controller
                 $kewajibanJkPjg = KeuAkun::where('kode_akun', 'like', '22%')->get()->all();
                 $ekuitas = KeuAkun::where('kode_akun', 'like', '3%')->get()->all();
                 $labaRugi = KeuLabaRugi::get()->first();
+                $hpp_sesungguhnya = HppSesungguhnya::get();
+                $DataHarga = Invoice::get()->first();
             }
     
             if (request()->get('export') == 'pdf') {
@@ -284,6 +292,8 @@ class LapKeuController extends Controller
                     'jumlah_kewajiban_jkpdk' => 0,
                     'jumlah_kewajiban_jkpjg' => 0,
                     'jumlah_ekuitas' => 0,
+                    'hppSesungguhnya' => $hpp_sesungguhnya,
+                    'hpp' => $DataHarga,
                     'bulan' => $this->bulan
                 ])->setPaper('a4');
                 return $pdf->stream('Laporan HPP.pdf');
@@ -301,7 +311,9 @@ class LapKeuController extends Controller
                 'jumlah_kewajiban_jkpdk' => 0,
                 'jumlah_kewajiban_jkpjg' => 0,
                 'jumlah_ekuitas' => 0,
-                'bulan' => $this->bulan
+                'hppSesungguhnya' => $hpp_sesungguhnya,
+                'hpp' => $DataHarga,
+                'bulan' => $this->bulan,
             ]);
 
         } else {
@@ -311,6 +323,9 @@ class LapKeuController extends Controller
 
     public function postingLabaRugi(Request $request)
     {
+        if(is_null($request->bulan) || is_null($request->tahun)){
+        return redirect()->route('Laporan Laba Rugi')->with('error', 'Pilih Filter bulan dan tahun terlebih dahulu');
+        }
         KeuLabaRugi::create([
             'jumlah_laba_rugi' => $request->jumlah_laba_rugi,
             'beban_pajak_penghasilan' => $request->beban_pajak_penghasilan,
@@ -319,11 +334,14 @@ class LapKeuController extends Controller
             'tanggal_posting' => date('Y-m-d'),
         ]);
 
-        return redirect()->route('Laporan Laba Rugi');
+        return redirect()->route('Laporan Laba Rugi')->with('success', 'Laba/rugi bersih berhasil di posting ke laporan posisi keuangan');
     }
 
     public function postingHPP(Request $request)
     {
+        if(is_null($request->bulan) || is_null($request->tahun)){
+        return redirect()->route('Laporan Laba Rugi')->with('error', 'Pilih Filter bulan dan tahun terlebih dahulu');
+        }
         KeuHpp::create([
             'jumlah_hpp' => $request->jumlah_hpp,
             'bulan' => $request->bulan,
@@ -331,6 +349,6 @@ class LapKeuController extends Controller
             'tanggal_posting' => date('Y-m-d'),
         ]);
 
-        return redirect()->route('Harga Pokok Penjualan');
+        return redirect()->route('Harga Pokok Penjualan')->with('success', 'Laporan HPP berhasil di posting ke laporan Laba/Rugi');
     }
 }

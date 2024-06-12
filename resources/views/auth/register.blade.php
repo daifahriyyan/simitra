@@ -25,6 +25,7 @@
       /* Mengatur warna teks menjadi putih */
     }
 
+
     .btn-primary {
       background-color: rgba(255, 255, 255, 0.5);
       border-color: transparent;
@@ -35,10 +36,18 @@
       background-color: rgba(255, 255, 255, 0.7);
     }
 
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 15px;
+      position: relative;
+      width: 100%;
+    }
 
     .form-group label {
       color: white;
-      margin-right: 10px;
+      margin-bottom: 5px;
     }
 
     /* CSS untuk input */
@@ -49,10 +58,19 @@
       border: none;
       color: white;
       flex: 1;
+      padding: 10px;
+      border-radius: 5px;
+      width: 100%;
     }
 
     .form-group .toggle-password {
-      color: rgba(255, 255, 255, 0.3);
+      color: rgba(255, 255, 255, 0.7);
+      cursor: pointer;
+      position: absolute;
+      right: 15px;
+      top: 50px;
+      /* Adjust this based on input padding */
+      transform: translateY(-50%);
     }
 
     .form-group select {
@@ -74,7 +92,7 @@
         <div class="col-lg-12">
           <div class="login-form">
             <div class="text-center">
-              <img class="logo" src="{{ asset('img/logo/logo.png') }}" alt="Logo" style="width: 160px;">
+              <img class="logo" src="{{ asset('img/logo/logo2.png') }}" alt="Logo" style="width: 160px;">
               <h5 style="color: white;">Sistem Informasi Akuntansi
                 <br>PT Mitra Indo Maju Mandiri
               </h5>
@@ -82,42 +100,39 @@
             <br>
             <form method="POST" action="{{ route('Sign Up Pegawai') }}">
               @csrf
-              <div class="form-group" style="display: flex; align-items: center;">
+              <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" name="username" placeholder="Enter Username"
-                  style="flex: 1;">
+                <input type="text" class="form-control" id="username" name="username" placeholder="Enter Username">
               </div>
-              <div class="form-group" style="display: flex; align-items: center;">
+              <div class="form-group">
                 <label for="nama_lengkap">Nama Lengkap</label>
                 <input type="text" class="form-control" id="nama_lengkap" name="nama_lengkap"
-                  placeholder="Enter Nama Lengkap" style="flex: 1;">
+                  placeholder="Enter Nama Lengkap">
               </div>
-              <div class="form-group" style="display: flex; align-items: center;">
+              <div class="form-group">
                 <label for="posisi">Posisi</label>
-                <select class="form-control" id="posisi" name="posisi" placeholder="Select Posisi" style="flex: 1;">
+                <select class="form-control" id="posisi" name="posisi" placeholder="Select Posisi">
                   <option value="Direktur">Direktur</option>
                   <option value="Administrasi">Administrasi</option>
                   <option value="Operasional">Operasional</option>
                   <option value="Keuangan">Keuangan</option>
                 </select>
               </div>
-              <div class="form-group" style="display: flex; align-items: center;">
+              <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp"
-                  placeholder="Enter Email Address" style="flex: 1;">
+                  placeholder="Enter Email Address">
               </div>
-              <div class="form-group" style="position: relative;">
+              <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" class="form-control" id="password" name="password" placeholder="Enter Password">
-                <i class="fas fa-eye-slash toggle-password" onclick="togglePasswordVisibility('password')"
-                  style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%); cursor: pointer;"></i>
+                <i class="fas fa-eye-slash toggle-password" onclick="togglePasswordVisibility('password')"></i>
               </div>
-              <div class="form-group" style="position: relative;">
+              <div class="form-group">
                 <label for="reenter_password">Reenter Password</label>
                 <input type="password" class="form-control" id="reenter_password" name="reenter_password"
                   placeholder="Reenter Password">
-                <i class="fas fa-eye-slash toggle-password" onclick="togglePasswordVisibility('reenter_password')"
-                  style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%); cursor: pointer;"></i>
+                <i class="fas fa-eye-slash toggle-password" onclick="togglePasswordVisibility('reenter_password')"></i>
               </div>
               <div class="form-group">
                 <button type="submit" class="btn btn-primary btn-block">Register</button>

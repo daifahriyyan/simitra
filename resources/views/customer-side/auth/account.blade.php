@@ -80,11 +80,11 @@
                     <div class="mb-3">
                       <label for="posisi" class="form-label">Posisi:</label>
                       <br>
-                      <select class="form-select" id="posisi" name="posisi" required>
+                      <select class="form-control" id="posisi" name="posisi" required>
                         <option value="">Pilih Posisi</option>
                         <option value="Direktur">Direktur</option>
                         <option value="Manajer">Manajer</option>
-                        <option value="Admin">Admin</option>
+                        <option value="Administrasi">Administrasi</option>
                         <option value="Operasional">Operasional</option>
                         <option value="Keuangan">Keuangan</option>
                         <option value="Fumigator">Fumigator</option>
@@ -134,11 +134,11 @@
                     <div class="mb-3">
                       <label for="posisi" class="form-label">Posisi:</label>
                       <br>
-                      <select class="form-select" id="posisi" name="posisi" required>
+                      <select class="form-control" id="posisi" name="posisi" required>
                         <option value="{{ $record->posisi }}">{{ $record->posisi }}</option>
                         <option value="Direktur">Direktur</option>
                         <option value="Manajer">Manajer</option>
-                        <option value="Admin">Admin</option>
+                        <option value="Administrasi">Administrasi</option>
                         <option value="Operasional">Operasional</option>
                         <option value="Keuangan">Keuangan</option>
                         <option value="Fumigator">Fumigator</option>

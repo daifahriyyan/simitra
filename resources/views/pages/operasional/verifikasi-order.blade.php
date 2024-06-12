@@ -48,6 +48,21 @@
             </div>
           </div>
           @endif
+          @if (session()->has('success'))
+          <div class="row">
+            <div class="col d-flex justify-content-center">
+              <div class="alert alert-success alert-dismissible fade show" style="min-height: 50px; width:500px;"
+                role="alert">
+                <div>
+                  {{ session('success') }}
+                </div>
+                <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          @endif
           <!-- Your container content -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Verifikasi Order</h1> <!-- EDIT NAMA -->
@@ -71,7 +86,7 @@
                     <div class="mb-3">
                       <label for="id_verifikasi" class="form-label">ID Verifikasi:</label>
                       <input type="text" class="form-control" id="id_verifikasi" name="id_verifikasi"
-                        value="VO00{{ $verifikasi->count() + 1 }}" readonly required>
+                        value="VO00{{ ($id_verif)? $id_verif + 1 : 1 }}" readonly required>
                     </div>
                     <div class="mb-3">
                       <label for="id_order" class="form-label">ID Order:</label>
@@ -99,41 +114,43 @@
                         <option value="Import">Import</option>
                       </select>
                     </div>
-                    <label for="kondisi_status" class="form-label">Kondisi:</label>
-                    <select class="form-control" id="kondisi_status" name="kondisi_status" required>
-                      <option value="">Pilih Kondisi</option>
-                      <option value="Finish">Finish</option>
-                      <option value="Unfinish">Unfinish</option>
-                      <option value="Asalan">Asalan</option>
-                      <option value="Sudah Diproses">Sudah Diproses</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                  <label for="packing" class="form-label">Packing:</label>
-                  <select class="form-control" id="packing" name="packing" required>
-                    <option value="">Pilih Packing</option>
-                    <option value="Plastik Wrapping">Plastik Wrapping</option>
-                    <option value="Karung Goni">Karung Goni</option>
-                    <option value="Single Face">Single Face</option>
-                    <option value="Karung Plastik">Karung Plastik</option>
-                    <option value="Lainnya">Lainnya</option>
-                  </select>
-                </div>
-                <div class="mb-3">
-                  <label for="place_fumigation" class="form-label">Tempat Fumigasi:</label>
-                  <select class="form-control" id="place_fumigation" name="place_fumigation" required>
-                    <option value="">Pilih Tempat Fumigasi</option>
-                    <option value="Memenuhi Syarat">Memenuhi Syarat</option>
-                    <option value="Tidak Memenuhi Syarat">Tidak Memenuhi Syarat</option>
-                  </select>
-                </div>
-                <div class="mb-3">
-                  <label for="kesimpulan" class="form-label">Kesimpulan:</label>
-                  <select class="form-control" id="kesimpulan" name="kesimpulan" required>
-                    <option value="">Pilih Kesimpulan</option>
-                    <option value="Bisa Dilakukan Fumigasi">Bisa Dilakukan Fumigasi</option>
-                    <option value="Tidak Bisa Dilakukan Fumigasi">Tidak Bisa Dilakukan Fumigasi</option>
-                  </select>
+                    <div>
+                      <label for="kondisi_status" class="form-label">Kondisi:</label>
+                      <select class="form-control" id="kondisi_status" name="kondisi_status" required>
+                        <option value="">Pilih Kondisi</option>
+                        <option value="Finish">Finish</option>
+                        <option value="Unfinish">Unfinish</option>
+                        <option value="Asalan">Asalan</option>
+                        <option value="Sudah Diproses">Sudah Diproses</option>
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label for="packing" class="form-label">Packing:</label>
+                      <select class="form-control" id="packing" name="packing" required>
+                        <option value="">Pilih Packing</option>
+                        <option value="Plastik Wrapping">Plastik Wrapping</option>
+                        <option value="Karung Goni">Karung Goni</option>
+                        <option value="Single Face">Single Face</option>
+                        <option value="Karung Plastik">Karung Plastik</option>
+                        <option value="Lainnya">Lainnya</option>
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label for="place_fumigation" class="form-label">Tempat Fumigasi:</label>
+                      <select class="form-control" id="place_fumigation" name="place_fumigation" required>
+                        <option value="">Pilih Tempat Fumigasi</option>
+                        <option value="Memenuhi Syarat">Memenuhi Syarat</option>
+                        <option value="Tidak Memenuhi Syarat">Tidak Memenuhi Syarat</option>
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label for="kesimpulan" class="form-label">Kesimpulan:</label>
+                      <select class="form-control" id="kesimpulan" name="kesimpulan" required>
+                        <option value="">Pilih Kesimpulan</option>
+                        <option value="Bisa Dilakukan Fumigasi">Bisa Dilakukan Fumigasi</option>
+                        <option value="Tidak Bisa Dilakukan Fumigasi">Tidak Bisa Dilakukan Fumigasi</option>
+                      </select>
+                    </div>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -160,7 +177,7 @@
                   <div class="mb-3">
                     <label for="id_verifikasi" class="form-label">ID Verifikasi:</label>
                     <input type="text" class="form-control" id="id_verifikasi" name="id_verifikasi"
-                      value="VO00{{ $verifikasi->count() + 1 }}" readonly required>
+                      value="VO00{{ ($id_verif)? $id_verif + 1 : 1 }}" readonly required>
                   </div>
                   <div class="mb-3">
                     <label for="id_order" class="form-label">ID Order:</label>
@@ -340,7 +357,7 @@
                     <tr>
                       <th>Id Verifikasi</th>
                       <th>Id Order</th>
-                      <th>Id Order Container</th>
+                      <th>Id Detail Order</th>
                       <th>Tanggal Order</th>
                       <th>Id Customer</th>
                       <th>Nama Customer</th>

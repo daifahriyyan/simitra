@@ -93,7 +93,7 @@
 <body>
   <div class="container">
     <div class="letterhead">
-      <img src="{{ public_path('assets/img/logo-surat.jpg') }}" alt="Company Logo" class="logo">
+      <img src="{{ public_path('assets/img/logo-surat.png') }}" alt="Company Logo" class="logo">
       <h1>PT MITRA INDO MAJU MANDIRI<br>Fumigation, Termite & Pest Control</h1>
       <div class="address">
         <p>Jl. Pakis II Blok C No. 60 Perum Ardhimas Bumi Mulya</p>
@@ -138,7 +138,6 @@
           <th>Wrapping</th>
           <th>Tanggal Sertif</th>
           {{-- <th>No Reg</th> --}}
-          <th>Status</th>
         </tr>
         @foreach ($sertifikat as $record)
         <tr>
@@ -174,15 +173,6 @@
           <td>{{ $record->wrapping }}</td>
           <td>{{ $record->tanggal_sertif }}</td>
           {{-- <td>{{ $record->no_reg }}</td> --}}
-          <td>
-            <?php
-              if($record->detailOrder->verifikasi <= 3){ 
-                echo '<span class="badge-pill badge-info">Process' ; 
-              }else if($record->detailOrder->verifikasi >= 4){
-                echo '<span class="badge-pill badge-success">Finish';
-              }
-              ?>
-          </td>
         </tr>
         @endforeach
       </table>

@@ -81,6 +81,7 @@
       padding: 8px;
       padding-bottom: 10px;
       text-align: center;
+      font-size: 10px;
       border-bottom: 1px solid black;
       border-right: 1px solid black;
     }
@@ -89,6 +90,7 @@
       padding: 8px;
       padding-bottom: 10px;
       text-align: left;
+      font-size: 10px;
       border-bottom: 1px solid black;
       border-right: 1px solid black;
     }
@@ -116,7 +118,7 @@
 <body>
   <div class="container">
     <div class="letterhead">
-      <img src="{{ public_path('assets/img/logo-surat.jpg') }}" alt="Company Logo" class="logo">
+      <img src="{{ public_path('assets/img/logo-surat.png') }}" alt="Company Logo" class="logo">
       <h1>PT MITRA INDO MAJU MANDIRI<br>Fumigation, Termite & Pest Control</h1>
       <div class="address">
         <p>Jl. Pakis II Blok C No. 60 Perum Ardhimas Bumi Mulya</p>

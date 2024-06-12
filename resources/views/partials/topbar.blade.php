@@ -22,7 +22,7 @@
         </form>
       </div>
     </li>
-    @if (Auth::user()->posisi == 'Administrasi' || Auth::user()->posisi == 'Operasional' || Auth::user()->posisi == 'Keuangan')
+    @if (Auth::user()->posisi != null)
     <li class="nav-item dropdown no-arrow mx-1">
       <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">
@@ -35,6 +35,7 @@
           Alerts Center
         </h6>
         @if (!is_null(App\Models\Notifikasi::get()))
+        @if(Auth::user()->posisi != 'Direktur')
         @foreach (App\Models\Notifikasi::where('posisi', Auth::user()->posisi)->limit(5)->get() as $item)
         <a class="dropdown-item d-flex align-items-center" href="#">
           <div class="mr-3">
@@ -48,6 +49,21 @@
           </div>
         </a>
         @endforeach
+        @elseif(Auth::user()->posisi == 'Direktur')
+        @foreach (App\Models\Notifikasi::limit(5)->get() as $item)
+        <a class="dropdown-item d-flex align-items-center" href="#">
+          <div class="mr-3">
+            <div class="icon-circle bg-primary">
+              <i class="fas fa-file-alt text-white"></i>
+            </div>
+          </div>
+          <div>
+            <div class="small text-gray-500">{{ date_format($item->created_at, 'M d H:i, Y') }}</div>
+            <span class="font-weight-bold">{{ $item->keterangan }}</span>
+          </div>
+        </a>
+        @endforeach
+        @endif
         @endif
         {{-- <a class="dropdown-item d-flex align-items-center" href="#">
           <div class="mr-3">
@@ -115,8 +131,9 @@
     <li class="nav-item dropdown no-arrow">
       <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">
-        <img class="img-profile rounded-circle" src="{{ asset('img/girl.png') }}" style="max-width: 60px">
-        <span class="ml-2 d-none d-lg-inline text-white small">Aida Ika Nadia</span>
+        <img class="img-profile rounded-circle"
+          src="{{ Auth::user()->foto ? asset(Auth::user()->foto) : asset('img/girl.png') }}" style="max-width: 60px">
+        <span class="ml-2 d-none d-lg-inline text-white small">{{ Auth::user()->nama_lengkap }}</span>
       </a>
       <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
         <a class="dropdown-item" href="{{ route('Profile Pegawai') }}">

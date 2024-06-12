@@ -27,7 +27,22 @@ class InvoiceController extends Controller
     public function index()
     {
         if (Auth::user()->posisi == null) {
-          return redirect()->route('Home');
+            if (request()->get('export') == 'pdf-detail') {
+                $detail = Invoice::where('id', request()->id)->get()->first();
+                Pdf::setOption([
+                    'enabled' => true,
+                    'isRemoteEnabled' => true,
+                    'chroot' => realpath(''),
+                    'isPhpEnabled' => true,
+                    'isFontSubsettingEnabled' => true,
+                    'pdfBackend' => 'CPDF',
+                    'isHtml5ParserEnabled' => true
+                ]);
+                $pdf = Pdf::loadView('generate-pdf.invoice', ['detail' => $detail])->setPaper('a4');
+                return $pdf->stream('Invoice.pdf');
+            } else {
+                return redirect()->route('Home');
+            }
           
         } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Administrasi') {
             if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
@@ -66,14 +81,17 @@ class InvoiceController extends Controller
             }
             if (request()->get('verif') !== null) {
                 DetailOrder::where('id', request()->get('verif'))->update([
-                    'verifikasi' => 5
+                    'verifikasi' => 6,
+                    'is_reject' => '0'
                 ]);
+                
+                return redirect()->route('Invoice')->with('success', 'Verifikasi telah berhasil diupdate di web luar');
             }
             return view('pages.penerimaan-jasa.invoice', [
                 'invoice' => $invoice,
                 'id_invoice' => (isset(Invoice::latest()->get()->first()->id)) ? Invoice::latest()->get()->first()->id : 1,
                 'dataSertif' => Sertifikat::get(),
-                'dataOrder' => DetailOrder::get(),
+                'dataOrder' => DetailOrder::latest()->get(),
                 'recordsheet' => MetilRecordsheet::get(),
                 'dataHarga' => DataHargar::get(),
             ]);
@@ -104,6 +122,8 @@ class InvoiceController extends Controller
         $totalPenjualan = intval($dataHarga->harga_jual) * $dataOrder->dataOrder->jumlah_order;
         // hitung jumlah dibayar
         $jumlah_dibayar = $totalPenjualan + ($totalPenjualan * ($request['ppn']/100));
+        // merubah request ppn menjadi format rupiah
+        request()->ppn = $totalPenjualan * ($request['ppn']/100);
 
         $termin = explode('/', $request->termin);
         $tglJatuhTempo = date("Y-m-d", strtotime("+$termin[1] days", strtotime($request['tanggal_invoice'])));
@@ -152,7 +172,7 @@ class InvoiceController extends Controller
             KeuAkun::create([
                 'kode_akun' => '2120',
                 'nama_akun' => 'PPN Keluaran',
-                'jenis_akun' => 'debet',
+                'jenis_akun' => 'kredit',
                 'kelompok_akun' => 'aset',
                 'saldo_akun' => 0
             ]);
@@ -186,7 +206,7 @@ class InvoiceController extends Controller
         // jika jenis akun adalah kredit maka kurangi 
         $saldo_akun2120 = $kodeAkun2120->saldo_akun + $request->ppn;
         // jika jenis akun adalah debet maka tambahi
-        $saldo_akun4110 = $kodeAkun4110->saldo_akun - $totalPenjualan;
+        $saldo_akun4110 = $kodeAkun4110->saldo_akun + $totalPenjualan;
 
         // ubah sesuai operasi diatas
         KeuAkun::where('kode_akun', '1120')->update([
@@ -225,7 +245,7 @@ class InvoiceController extends Controller
         KeuDetailJurnal::create([
             'no_jurnal' => $id_jurnal,
             'kode_akun' => $id_2120,
-            'debet' => $request->ppn
+            'kredit' => $request->ppn
         ]);
         // Masukkan Data invoice Ke Detail Jurnal Umum bagian kredit
         KeuDetailJurnal::create([
@@ -286,16 +306,19 @@ class InvoiceController extends Controller
         $dataOrder = DetailOrder::where('id', $request['id_order'])->get()->first();
         // ambil data harga berdasarkan id data standar yang diinput
         $dataHarga = DataHargar::where('id', $request['id_data_standar'])->get()->first();
+        // dd($request['id_order']);
         // hitung total penjualan
-        $totalPenjualan = $dataHarga->harga_jual * $dataOrder->jumlah_order;
+        $totalPenjualan = $dataHarga->harga_jual * $dataOrder->dataOrder->jumlah_order;
         // hitung jumlah dibayar
         $jumlah_dibayar = $totalPenjualan + ($totalPenjualan * ($request['ppn']/100));
+        // merubah request ppn menjadi format rupiah
+        request()->ppn = $totalPenjualan * ($request['ppn']/100);
 
         $termin = explode('/', $request->termin);
         $tglJatuhTempo = date("Y-m-d", strtotime("+$termin[1] days", strtotime($request['tanggal_invoice'])));
 
         // buat data invoice
-        Invoice::where('id', $id)->create([
+        Invoice::where('id', $id)->update([
             'id_invoice' => $request['id_invoice'],
             'termin' => $request['termin'],
             'tanggal_invoice' => $request['tanggal_invoice'],
@@ -334,7 +357,7 @@ class InvoiceController extends Controller
         // jika jenis akun adalah kredit maka kurangi 
         $saldo_akun2120 = $kodeAkun2120->saldo_akun + $request->ppn;
         // jika jenis akun adalah debet maka tambahi
-        $saldo_akun4110 = $kodeAkun4110->saldo_akun - $totalPenjualan;
+        $saldo_akun4110 = $kodeAkun4110->saldo_akun + $totalPenjualan;
 
         // ubah sesuai operasi diatas
         KeuAkun::where('kode_akun', '1120')->update([
@@ -349,26 +372,29 @@ class InvoiceController extends Controller
             'saldo_akun' => $saldo_akun4110,
         ]);
 
+        $id_1120 = KeuAkun::where('kode_akun', '1120')->get()->first()->id;
+        $id_2120 = KeuAkun::where('kode_akun', '2120')->get()->first()->id;
+        $id_4110 = KeuAkun::where('kode_akun', '4110')->get()->first()->id;
 
         // ambil data no jurnal dimana no bukti berdasarkan data invoice yang ingin dirubah
-        $no_jurnal = KeuJurnal::where('no_bukti', $request->id_invoice)->get()->first()->no_jurnal;
+        $no_jurnal = KeuJurnal::where('no_bukti', $request->id_invoice)->get()->first()->id;
 
         // Ubah Data Detail Jurnal bagian debet berdasarkan no jurnal yang dirubah dan kode akun
-        KeuDetailJurnal::where('no_jurnal', $no_jurnal)->where('kode_akun', '1120')->update([
+        KeuDetailJurnal::where('no_jurnal', $no_jurnal)->where('kode_akun', $id_1120)->update([
             'no_jurnal' => $no_jurnal,
-            'kode_akun' => '1120',
+            'kode_akun' => $id_1120,
             'debet' => $jumlah_dibayar
         ]);
         // Ubah Data Detail Jurnal bagian debet berdasarkan no jurnal yang dirubah dan kode akun
-        KeuDetailJurnal::where('no_jurnal', $no_jurnal)->where('kode_akun', '2120')->update([
+        KeuDetailJurnal::where('no_jurnal', $no_jurnal)->where('kode_akun', $id_2120)->update([
             'no_jurnal' => $no_jurnal,
-            'kode_akun' => '2120',
-            'debet' => $request->ppn
+            'kode_akun' => $id_2120,
+            'kredit' => $request->ppn
         ]);
         // Ubah Data Detail Jurnal bagian kredit berdasarkan no jurnal yang dirubah dan kode akun
-        KeuDetailJurnal::where('no_jurnal', $no_jurnal)->where('kode_akun', '4110')->update([
+        KeuDetailJurnal::where('no_jurnal', $no_jurnal)->where('kode_akun', $id_4110)->update([
             'no_jurnal' => $no_jurnal,
-            'kode_akun' => '4110',
+            'kode_akun' => $id_4110,
             'kredit' => $totalPenjualan
         ]);
 

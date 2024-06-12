@@ -93,7 +93,7 @@
 <body>
   <div class="container">
     <div class="letterhead">
-      <img src="{{ public_path('assets/img/logo-surat.jpg') }}" alt="Company Logo" class="logo">
+      <img src="{{ public_path('assets/img/logo-surat.png') }}" alt="Company Logo" class="logo">
       <h1>PT MITRA INDO MAJU MANDIRI<br>Fumigation, Termite & Pest Control</h1>
       <div class="address">
         <p>Jl. Pakis II Blok C No. 60 Perum Ardhimas Bumi Mulya</p>
@@ -103,7 +103,7 @@
     </div>
     <hr>
     <div class="request-details">
-      <h3 style="text-align: center; font-weight: bold; text-decoration: underline;">DAFTAR DETAIL CUSTOMER</h3>
+      <h3 style="text-align: center; font-weight: bold; text-decoration: underline;">REKAP CEKLIST FUMIGASI</h3>
       <table>
         <tr>
           <th>ID Ceklist</th>
@@ -130,14 +130,14 @@
           <th>Semarang, {{ date('d M Y') }}</th>
         </tr>
         <tr>
-          <th>Administrasi</th>
+          <th>MANAJER TEKNIK,</th>
         </tr>
         <tr>
           <td>
             <br>
             <br>
             <br>
-            (Bagus Ramadhan)
+            DIDIK SETIAWAN
           </td>
         </tr>
       </table>

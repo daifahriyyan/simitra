@@ -57,7 +57,8 @@ class PemberitahuanKegiatanController extends Controller
     
             if (request()->get('verif') !== null) {
                 DetailOrder::where('id', request()->get('verif'))->update([
-                    'verifikasi' => 3
+                    'verifikasi' => 3,
+                    'is_reject' => '0'
                 ]);
                 
                 $id_detailorder = DetailOrder::where('id', request()->get('verif'))->get()->first()->id_detailorder;
@@ -68,11 +69,13 @@ class PemberitahuanKegiatanController extends Controller
                     'is_read' => 'N',
                     'posisi' => 'Administrasi',
                 ]);
+                
+                return redirect()->route('Pemberitahuan Kegiatan')->with('success', 'Verifikasi telah berhasil diupdate di web luar');
             }
     
             return view('pages.operasional.pemberitahuan-kegiatan', [
                 'pemberitahuanKegiatan' => $pemberitahuanKegiatan,
-                'dataOrder' => DetailOrder::get(),
+                'dataOrder' => DetailOrder::latest()->get(),
             ]);
 
         } else {

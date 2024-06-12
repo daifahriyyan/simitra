@@ -49,6 +49,21 @@
             </div>
           </div>
           @endif
+          @if (session()->has('success'))
+          <div class="row">
+            <div class="col d-flex justify-content-center">
+              <div class="alert alert-success alert-dismissible fade show" style="min-height: 50px; width:500px;"
+                role="alert">
+                <div>
+                  {{ session('success') }}
+                </div>
+                <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          @endif
           <!-- Your container content -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Invoice</h1> <!-- EDIT NAMA -->
@@ -136,7 +151,7 @@
                       </select>
                     </div>
                     <div class="mb-3">
-                      <label for="ppn" class="form-label">PPN:</label>
+                      <label for="ppn" class="form-label">PPN (%):</label>
                       <input type="number" class="form-control" id="ppn" name="ppn">
                     </div>
                     <div class="modal-footer">
@@ -174,7 +189,8 @@
                     <div class="mb-3">
                       <label for="id_order" class="form-label">ID Order:</label>
                       <select class="form-control form-select-lg" name="id_order" id="id_order" required>
-                        <option value="{{ $record->id }}">{{ $record->detailOrder->id_detailorder }}</option>
+                        <option value="{{ $record->detailOrder->id }}">{{ $record->detailOrder->id_detailorder }}
+                        </option>
                         @foreach ($dataOrder as $item)
                         <option value="{{ $item->id }}">{{ $item->id_detailorder }}</option>
                         @endforeach
@@ -200,6 +216,11 @@
                         required>
                     </div>
                     <div class="mb-3">
+                      <label for="termin" class="form-label">Termin:</label>
+                      <input type="text" class="form-control" id="termin" name="termin" value="{{ $record->termin }}"
+                        required>
+                    </div>
+                    <div class=" mb-3">
                       <label for="stuffing_date" class="form-label">Stuffing Date:</label>
                       <input type="date" class="form-control" id="stuffing_date" name="stuffing_date"
                         value="{{ $record->stuffing_date }}" required>
@@ -229,7 +250,7 @@
                       </select>
                     </div>
                     <div class="mb-3">
-                      <label for="ppn" class="form-label">PPN:</label>
+                      <label for="ppn" class="form-label">PPN (%):</label>
                       <input type="number" class="form-control" id="ppn" name="ppn" value="{{ $record->ppn }}">
                     </div>
                     <div class="modal-footer">
@@ -382,7 +403,7 @@
                         <td>{{ $record->detailOrder->dataOrder->dataCustomer->nama_customer }}</td>
                         <td>{{ $record->detailOrder->dataOrder->dataCustomer->alamat_customer }}</td>
                         <td>{{ $record->sertifikat->id_sertif }}</td>
-                        <td>{{ $record->no_bl }}</td>
+                        <td>{{ $record->sertifikat->consignment }}</td>
                         <td>{{ $record->shipper }}</td>
                         <td>{!! $record->detailOrder->destination ?? "<span class='text-danger'>Data Tidak
                             Ditemukan</span>" !!}</td>
@@ -399,9 +420,9 @@
                             Ditemukan</span>" !!}</td>
                         <td>{{ $record->dataHarga->id_datastandar}}</td>
                         <td>{{ $record->dataHarga->harga_jual }}</td>
-                        <td>{{ $record->total_penjualan }}</td>
-                        <td>{{ $record->ppn }}</td>
-                        <td>{{ $record->jumlah_dibayar }}</td>
+                        <td>{{ number_format($record->total_penjualan, 2, ',', '.') }}</td>
+                        <td>{{ number_format($record->ppn, 2, ',', '.') }}</td>
+                        <td>{{ number_format($record->jumlah_dibayar, 2, ',', '.') }}</td>
                         <td>
                           <button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal'
                             data-bs-target='#editModal{{ $record->id }}'><i class='fas fa-edit'></i></button>

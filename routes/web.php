@@ -91,6 +91,7 @@ Route::middleware('auth')->group(function () {
     Route::view('/dashboard', 'index')->name('Dashboard');
     Route::get('/dashboard/profile', [UserController::class, 'profilePegawai'])->name('Profile Pegawai');
     Route::post('/dashboard/profile/update', [UserController::class, 'updatePegawai'])->name('Update Profile Pegawai');
+    Route::post('/dashboard/logout', [UserController::class, 'logoutPegawai'])->name('Logout Pegawai');
 
 
     /////////////          Master             //////////////
@@ -310,7 +311,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/dashboard/user/create', [UserController::class, 'tambahUser'])->name('Tambah User');
     Route::put('/dashboard/user/edit/{id}', [UserController::class, 'updateUser'])->name('Ubah User');
     Route::delete('/dashboard/user/delete/{id}', [UserController::class, 'deleteUser'])->name('Hapus User');
-    Route::view('/dashboard/user-logs', 'user-logs')->name('User Logs');
 });
 
 

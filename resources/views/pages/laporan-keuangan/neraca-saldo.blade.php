@@ -34,6 +34,36 @@
 
         <!-- Container Fluid-->
         <div class="container-fluid" id="container-wrapper">
+          @if (session()->has('error'))
+          <div class="row">
+            <div class="col d-flex justify-content-center">
+              <div class="alert alert-danger alert-dismissible fade show" style="min-height: 50px; width:500px;"
+                role="alert">
+                <div>
+                  {{ session('error') }}
+                </div>
+                <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          @endif
+          @if (session()->has('success'))
+          <div class="row">
+            <div class="col d-flex justify-content-center">
+              <div class="alert alert-success alert-dismissible fade show" style="min-height: 50px; width:500px;"
+                role="alert">
+                <div>
+                  {{ session('success') }}
+                </div>
+                <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          @endif
           <!-- Your container content -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Neraca Saldo</h1> <!-- EDIT NAMA -->
@@ -187,8 +217,8 @@
                         <td>Rp. {{ number_format($saldoKredit) }}</td>
                       </tr>
                       @php
-                          $saldoDebet = 0;
-                          $saldoKredit = 0;
+                      $saldoDebet = 0;
+                      $saldoKredit = 0;
                       @endphp
                       @endforeach
                       <tr>

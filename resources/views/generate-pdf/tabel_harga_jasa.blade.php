@@ -76,7 +76,8 @@
     .custom-table th,
     .custom-table td {
       border: 1px solid black;
-      padding: 8px;
+      padding: 4px;
+      font-size: 10px;
       text-align: center;
     }
 
@@ -103,7 +104,7 @@
 <body>
   <div class="container">
     <div class="letterhead">
-      <img src="{{ public_path('assets/img/logo-surat.jpg') }}" alt="Company Logo" class="logo">
+      <img src="{{ public_path('assets/img/logo-surat.png') }}" alt="Company Logo" class="logo">
       <h1>PT MITRA INDO MAJU MANDIRI<br>Fumigation, Termite & Pest Control</h1>
       <div class="address">
         <p>Jl. Pakis II Blok C No. 60 Perum Ardhimas Bumi Mulya</p>
@@ -129,17 +130,24 @@
           <th>Harga Jual</th>
         </tr>
         @foreach ($dataHarga as $record)
+        @php
+        $bbb_feet = $record->standarHPP->bbb_feet * $record->volume;
+        $btk_feet = $record->standarHPP->btk_feet * $record->volume;
+        $bop_feet = $record->standarHPP->bop_feet * $record->volume;
+        $hpp = $record->standarHPP->jumlah_hpp_feet * $record->volume;
+        $harga_jual = $hpp * ($record->markup / 100);
+        @endphp
         <tr>
-          <td>{{ $loop->iteration }}</td>
           <td>{{ $record->id_datastandar }}</td>
           <td>{{ $record->standarHPP->id_standar }}</td>
           <td>{{ $record->volume }}</td>
           <td>{{ $record->treatment }}</td>
-          <td>Rp. {{ number_format($record->bbb_standar) }}</td>
-          <td>Rp. {{ number_format($record->btk_standar) }}</td>
-          <td>Rp. {{ number_format($record->bop_standar) }}</td>
-          <td>{{ $record->markup }}%</td>
-          <td>Rp. {{ number_format($record->harga_jual) }}</td>
+          <td>Rp.{{ number_format($bbb_feet, 2, ',', '.') }}</td>
+          <td>Rp.{{ number_format($btk_feet, 2, ',', '.') }}</td>
+          <td>Rp.{{ number_format($bop_feet, 2, ',', '.') }}</td>
+          <td>Rp.{{ number_format($hpp, 2, ',', '.') }}</td>
+          <td>{{ number_format($record->markup, 2, ',', '.') }}</td>
+          <td>Rp.{{ number_format($harga_jual, 2, ',', '.') }}</td>
         </tr>
         @endforeach
       </table>

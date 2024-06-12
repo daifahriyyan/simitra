@@ -19,7 +19,22 @@ class VerifikasiOrderController extends Controller
     public function index()
     {
         if (Auth::user()->posisi == null) {
-          return redirect()->route('Home');
+            if (request()->get('export') == 'pdf-detail') {
+                $record = VerifikasiOrder::where('id', request()->id)->get()->first();
+                Pdf::setOption([
+                    'enabled' => true,
+                    'isRemoteEnabled' => true,
+                    'chroot' => realpath(''),
+                    'isPhpEnabled' => true,
+                    'isFontSubsettingEnabled' => true,
+                    'pdfBackend' => 'CPDF',
+                    'isHtml5ParserEnabled' => true
+                ]);
+                $pdf = Pdf::loadView('generate-pdf.baris_verifikasi_order', ['record' => $record])->setPaper('a4');
+                return $pdf->stream('Verifikasi Order.pdf');
+            } else {
+                return redirect()->route('Home');
+            }
           
         } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Operasional') {
             if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
@@ -61,7 +76,8 @@ class VerifikasiOrderController extends Controller
     
             if (request()->get('verif') !== null) {
                 DetailOrder::where('id', request()->get('verif'))->update([
-                    'verifikasi' => 2
+                    'verifikasi' => 2,
+                    'is_reject' => '0'
                 ]);
 
                 $id_detailorder = DetailOrder::where('id', request()->get('verif'))->get()->first()->id_detailorder;
@@ -72,16 +88,21 @@ class VerifikasiOrderController extends Controller
                     'is_read' => 'N',
                     'posisi' => 'Administrasi',
                 ]);
+
+                return redirect()->route('Verifikasi Order')->with('success', 'Verifikasi telah berhasil diupdate di web luar');
             }
             if (request()->get('reject') !== null) {
                 DetailOrder::where('id', request()->get('reject'))->update([
                     'verifikasi' => 2,
                     'is_reject' => '1'
                 ]);
+
+                return redirect()->route('Verifikasi Order')->with('error', 'Verifikasi telah berhasil diupdate di web luar');
             }
     
             return view('pages.operasional.verifikasi-order', [
-                'dataOrder' => DetailOrder::get(),
+                'dataOrder' => DetailOrder::latest()->get(),
+                'id_verif'=> VerifikasiOrder::latest()->get()->first()->id,
                 'verifikasi' => $verifikasi,
             ]);
             

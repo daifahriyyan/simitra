@@ -25,8 +25,7 @@ class BuktiPembayaranController extends Controller
     public function index()
     {
         if (Auth::user()->posisi == null) {
-          return redirect()->route('Home');
-          
+            return redirect()->route('Home');
         } else if (Auth::user()->posisi == 'Direktur' || Auth::user()->posisi == 'Administrasi') {
             if (isset(request()->tanggalMulai) && isset(request()->tanggalAkhir)) {
                 $tanggalMulai = request()->tanggalMulai;
@@ -35,7 +34,7 @@ class BuktiPembayaranController extends Controller
             } else {
                 $buktiPembayaran = BuktiPembayaran::get();
             }
-    
+
             if (request()->get('export') == 'pdf') {
                 Pdf::setOption([
                     'enabled' => true,
@@ -49,23 +48,102 @@ class BuktiPembayaranController extends Controller
                 $pdf = Pdf::loadView('generate-pdf.tabel-bukti-pembayaran', ['buktiPembayaran' => $buktiPembayaran])->setPaper('a4');
                 return $pdf->stream('Daftar Bukti Pembayaran.pdf');
             }
-    
+
             if (request()->get('verif') !== null) {
-                $id_order = DataOrder::where('id', request()->get('verif'))->get()->first()->id_order;
+                $id_order = DetailOrder::where('id', request()->get('verif'))->get()->first()->dataOrder->id_order;
+                $BP = BuktiPembayaran::where('id_order', request()->get('verif'))->get()->first();
                 DetailOrder::where('id_order', request()->get('verif'))->update([
-                    'verifikasi' => 6
+                    'verifikasi' => 7
                 ]);
-                
+
                 // Menambahkan Notifikasi
                 Notifikasi::create([
-                    'keterangan' => "Pembayaran dari Order no.".$id_order." telah lunas, cek jurnal",
+                    'keterangan' => "Pembayaran dari Order no." . $id_order . " telah lunas, cek jurnal",
                     'is_read' => 'N',
                     'posisi' => 'Keuangan',
                 ]);
+
+                // ambil data Piutang Usaha dengan kode 1110 dari table keu_akun
+                $kas = KeuAkun::where('kode_akun', '1110')->get()->first();
+                // ambil data Piutang Usaha dengan kode 1120 dari table keu_akun
+                $piutang_usaha = KeuAkun::where('kode_akun', '1120')->get()->first();
+
+                // cek apakah Piutang Usaha dengan kode 1110 ada?
+                // jika tidak ada maka buat akun Piutang Usaha
+                if (is_null($kas)) {
+                    KeuAkun::create([
+                        'kode_akun' => '1110',
+                        'nama_akun' => 'Kas',
+                        'jenis_akun' => 'debet',
+                        'kelompok_akun' => 'aset',
+                        'saldo_akun' => 0
+                    ]);
+                }
+                // cek apakah Piutang Usaha dengan kode 1120 ada?
+                // jika tidak ada maka buat akun Piutang Usaha
+                if (is_null($piutang_usaha)) {
+                    KeuAkun::create([
+                        'kode_akun' => '1120',
+                        'nama_akun' => 'Piutang Usaha',
+                        'jenis_akun' => 'debet',
+                        'kelompok_akun' => 'aset',
+                        'saldo_akun' => 0
+                    ]);
+                }
+                // Ambil nama customer 
+                $detail_order = DetailOrder::where('id', request()->get('verif'))->get()->first();
+                // ambil id invoice terakhir
+                $id_BP = BuktiPembayaran::latest()->first()->id;
+                $no_JUBP = ($id_BP) ? $id_BP + 1 : 1;
+                // Buat No Jurnal JUBP
+                $no_jurnal = 'JUBP' . str_pad($no_JUBP, 4, 0, STR_PAD_LEFT);
+
+                // ambil data Akun
+                $kodeAkun1120 = KeuAkun::where('kode_akun', '1120')->get()->first();
+                $kodeAkun1110 = KeuAkun::where('kode_akun', '1110')->get()->first();
+
+                // jika jenis akun adalah kredit maka kurangi 
+                $saldo_akun1120 = $kodeAkun1120->saldo_akun - $BP->invoice->jumlah_dibayar;
+                // jika jenis akun adalah kredit maka kurangi 
+                $saldo_akun1110 = $kodeAkun1110->saldo_akun + $BP->invoice->jumlah_dibayar;
+
+                // ubah sesuai operasi diatas
+                KeuAkun::where('kode_akun', '1120')->update([
+                    'saldo_akun' => $saldo_akun1120,
+                ]);
+                // ubah sesuai operasi diatas
+                KeuAkun::where('kode_akun', '1110')->update([
+                    'saldo_akun' => $saldo_akun1110,
+                ]);
+
+                // Masukkan Data invoice Ke Jurnal Umum
+                KeuJurnal::create([
+                    'no_jurnal' => $no_jurnal,
+                    'tanggal_jurnal' => date('Y-m-d'),
+                    'uraian_jurnal' => 'Pelunasan Piutang ' . $detail_order->id_detailorder,
+                    'no_bukti' => $BP->invoice->id_invoice,
+                ]);
+
+                $id_jurnal = KeuJurnal::where('no_jurnal', $no_jurnal)->get()->first()->id;
+
+                // Masukkan Data invoice Ke Detail Jurnal Umum bagian debet
+                KeuDetailJurnal::create([
+                    'no_jurnal' => $id_jurnal,
+                    'kode_akun' => $kodeAkun1120->id,
+                    'debet' => $BP->invoice->jumlah_dibayar
+                ]);
+                // Masukkan Data invoice Ke Detail Jurnal Umum bagian debet
+                KeuDetailJurnal::create([
+                    'no_jurnal' => $id_jurnal,
+                    'kode_akun' => $kodeAkun1110->id,
+                    'kredit' => $BP->invoice->jumlah_dibayar
+                ]);
+
+                return redirect()->route('Bukti Pembayaran');
             }
             if (request()->get('reject') !== null) {
                 DetailOrder::where('id_order', request()->get('reject'))->update([
-                    'verifikasi' => 6,
+                    'verifikasi' => 7,
                     'is_reject' => '1'
                 ]);
             }
@@ -73,11 +151,10 @@ class BuktiPembayaranController extends Controller
                 'title' => 'Bukti Pembayaran',
                 'records' => $buktiPembayaran,
                 'invoice' => Invoice::get(),
-                'dataOrder' => DataOrder::get(),
+                'dataOrder' => DataOrder::latest()->get(),
             ]);
-
         } else {
-          return redirect()->route('Dashboard');
+            return redirect()->route('Dashboard');
         }
     }
 
@@ -112,8 +189,6 @@ class BuktiPembayaranController extends Controller
             DetailOrder::where('id', request()->get('reject'))->update([
                 'is_reject' => '0'
             ]);
-
-            return redirect()->back();
         } else {
             if (isset($data->bukti_pembayaran)) {
                 Storage::disk('public')->delete('Bukti_pembayaran/' . $data->bukti_pembayaran);
@@ -135,9 +210,8 @@ class BuktiPembayaranController extends Controller
                 'is_read' => 'N',
                 'posisi' => 'Administrasi',
             ]);
-    
-            return redirect()->back();
         }
+        return redirect()->back();
     }
 
     /**
